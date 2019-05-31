@@ -18,4 +18,13 @@ process.on('uncaughtException', function (err) {
   // Example:
   //
   // Error: listen EADDRINUSE: address already in use :::3000
+  //
+  // Error: connect ECONNREFUSED 127.0.0.1:6006
+  // at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1054:14) {
+  //   errno: 'ECONNREFUSED',
+  //   code: 'ECONNREFUSED',
+  //   syscall: 'connect',
+  //   address: '127.0.0.1',
+  //   port: 6006
+  // }
 });

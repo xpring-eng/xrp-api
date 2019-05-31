@@ -11,7 +11,6 @@ info:
 tags:
   - name: Query
     description: Methods to access data from the ledger.
-paths: {}
 paths:
   '/servers/info':
     get:
@@ -27,6 +26,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerInfo'
+  '/accounts/{address}/info': # Maps to rippled's account_info command
+    get:
+      tags:
+        - Query
+      summary: Get account info
+      operationId: getAccountInfo
+      description: |
+        Get information about an account. This includes its settings, activity, and XRP balance. It also includes the sequence number of the next valid transaction for this account, which you should use to prepare a transaction from this account. By default, this method returns data from the 'current' (in-progress) ledger, which may change before validation.
+      parameters:
+        - in: path
+          name: address
+          description: The account to query.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Address'
+        - in: query
+          name: ledger_index
+          description: (Optional) The sequence number of the ledger to use, or a shortcut string to choose a ledger automatically. (See [Specifying Ledgers](https://developers.ripple.com/basic-data-types.html#specifying-ledgers))
+          required: false
+          schema:
+            $ref: '#/components/schemas/LedgerIndex'
+      responses:
+        '200':
+          description: AccountInfo object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfo'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
   '/apiDocs':
     get:
       tags:
@@ -49,6 +82,28 @@ paths:
           description: Ping response
 components:
   schemas:
+    RippleAPIError:
+      type: object
+      required:
+      - message
+      - errors
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+    ErrorItem:
+      type: object
+      required:
+      - message
+      - code
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
     ServerInfo:
       required:
         - server_version
@@ -117,13 +172,15 @@ components:
           $ref: '#/components/schemas/ServerState'
         serverStateDurationUs:
           type: string
+          description: The amount of time, in microseconds, that the server has continuously been in the present state (`full`, `syncing`, etc.)
         stateAccounting:
           type: object
-          description: Total duration spent in and every transition to each possible server state.
+          description: Total duration spent in and every transition to various server states. This can be useful for tracking the long-term health of your server's connectivity to the network.
         time:
           type: string
         uptime:
           type: number
+          description: Number of consecutive seconds that the server has been operational.
         validatedLedger:
           $ref: '#/components/schemas/ValidatedLedger'
         validationQuorum:
@@ -213,6 +270,68 @@ components:
           description: Identifying sequence number of this ledger version.
           format: int32
       description: Information about the fully-validated ledger with the highest sequence number (the most recent).
+    Address:
+      description: The address of the XRP Ledger account that is initiating the transaction, or the public representation of a [RegularKey](https://developers.ripple.com/cryptographic-keys.html#regular-key-pair), which has the same format.
+      type: string
+      pattern: '^r[A-HJ-NP-Za-km-z1-9]{24,34}$'
+      example: raqFu9wswvHYS4q5hZqZxVSYei73DQnKL8
+    AccountInfo:
+      required:
+        - account_data
+      properties:
+        account_data:
+          $ref: '#/components/schemas/AccountData'
+        ledger_current_index:
+          type: integer
+          description: (Omitted if `ledger_index` is provided instead) The sequence number of the most-current ledger, which was used when retrieving this information. The information does not contain any changes from ledgers newer than this one.
+        ledger_index:
+          type: integer
+          description: (Omitted if `ledger_current_index` is provided instead) The sequence number of the ledger used when retrieving this information. The information does not contain any changes from ledgers newer than this one.
+        validated:
+          type: boolean
+          description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
+    AccountData: # https://developers.ripple.com/accountroot.html
+      type: object
+      required:
+        - LedgerEntryType
+        - Account
+        - Balance
+        - Flags
+        - OwnerCount
+        - PreviousTxnID
+        - PreviousTxnLgrSeq
+        - Sequence
+      properties:
+        Account:
+          type: string
+        Balance:
+          type: string
+        Flags:
+          type: integer
+        LedgerEntryType:
+          type: string
+        OwnerCount:
+          type: integer
+        PreviousTxnID:
+          type: string
+        PreviousTxnLgrSeq:
+          type: integer
+        RegularKey:
+          $ref: '#/components/schemas/Address'
+        Sequence:
+          type: integer
+        index:
+          pattern: ^[A-F0-9]{64}$
+          type: string
+      additionalProperties: false
+    LedgerIndex:
+      oneOf:
+        - type: string
+          enum:
+            - validated
+            - closed
+            - current # default
+        - type: integer
     ApiDoc:
       description: The requested apiDoc.
       type: object

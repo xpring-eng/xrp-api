@@ -1,0 +1,16 @@
+{
+  "account_data": {
+      "Account": "r3SuZSHtSvS2Wzi4sUGa3VZQKVFeA1VMcQ",
+      "Balance": "9999999976",
+      "Flags": 1114112,
+      "LedgerEntryType": "AccountRoot",
+      "OwnerCount": 0,
+      "PreviousTxnID": "37DEAA5D334866466C640EA8CBD88BAC2C19C1BBA796EEECB971C1ECA63C7D22",
+      "PreviousTxnLgrSeq": 17541346,
+      "RegularKey": "rBNLLgShdW5SfdgvHvmjkZb2LxxRkhG7CF",
+      "Sequence": 3,
+      "index": "1B358937FEDFC4FD1DD6523E7827648B5D51C3070443F20DCA38363A6EA167C1"
+  },
+  "ledger_current_index": 19797356,
+  "validated": false
+}
