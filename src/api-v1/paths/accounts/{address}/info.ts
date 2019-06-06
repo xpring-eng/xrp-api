@@ -1,17 +1,13 @@
 // GET /v1/accounts/{address}/info
 
 import { RippleAPI } from "ripple-lib";
-import { Request, Response, NextFunction } from "express";
-import { Operation } from "express-openapi";
+import { Request, NextFunction } from "express";
+import { Operations, ValidatableResponse } from "../../../../types";
 
-export default function(api: RippleAPI, log: Function) {
-  const operations: {
-    GET: Operation
-  } = {
-    GET
-  };
+export default function(api: RippleAPI, log: Function): Operations {
 
-  const validate = (res: any, response: object) => {
+  // Simply logs result of validation to debug output
+  const validate = (res: ValidatableResponse, response: object): void => {
     // TODO: validate all responses
     if (process.env.NODE_ENV != 'production') {
       const validation = res.validateResponse(200, response);
@@ -25,9 +21,9 @@ export default function(api: RippleAPI, log: Function) {
     }
   }
 
-  async function GET(req: Request, res: Response, next: NextFunction) {
+  async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
-      {ledger_index: 'current'}, // default to 'current' (in-progress) ledger
+      {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
       req.query,
       {account: req.params.address}
     )
@@ -41,5 +37,9 @@ export default function(api: RippleAPI, log: Function) {
     });
   }
 
-  return operations;
+  const operations = {
+    GET
+  };
+
+  return operations as Operations;
 }

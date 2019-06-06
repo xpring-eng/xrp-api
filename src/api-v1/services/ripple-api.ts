@@ -1,65 +1,65 @@
 import { NextHandleFunction } from 'connect';
 import { NextFunction } from 'express';
 import * as http from "http";
-import { debuglog } from 'util'
+import { debuglog } from 'util';
 
-import { RippleAPI } from 'ripple-lib'
+import { RippleAPI } from 'ripple-lib';
 import { APIOptions } from 'ripple-lib/dist/npm/api';
 
 // Set NODE_DEBUG=ripple-api for debug logs
-const debug = debuglog('ripple-api')
+const debug = debuglog('ripple-api');
 
 class RippleApiService {
-  api: RippleAPI
+  public api: RippleAPI;
 
   constructor(options: APIOptions) {
     if (typeof options.server != 'string') {
-      console.error('[CONFIG] Missing required field: `server`. Check `.secret_config.js`.')
-      process.exit(1)
+      console.error('[CONFIG] Missing required field: `server`. Check `.secret_config.js`.');
+      process.exit(1);
     }
     
-    this.api = new RippleAPI(options)
+    this.api = new RippleAPI(options);
     
     // WebSocket error handler
     this.api.on('error', (errorCode, errorMessage) => {
-      console.log(`[WebSocket Error] ${errorCode}: ${errorMessage}`)
+      console.log(`[WebSocket Error] ${errorCode}: ${errorMessage}`);
       if (this.api.isConnected()) {
-        debug('Still connected to rippled.')
+        debug('Still connected to rippled.');
       } else {
-        debug('Reconnecting...')
-        this.connectWithRetry()
+        debug('Reconnecting...');
+        this.connectWithRetry();
       }
-    })
+    });
     
     this.api.on('connected', () => {
-      debug('Connected to rippled.')
+      debug('Connected to rippled.');
       this.api.getLedgerVersion().then(v => {
-        console.log('Ledger version:', v.toLocaleString())
-      })
-    })
+        console.log('Ledger version:', v.toLocaleString());
+      });
+    });
     
     this.api.on('disconnected', code => {
-      console.log('Disconnected from rippled. Code:', code)
+      console.log('Disconnected from rippled. Code:', code);
       // code === 1000 : normal disconnection
-    })
+    });
     
-    this.connectWithRetry()
+    this.connectWithRetry();
   }
 
   connectWithRetry() {
-    const timestamp = new Date().toUTCString() + ' |'
+    const timestamp = new Date().toUTCString() + ' |';
     this.api.connect().then(() => {
       this.api.getLedgerVersion().then(v => {
-        console.log('Initial connect - ledger version:', v.toLocaleString())
+        console.log('Initial connect - ledger version:', v.toLocaleString());
       })
     }).catch(error => {
       if (error.name === 'RippledNotInitializedError') {
-        console.log(timestamp, 'rippled server is not yet initialized. Will retry in 1 second...')
+        console.log(timestamp, 'rippled server is not yet initialized. Will retry in 1 second...');
         setTimeout(this.connectWithRetry.bind(this), 1000)
       } else if (error.data && error.data.code === 'ECONNREFUSED') {
         // NotConnectedError: connect ECONNREFUSED 127.0.0.1:6006
         //     at Connection._onOpenError ...
-        console.log(timestamp, 'rippled server is not running. Check your config. Will retry in 2 seconds...')
+        console.log(timestamp, 'rippled server is not running. Check your config. Will retry in 2 seconds...');
         setTimeout(this.connectWithRetry.bind(this), 2000)
       } else {
         console.log(error)

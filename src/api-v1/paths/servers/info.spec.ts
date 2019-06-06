@@ -3,14 +3,13 @@ import { mockApp, rippleApi, mockedDebuglog } from "../../../../test/mocks";
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { capture } from 'ts-mockito';
-
-const fixture_getServerInfo = require('../../../../test/fixtures/getServerInfo');
+import getServerInfoFixture from '../../../../test/fixtures/getServerInfo.json';
 const path = '/v1/servers/info';
 
 describe(path, () => {
   it('GET - returns server info', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
-    sinon.stub(rippleApi, 'getServerInfo').resolves(fixture_getServerInfo);
+    sinon.stub(rippleApi, 'getServerInfo').resolves(getServerInfoFixture);
     
     request(mockApp)
       .get(path)
@@ -43,7 +42,7 @@ describe(path, () => {
 
   it('GET - fails validation when response is invalid', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
-    sinon.stub(rippleApi, 'getServerInfo').resolves(Object.assign({}, fixture_getServerInfo, {foo: 'bar'}));
+    sinon.stub(rippleApi, 'getServerInfo').resolves(Object.assign({}, getServerInfoFixture, {foo: 'bar'}));
 
     request(mockApp)
       .get(path)

@@ -1,29 +1,25 @@
 // GET /v1/servers/info
 
 import { RippleAPI } from "ripple-lib";
-import { Request, Response, NextFunction } from "express";
-import { Operation } from "express-openapi";
+import { Request, NextFunction } from "express";
+import { Operations, ValidatableResponse } from "../../../types";
+import { GetServerInfoResponse } from "ripple-lib/dist/npm/common/serverinfo";
 
-export default function(api: RippleAPI, log: Function) {
-  const operations: {
-    GET: Operation
-  } = {
-    GET
-  };
+export default function(api: RippleAPI, log: Function): Operations {
 
-  async function GET(req: Request, res: Response, next: NextFunction) {
-    const rippled_servers: any[] = [];
+  async function GET(_req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+    const rippledServers: GetServerInfoResponse[] = [];
     if (api.isConnected()) {
-      rippled_servers.push(await api.getServerInfo());
+      rippledServers.push(await api.getServerInfo());
     }
     const info = {
-      server_version: process.env.npm_package_version,
-      rippled_servers
+      'server_version': process.env.npm_package_version,
+      'rippled_servers': rippledServers
     };
 
     // TODO: validate all responses
     if (process.env.NODE_ENV != 'production') {
-      const validation = (res as any).validateResponse(200, info);
+      const validation = res.validateResponse(200, info);
       if (validation) {
         // red
         log('\x1b[31m%s\x1b[0m', 'validation:', validation);
@@ -35,5 +31,7 @@ export default function(api: RippleAPI, log: Function) {
     res.status(200).json(info);
   }
 
-  return operations;
+  return {
+    GET
+  };
 }

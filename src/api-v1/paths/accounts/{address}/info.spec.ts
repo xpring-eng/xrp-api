@@ -3,14 +3,13 @@ import { mockApp, rippleApi, mockedDebuglog } from "../../../../../test/mocks";
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { capture } from 'ts-mockito';
-
-const fixture_getAccountInfo = require('../../../../../test/fixtures/getAccountInfo');
+import getAccountInfoFixture from '../../../../../test/fixtures/getAccountInfo.json';
 const path = '/v1/accounts/{address}/info';
 
 describe(path, () => {
   it('GET - returns account info', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
-    sinon.stub(rippleApi, 'request').resolves(fixture_getAccountInfo);
+    sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
     
     request(mockApp)
       .get(path)
@@ -26,9 +25,10 @@ describe(path, () => {
   it('GET - passes along ledger_index', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     sinon.stub(rippleApi, 'request').withArgs('account_info', {
-      ledger_index: 'validated',
+      // Use camelcase for rippled API
+      ledger_index: 'validated', // eslint-disable-line @typescript-eslint/camelcase
       account: '{address}'
-    }).resolves(Object.assign({}, fixture_getAccountInfo, {validated: true}));
+    }).resolves(Object.assign({}, getAccountInfoFixture, {validated: true}));
     
     request(mockApp)
       .get(path + '?ledger_index=validated')
@@ -44,8 +44,9 @@ describe(path, () => {
 
   it('GET - fails validation when response is invalid', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
-    const getAccountInfoResponse = Object.assign({}, fixture_getAccountInfo);
-    getAccountInfoResponse.account_data.foo = 'bar';
+    const getAccountInfoResponse = Object.assign({}, getAccountInfoFixture);
+    // For testing only:
+    (getAccountInfoResponse.account_data as any).foo = 'bar'; // eslint-disable-line @typescript-eslint/no-explicit-any
     sinon.stub(rippleApi, 'request').resolves(getAccountInfoResponse);
 
     request(mockApp)
