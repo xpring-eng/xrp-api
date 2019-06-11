@@ -197,8 +197,19 @@ components:
       type: object
       properties:
         jobTypes:
-          type: object
+          type: array
           description: '*(Admin only)* Information about the rate of different types of jobs being performed by the server and how much time it spends on each.'
+          items:
+              type: object
+              properties:
+                avgTime:
+                  type: number
+                jobType:
+                  type: string
+                peakTime:
+                  type: number
+                perSecond:
+                  type: number
         threads:
           type: number
           description: '*(Admin only)* The number of threads in the server’s main job pool, performing various operations.'

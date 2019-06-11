@@ -7,7 +7,11 @@ import { GetServerInfoResponse } from "ripple-lib/dist/npm/common/serverinfo";
 
 export default function(api: RippleAPI, log: Function): Operations {
 
-  async function GET(_req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+    if (req.query.connect) {
+      log('Connecting...');
+      await api.connect();
+    }
     const rippledServers: GetServerInfoResponse[] = [];
     if (api.isConnected()) {
       rippledServers.push(await api.getServerInfo());

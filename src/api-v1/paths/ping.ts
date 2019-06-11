@@ -8,7 +8,7 @@ export default function (): Operations {
 
   const operations = {
     GET
-  }
+  };
 
   return operations;
 }

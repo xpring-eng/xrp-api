@@ -10,9 +10,10 @@
     "serve": "node dist/index.js",
     "clean": "rm -r dist || true",
     "check-types": "tsc",
-    "test": "npm run clean && npm run build && npm run check-types && mocha",
+    "test": "npm run lint && npm run clean && npm run build && npm run check-types && mocha",
     "unit": "npm run build && mocha",
-    "coverage": "npm run build && nyc mocha"
+    "coverage": "npm run build && nyc mocha",
+    "lint": "eslint ./ --ext .js,.ts"
   },
   "nodemonConfig": {
     "watch": [

@@ -2,23 +2,23 @@
 //   Replace 3000 with the desired port
 
 import '@babel/polyfill'; // For async functions
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, Application } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { initialize } from 'express-openapi';
 import path from 'path';
 import RippleApiService from './api-v1/services/ripple-api';
 
-type ServerOptions = {
-  rippleApiService: RippleApiService
+interface ServerOptions {
+  rippleApiService: RippleApiService;
 }
 
 export class Server {
-  pathDebug: any
-  debug: any
-  app: express.Application
+  private pathDebug: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private serverDebug: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  private app: express.Application;
 
-  constructor(options: ServerOptions) {
+  public constructor(options: ServerOptions) {
     const rippleApiService = options.rippleApiService;
     this.app = express();
 
@@ -27,10 +27,10 @@ export class Server {
       res.on('finish', () => {
         if (res.statusCode >= 100 && res.statusCode < 300) {
           // Green for 1xx and 2xx
-          this.debug('\x1b[32m%s\x1b[0m', req.method.toUpperCase() + ' ' + req.originalUrl + ' ' + res.statusCode);
+          this.serverDebug('\x1b[32m%s\x1b[0m', req.method.toUpperCase() + ' ' + req.originalUrl + ' ' + res.statusCode);
         } else {
           // Red for the rest
-          this.debug('\x1b[31m%s\x1b[0m', req.method.toUpperCase() + ' ' + req.originalUrl + ' ' + res.statusCode);
+          this.serverDebug('\x1b[31m%s\x1b[0m', req.method.toUpperCase() + ' ' + req.originalUrl + ' ' + res.statusCode);
         }
       });
       next();
@@ -53,11 +53,17 @@ export class Server {
       promiseMode: true // Required to use promises in operations
     });
 
+    interface ServerError {
+      status?: number;
+      errors: ServerError[];
+      // ...
+    };
+
     // Error handler for business logic
-    this.app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-      this.debug('Error:', err);
+    this.app.use((err: ServerError, req: Request, res: Response, next: NextFunction) => {
+      this.serverDebug('Error:', err);
       if (res.headersSent) {
-        this.debug('headers were previously sent, not responding with error');
+        this.serverDebug('headers were previously sent, not responding with error');
         return next(err);
       }
 
@@ -70,24 +76,28 @@ export class Server {
     });
   }
 
-  setDebuglog(debuglog: Function) {
+  public setDebuglog(debuglog: Function): void {
     // Set NODE_DEBUG=server for debug logs
-    this.debug = debuglog('server');
+    this.serverDebug = debuglog('server');
 
     this.pathDebug = debuglog('paths');
   }
 
   // Must use arrow function to preserve `this`
-  pathHandlerLog = (...args: string[]) => {
+  private pathHandlerLog = (...args: string[]) => {
     this.pathDebug(...args);
-  }
+  };
 
-  listen(): Promise<number> {
+  public listen(): Promise<number> {
     return new Promise((resolve) => {
       const port = parseInt(process.argv[2], 10) || 3000;
       this.app.listen(port, function() {
         resolve(port);
       });
     });
+  }
+
+  public expressApp(): Application {
+    return this.app;
   }
 }

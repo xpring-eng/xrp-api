@@ -1,5 +1,5 @@
-import { OperationFunction } from "express-openapi";
 import { Request, Response, NextFunction } from "express";
+import { Operation } from "express-openapi";
 
 export interface ValidatableOperation /*extends OperationFunction*/ {
   // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
@@ -7,7 +7,7 @@ export interface ValidatableOperation /*extends OperationFunction*/ {
 }
 
 export interface Operations {
-  GET: ValidatableOperation;
+  GET: ValidatableOperation | Operation;
 }
 
 export interface ValidatableResponse extends Response {

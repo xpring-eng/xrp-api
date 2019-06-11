@@ -1,20 +1,20 @@
-import { mock, instance, when, resetCalls, spy, reset } from 'ts-mockito';
+import { mock, instance, when, resetCalls } from 'ts-mockito';
 import { Server } from '../src/server';
 import RippleApiService from '../src/api-v1/services/ripple-api';
 import { RippleAPI } from 'ripple-lib';
 
 class Debuglog {
-  setKey(key: string) {}
-  log(...args: string[]) {}
+  public setKey(_key: string): void {}
+  public log(..._args: string[]): void {}
 }
 const mockedDebuglog = mock(Debuglog);
 const debuglogInstance = instance(mockedDebuglog);
-const debuglog = function(key: string) {
+const debuglog = function(key: string): (...args: string[]) => void {
   debuglogInstance.setKey(key);
   return function(...args: string[]) {
     debuglogInstance.log(...args);
-  }
-}
+  };
+};
 
 const mockedRippleApiService = mock(RippleApiService);
 when(mockedRippleApiService.connectHandleFunction()).thenReturn(function(req, res, next) {
@@ -29,7 +29,7 @@ const mockedRippleApiServiceInstance = instance(mockedRippleApiService);
 
 const server = new Server({rippleApiService: mockedRippleApiServiceInstance});
 server.setDebuglog(debuglog);
-const app = server.app;
+const app = server.expressApp();
 
 afterEach(() => {
   resetCalls(mockedDebuglog);
@@ -38,5 +38,6 @@ afterEach(() => {
 export {
   app as mockApp,
   mockedDebuglog,
-  rippleApi
+  rippleApi,
+  Debuglog
 };

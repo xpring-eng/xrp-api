@@ -12,7 +12,7 @@ const debug = debuglog('ripple-api');
 class RippleApiService {
   public api: RippleAPI;
 
-  constructor(options: APIOptions) {
+  public constructor(options: APIOptions) {
     if (typeof options.server != 'string') {
       console.error('[CONFIG] Missing required field: `server`. Check `.secret_config.js`.');
       process.exit(1);
@@ -46,34 +46,34 @@ class RippleApiService {
     this.connectWithRetry();
   }
 
-  connectWithRetry() {
+  private connectWithRetry(): void {
     const timestamp = new Date().toUTCString() + ' |';
     this.api.connect().then(() => {
       this.api.getLedgerVersion().then(v => {
         console.log('Initial connect - ledger version:', v.toLocaleString());
-      })
+      });
     }).catch(error => {
       if (error.name === 'RippledNotInitializedError') {
         console.log(timestamp, 'rippled server is not yet initialized. Will retry in 1 second...');
-        setTimeout(this.connectWithRetry.bind(this), 1000)
+        setTimeout(this.connectWithRetry.bind(this), 1000);
       } else if (error.data && error.data.code === 'ECONNREFUSED') {
         // NotConnectedError: connect ECONNREFUSED 127.0.0.1:6006
         //     at Connection._onOpenError ...
         console.log(timestamp, 'rippled server is not running. Check your config. Will retry in 2 seconds...');
-        setTimeout(this.connectWithRetry.bind(this), 2000)
+        setTimeout(this.connectWithRetry.bind(this), 2000);
       } else {
-        console.log(error)
-        console.log(timestamp, 'Failed to connect:', error)
-        console.log('Will retry in 1 second...')
-        setTimeout(this.connectWithRetry.bind(this), 1000)
+        console.log(error);
+        console.log(timestamp, 'Failed to connect:', error);
+        console.log('Will retry in 1 second...');
+        setTimeout(this.connectWithRetry.bind(this), 1000);
       }
-    })
+    });
   }
 
   // Connect before every API call
-  connectHandleFunction(): NextHandleFunction {
+  public connectHandleFunction(): NextHandleFunction {
     return (req: http.IncomingMessage, res: http.ServerResponse, next: NextFunction): void => {
-      const request = req as any
+      const request = req as MessageWithPath;
       // Whitelist paths that do not strictly require rippled
       if (request.path === '/v1/apiDocs') {
         return next();
@@ -87,7 +87,7 @@ class RippleApiService {
         }
         debug('connectHandleFunction() caught err:', err);
         if (err.name === 'NotConnectedError') {
-          err.message = 'XRP Server is unable to connect to the rippled server'
+          err.message = 'XRP Server is unable to connect to the rippled server';
         }
         return next(err);
       });
@@ -95,4 +95,8 @@ class RippleApiService {
   }
 }
 
-export default RippleApiService
+interface MessageWithPath extends http.IncomingMessage {
+  path: string;
+}
+
+export default RippleApiService;

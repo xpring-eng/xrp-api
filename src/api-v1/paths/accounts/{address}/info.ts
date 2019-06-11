@@ -19,14 +19,14 @@ export default function(api: RippleAPI, log: Function): Operations {
         log('\x1b[32m%s\x1b[0m', '/accounts/{address}/info: response validated');
       }
     }
-  }
+  };
 
   async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
       {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
       req.query,
       {account: req.params.address}
-    )
+    );
     debugger;
     api.request('account_info', parameters).then((info: object) => {
       validate(res, info);

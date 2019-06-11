@@ -15,7 +15,7 @@ describe(path, () => {
       .get(path)
       .expect(200)
       .expect(res => {
-        expect(res.text.length).to.be.greaterThan(1800).lessThan(1900);
+        expect(res.text.length).to.be.greaterThan(1900).lessThan(2000);
         
         expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","response validated"]);
       })

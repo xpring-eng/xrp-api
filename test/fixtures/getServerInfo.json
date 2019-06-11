@@ -1,59 +1,133 @@
 {
   "buildVersion": "1.3.0-b3+DEBUG",
-  "completeLedgers": "19763187-19763458",
-  "fetchPack": 696,
+  "completeLedgers": "20164715-20165156",
   "ioLatencyMs": 1,
   "jqTransOverflow": "0",
-  "lastClose": {"convergeTimeS": 2.002, "proposers": 6},
+  "lastClose": {
+    "convergeTimeS": 2,
+    "proposers": 6
+  },
   "load": {
-    "jobTypes": {
-      "0": {"jobType": "untrustedValidation", "perSecond": 10},
-      "1": {"jobType": "ledgerData", "peakTime": 2, "perSecond": 2},
-      "2": {"inProgress": 1, "jobType": "clientCommand", "perSecond": 1},
-      "3": {"jobType": "transaction", "perSecond": 1},
-      "4": {"jobType": "batch", "perSecond": 1},
-      "5": {"jobType": "advanceLedger", "peakTime": 4, "perSecond": 1},
-      "6": {"jobType": "trustedValidation", "perSecond": 1},
-      "7": {"jobType": "writeObjects", "perSecond": 1},
-      "8": {"jobType": "trustedProposal", "perSecond": 1},
-      "9": {"jobType": "peerCommand", "perSecond": 509},
-      "10": {"jobType": "diskAccess", "perSecond": 1},
-      "11": {"jobType": "processTransaction", "perSecond": 1},
-      "12": {"jobType": "SyncReadNode", "perSecond": 88019},
-      "13": {"jobType": "AsyncReadNode", "perSecond": 6},
-      "14": {"jobType": "WriteNode", "perSecond": 23}
-    },
+    "jobTypes": [
+      {
+        "jobType": "untrustedValidation",
+        "perSecond": 8
+      },
+      {
+        "avgTime": 2,
+        "jobType": "ledgerData",
+        "peakTime": 72,
+        "perSecond": 2
+      },
+      {
+        "inProgress": 1,
+        "jobType": "clientCommand",
+        "perSecond": 1
+      },
+      {
+        "jobType": "transaction",
+        "perSecond": 1
+      },
+      {
+        "jobType": "batch",
+        "peakTime": 4,
+        "perSecond": 1
+      },
+      {
+        "jobType": "advanceLedger",
+        "peakTime": 1,
+        "perSecond": 1
+      },
+      {
+        "jobType": "fetchTxnData",
+        "perSecond": 1
+      },
+      {
+        "jobType": "trustedValidation",
+        "perSecond": 1
+      },
+      {
+        "jobType": "writeObjects",
+        "perSecond": 1
+      },
+      {
+        "jobType": "trustedProposal",
+        "perSecond": 2
+      },
+      {
+        "jobType": "peerCommand",
+        "perSecond": 591
+      },
+      {
+        "jobType": "diskAccess",
+        "perSecond": 1
+      },
+      {
+        "jobType": "processTransaction",
+        "perSecond": 1
+      },
+      {
+        "jobType": "SyncReadNode",
+        "peakTime": 5,
+        "perSecond": 3
+      },
+      {
+        "jobType": "AsyncReadNode",
+        "peakTime": 22,
+        "perSecond": 540
+      },
+      {
+        "jobType": "WriteNode",
+        "peakTime": 21,
+        "perSecond": 554
+      }
+    ],
     "threads": 6
   },
   "loadFactor": 1,
   "peerDisconnects": "2",
   "peerDisconnectsResources": "0",
   "peers": 10,
-  "pubkeyNode": "n9Lxxxxxxxxxxxxxxxxxxxx",
+  "pubkeyNode": "n9L3Gt5wonAWDBNJ8umj2ydx76fnGG52QXbdFGerpB5jiaNfxohm",
   "pubkeyValidator": "none",
   "serverState": "full",
-  "serverStateDurationUs": "54424882",
+  "serverStateDurationUs": "589609448",
   "stateAccounting": {
-    "connected": {"durationUs": "156257492", "transitions": 1},
-    "disconnected": {"durationUs": "2249895", "transitions": 1},
-    "full": {"durationUs": "54424882", "transitions": 1},
-    "syncing": {"durationUs": "2006056", "transitions": 1},
-    "tracking": {"durationUs": "2", "transitions": 1}
+    "connected": {
+      "durationUs": "235620380",
+      "transitions": 1
+    },
+    "disconnected": {
+      "durationUs": "2202838",
+      "transitions": 1
+    },
+    "full": {
+      "durationUs": "589609448",
+      "transitions": 1
+    },
+    "syncing": {
+      "durationUs": "15418540",
+      "transitions": 1
+    },
+    "tracking": {
+      "durationUs": "2",
+      "transitions": 1
+    }
   },
-  "time": "2019-May-28 21:59:36.567734",
-  "uptime": 214,
+  "time": "2019-Jun-12 21:43:12.185587",
+  "uptime": 842,
   "validatedLedger": {
-    "age": 4,
-    "hash": "19E1CD24FED3BB0F38571BB7CDDA713DC82915F79C849AF6958B8CB9B494295F",
+    "age": 1,
+    "hash": "4D8C8FA33EBFE2923A04FF564B74E3769C125368EAE8232D846DF646AB3BB96D",
     "baseFeeXRP": "0.00001",
     "reserveBaseXRP": "20",
     "reserveIncrementXRP": "5",
-    "ledgerVersion": 19763458
+    "ledgerVersion": 20165156
   },
   "validationQuorum": 5,
   "validatorList": {
     "count": 1,
-    "expiration": "2019-Jun-03 00:00:00.000000",
+    "expiration": "2019-Jul-17 00:00:00.000000",
     "status": "active"
   },
   "hostID": "computer.local"
