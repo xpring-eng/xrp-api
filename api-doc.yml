@@ -60,6 +60,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
+  '/payments':
+    post:
+      tags:
+        - Transact
+      summary: Submit a payment.
+      operationId: submitPayment
+      description: |
+        Submit a payment object to be processed. The server responds immediately with a message indicating that the transaction was received for processing.
+      requestBody:
+        description: A payment object (transaction object) and instructions.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentObjectAndInstructions'
+            examples:
+              Example_Payment:
+                summary: Send an XRP-to-XRP payment.
+                value:
+                  payment:
+                    source_address: 'rBEXjfD3MuXKATePRwrk4AqgqzuD9JjQqv'
+                    source_tag: 123
+                    source_amount:
+                      value: '5000000'
+                      currency: 'drops'
+                    destination_address: 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
+                    destination_tag: 456
+                    destination_amount:
+                      value: '5000000'
+                      currency: 'drops'
+      responses:
+        '200':
+          description: AccountInfo object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+        '400':
+          description: AccountInfo object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
   '/apiDocs':
     get:
       tags:
@@ -343,6 +386,167 @@ components:
             - closed
             - current # default
         - type: integer
+    PaymentObjectAndInstructions:
+      title: Payment object and instructions
+      description: Payment object (specification) and instructions on how to execute it.
+      type: object
+      required:
+      - payment
+      - submit
+      properties:
+        payment:
+          $ref: '#/components/schemas/PaymentObject'
+        instructions:
+          $ref: '#/components/schemas/Instructions'
+        submit:
+          type: boolean
+          description: |
+            If `false`, the server will not submit the transaction to the network. Instead, it will only return the following additional fields in the response: `tx_json`, `tx_blob`, and `id` (hash).
+    PaymentObject:
+      title: Payment Object
+      description: A payment object (specification).
+      type: object
+      properties:
+        source_address:
+          # description: The account sending the payment (the source account).
+          $ref: '#/components/schemas/Address'
+        source_tag:
+          type: number
+        source_amount:
+          $ref: '#/components/schemas/Amount'
+        source_slippage:
+          type: string
+        destination_address:
+          $ref: '#/components/schemas/Address'
+        destination_tag:
+          type: number
+        destination_amount:
+          $ref: '#/components/schemas/Amount'
+        invoice_id:
+          type: string
+        paths:
+          type: string
+        partial_payment:
+          type: boolean
+        no_direct_ripple:
+          type: boolean
+      required:
+        - source_address
+        - source_amount
+        - destination_address
+        - destination_amount
+    Amount:
+      description: An amount in the XRP Ledger.
+      type: object
+      properties:
+        value:
+          type: string
+        currency:
+          $ref: '#/components/schemas/Currency'
+        issuer: # aka counterparty
+          $ref: '#/components/schemas/Address'
+      required:
+        - value
+        - currency
+    Currency:
+      type: string
+      pattern: '^[0-9A-F]{40}$|^[A-Za-z0-9!@#$%^&*<>(){}\[\]\?|]{3}$'
+      example: 'USD'
+      description: "A currency code that is valid in the XRP Ledger, or `XRP` for ledger's native currency."
+      externalDocs:
+        description: Currency codes in the XRP Ledger.
+        url: 'https://developers.ripple.com/basic-data-types.html#currency-codes'
+    Instructions:
+      title: Transaction Instructions
+      description: Indicates how to execute a transaction. Complements the transaction specification.
+      type: object
+      required:
+      - sequence
+      properties:
+        fee:
+          type: string
+          description: An exact fee to pay for the transaction, in XRP.
+        maxFee:
+          type: string
+          description: The maximum fee to pay for the transaction, in XRP.
+        maxLedgerVersion:
+          type: integer
+          nullable: true
+          description: The highest ledger version that the transaction can be included in.
+        maxLedgerVersionOffset:
+          type: integer
+          description: Offset from the current validated ledger version to the highest ledger version that the transaction can be included in.
+        sequence:
+          type: integer
+          description: The initiating account's sequence number for this transaction.
+        signersCount:
+          type: integer
+          description: The number of signers that will be signing this transaction.
+    TransactionStatus:
+      title: TransactionStatus
+      description: Transaction status. If the transaction was submitted, `tx_json.hash` and `engine_result` will be returned. Otherwise, they will be omitted.
+      type: object
+      properties:
+        engine_result:
+          type: string
+          description: Code indicating the preliminary result of the transaction, for example `tesSUCCESS`. Not final until included in a fully validated `TransactionResult`.
+          externalDocs:
+            description: List of transaction responses
+            url: https://developers.ripple.com/transaction-results.html
+        engine_result_code:
+          type: integer
+          description: Numeric code indicating the preliminary result of the transaction, directly correlated to `engine_result`.
+        engine_result_message:
+          type: string
+          description: Human-readable explanation of the transaction's preliminary result.
+        tx_blob:
+          type: string
+          description: The complete transaction in hex string format.
+        tx_json:
+          $ref: '#/components/schemas/TransactionJSON'
+
+        # Server implementations should handle this with a separate request until
+        # https://github.com/ripple/rippled/issues/2851 is addressed.
+        validated_ledger_index:
+          type: integer
+          description: The ledger index of the latest validated ledger prior to submission. The earliest ledger index that the submitted transaction could appear in, as a result of this submission, is this value +1. Use this to bound your tx queries to find out the final status of this transaction. This is a validated ledger index because getting the latest current or closed ledger is not a guarantee—your transaction could make it into an earlier ledger index that also hasn't been validated yet.
+
+    TransactionJSON:
+      title: Transaction JSON
+      type: object
+      description: The complete transaction in rippled JSON format. If the transaction was submitted, get the transaction hash from here.
+      properties:
+        hash:
+          type: string
+          description: The hash value that uniquely identifies this transaction. Included only if the transaction was signed and submitted.
+        # optional, but automatically set by RippleAPI/ripple-lib
+        LastLedgerSequence:
+          type: integer
+          description: Highest ledger index this transaction can appear in. This field places a strict upper limit on how long the transaction can wait to be validated or rejected.
+          externalDocs:
+            description: Reliable Transaction Submission
+            url: https://developers.ripple.com/reliable-transaction-submission.html
+        TransactionType:
+          type: string
+          description: The transaction type.
+        Sequence:
+          type: integer
+          description: The sequence number (nonce).
+        Amount:
+          type: string
+          description: The amount.
+        Destination:
+          $ref: '#/components/schemas/Address'
+        Account:
+          $ref: '#/components/schemas/Address'
+        Flags:
+          type: integer
+          format: int64
+          description: Transaction-specific flags (bit field).
+          example: 2147483648
+        Fee:
+          type: string
+          description: Transaction fee, in drops.
     ApiDoc:
       description: The requested apiDoc.
       type: object
