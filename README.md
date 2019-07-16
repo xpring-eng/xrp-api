@@ -61,30 +61,31 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
     In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address:
 
         curl -X GET \
-          http://localhost:3000/api/accounts/{ACCOUNT_ADDRESS_HERE}/info
+          http://localhost:3000/v1/accounts/{ACCOUNT_ADDRESS_HERE}/info
 
 2. Send a payment.
 
     In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. This example sends 20 XRP:
 
         curl -X POST \
-          http://localhost:3000/api/accounts/{ACCOUNT_ADDRESS_HERE}/payments \
-          -H 'Authorization: Bearer {API_KEY_HERE}' \
-          -d '{
-            "payment": {
-                "source_address": "{ACCOUNT_ADDRESS_HERE}",
-                "source_amount": {
-                    "value": "20",
-                    "currency": "XRP"
-                },
-                "destination_address": "{DESTINATION_ADDRESS_HERE}",
-                "destination_amount": {
-                    "value": "20",
-                    "currency": "XRP"
-                }
-            },
-            "submit": true
-        }'
+           http://localhost:3000/v1/payments \
+           -H 'Authorization: Bearer {API_KEY_HERE}' \
+           -H 'Content-Type: application/json' \
+           -d '{
+             "payment": {
+                 "source_address": "{ACCOUNT_ADDRESS_HERE}",
+                 "source_amount": {
+                     "value": "20",
+                     "currency": "XRP"
+                 },
+                 "destination_address": "{DESTINATION_ADDRESS_HERE}",
+                 "destination_amount": {
+                     "value": "20",
+                     "currency": "XRP"
+                 }
+             },
+             "submit": true
+         }'
 
 
     The response shows the transaction's identifying hash in the `hash` field of the `tx_json` object. Take note of this value for the next step.
