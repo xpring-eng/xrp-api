@@ -44,6 +44,7 @@ The quick setup instructions also assume you have access to the following:
     - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address
     - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step
     - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key
+    - Set `SERVER_ADDRESS_HERE` to the rippled server: `wss://s.altnet.rippletest.net:51233`
 
 ### Development
 
