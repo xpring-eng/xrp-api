@@ -41,10 +41,10 @@ The quick setup instructions also assume you have access to the following:
 
     Replace the following parts of the config file:
 
+    - Set `SERVER_ADDRESS_HERE` to the rippled node: `wss://s.altnet.rippletest.net:51233`. This is a public Testnet server, so it will not use real XRP. If you need a testnet account, use https://xrpl.org/xrp-test-net-faucet.html. 
     - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address
     - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step
     - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key
-    - Set `SERVER_ADDRESS_HERE` to the rippled server: `wss://s.altnet.rippletest.net:51233`
 
 ### Development
 
