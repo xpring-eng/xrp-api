@@ -96,13 +96,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionStatus'
+                $ref: '#/components/schemas/TransactionStatus'  
         '400':
           description: AccountInfo object
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
+  '/transactions/{transaction_id}':
+    get:
+      tags:
+        - Transact
+      summary: Check the status of a transaction.
+      operationId: getTransaction
+      description: Get a transaction, including its status. By default, this method returns data from the 'validated' ledger, which has been finalized.
+      parameters:
+        - in: path
+          name: transaction_id
+          description: The ID of the transaction to query.
+          required: true
+          schema:
+            $ref: '#/components/schemas/TransactionID'
+      responses:
+        '200':
+          description: Transaction object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
+        # TODO: tx does not exist
   '/apiDocs':
     get:
       tags:
@@ -329,6 +357,12 @@ components:
       type: string
       pattern: '^r[A-HJ-NP-Za-km-z1-9]{24,34}$'
       example: raqFu9wswvHYS4q5hZqZxVSYei73DQnKL8
+    TransactionID:
+      description: The identifying hash of a transaction.
+      type: string
+      # TODO: pattern, example
+    Transaction:
+      type: object
     AccountInfo:
       required:
         - account_data

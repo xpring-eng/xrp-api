@@ -95,11 +95,11 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
     In the following example, replace `{TRANSACTION_ID}` with the transaction's identifying hash from the previous step:
 
         curl -X GET \
-          http://localhost:3000/api/transactions/{TRANSACTION_ID}
+          http://localhost:3000/v1/transactions/{TRANSACTION_ID}
 
 4. Check the payment status using HTTPS.
 
     The URL in this example is the same except it uses port **3001** and `https:`. Use the `-k` parameter to skip checking the validity of the (self-signed) certificate:
 
         curl -k -X GET \
-          https://localhost:3001/api/transactions/{TRANSACTION_ID}
+          https://localhost:3001/v1/transactions/{TRANSACTION_ID}
