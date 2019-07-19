@@ -9,12 +9,6 @@ An API server that provides a REST-like interface to the XRP Ledger.
 - An XRP Ledger account with XRP
     For development, you can use the XRP Test Net and get some test XRP from the [XRP Test Net Faucet](https://developers.ripple.com/xrp-test-net-faucet.html).
 
-The quick setup instructions also assume you have access to the following:
-
-- [OpenSSL](https://www.openssl.org/)
-- [vim](https://www.vim.org/) (and the `xxd` executable it includes)
-    You can use another text editor if you prefer.
-
 ### Initial setup
 
 1. Clone this repository (or download and extract a copy).
@@ -33,24 +27,34 @@ The quick setup instructions also assume you have access to the following:
 
         xxd -l 16 -p /dev/urandom
 
-    If you do not have `xxd` (it comes with `vim`), you can choose a random string any way you like.
+    If you do not have `xxd` (it comes with [vim](https://www.vim.org/)), you can choose a random string any way you like.
 
-5. Edit the configuration file.
+5. Edit the configuration file. Instead of `vim`, you can use another text editor if you prefer.
 
         vim .secret_config.js
 
     Replace the following parts of the config file:
 
-    - Set `SERVER_ADDRESS_HERE` to the rippled node: `wss://s.altnet.rippletest.net:51233`. This is a public Testnet server, so it will not use real XRP. If you need a testnet account, use https://xrpl.org/xrp-test-net-faucet.html. 
-    - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address
-    - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step
-    - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key
+    - Set `SERVER_ADDRESS_HERE` to a rippled server's websockets address. In development, you may use the XRP Test Net: `wss://s.altnet.rippletest.net:51233`. This server does not use real XRP. Create a test net account with the [XRP Test Net Faucet](https://xrpl.org/xrp-test-net-faucet.html).
+    - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address.
+    - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step.
+    - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key.
 
 ### Development
 
 To start the server in development mode:
 
     yarn dev
+
+This starts the server with `nodemon` so that it will be automatically restarted when you save changes to the code.
+
+### Production
+
+As this server is still in active development, we do not recommend using it in production at this time.
+
+Considerations:
+- SSL/TLS must be used for all requests. An SSL/TLS termination proxy is recommended.
+- Restrictions should be made on signing, such as on the types of transactions, amount/velocity, and whitelisting of destinations. This feature is coming in the future.
 
 ### Tutorial
 
@@ -96,10 +100,3 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
 
         curl -X GET \
           http://localhost:3000/v1/transactions/{TRANSACTION_ID}
-
-4. Check the payment status using HTTPS.
-
-    The URL in this example is the same except it uses port **3001** and `https:`. Use the `-k` parameter to skip checking the validity of the (self-signed) certificate:
-
-        curl -k -X GET \
-          https://localhost:3001/v1/transactions/{TRANSACTION_ID}
