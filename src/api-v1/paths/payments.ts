@@ -13,6 +13,11 @@ const ERRORS = {
     const e = new Error('Invalid bearer token');
     e.name = 'Unauthorized';
     return e;
+  })(),
+  ACCOUNT_NOT_CONFIGURED: (function() {
+    const e = new Error('Check server configuration');
+    e.name = 'Account not configured';
+    return e;
   })()
 };
 
@@ -48,11 +53,13 @@ export default function(api: RippleAPI, log: Function): Operations {
     if (isErrorsResponse(json)) {
       json.errors.forEach(error => {
         if (error instanceof Error) {
-          log(error);
           serializedErrors.push({
             name: error.name,
             message: error.message.replace(/"/g, "'")
           });
+        } else {
+          log('Warning: Got non-Error:', error);
+          serializedErrors.push(error);
         }
       });
       json.errors = serializedErrors;
@@ -69,7 +76,7 @@ export default function(api: RippleAPI, log: Function): Operations {
 
     if (req.body.submit === true) {
       if (!config.accounts || !config.accounts[address]) {
-        finishRes(res, 400, {errors: [{name: 'Account not configured', message: 'Check server configuration'}]});
+        finishRes(res, 400, {errors: [ERRORS.ACCOUNT_NOT_CONFIGURED]});
         return;
       }
 
