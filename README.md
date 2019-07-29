@@ -100,3 +100,16 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
 
         curl -X GET \
           http://localhost:3000/v1/transactions/{TRANSACTION_ID}
+### Docker Container
+
+You can also run the service in a docker container using the Dockerfile in this repo.
+
+1. Be sure you have done the secret_config step from the Initial Setup section.
+2. Build the container.
+
+    ```docker build . -t <some_tag>```
+3. Run the container.
+
+   ```docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>```
+
+4. You should now be able to run the steps in the tutorial.
