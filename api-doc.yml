@@ -6,7 +6,7 @@ servers:
     description: Public development server
 info:
   description: XRP Server REST interface.
-  version: 0.0.14 # TODO: Load from package.json
+  version: 0.0.15 # TODO: Load from package.json
   title: XRP Server REST
 tags:
   - name: Query
@@ -54,6 +54,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountInfo'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
+  '/accounts/{address}/settings': # Maps to ripple-lib's getSettings method
+    get:
+      tags:
+        - Query
+      summary: Get account settings
+      operationId: getAccountSettings
+      description: |
+        Get an account's settings. These are the settings that can be modified by the user. By default, this method returns data from the 'current' (in-progress) ledger, which may change before validation.
+      parameters:
+        - in: path
+          name: address
+          description: The account to query.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Address'
+        - in: query
+          name: ledger_index
+          description: (Optional) The sequence number of the ledger to use, or a shortcut string to choose a ledger automatically. (See [Specifying Ledgers](https://xrpl.org/basic-data-types.html#specifying-ledgers))
+          required: false
+          schema:
+            $ref: '#/components/schemas/LedgerIndex'
+      responses:
+        '200':
+          description: Account Settings object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountSettings'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
+  '/accounts/{address}/transactions': # Maps to ripple-lib's getTransactions method
+    get:
+      tags:
+        - Query
+      summary: Get account transactions
+      operationId: getAccountTransactions
+      description: |
+        Get a selection of transactions that affected the specified account.
+      parameters:
+        - in: path
+          name: address
+          description: The account to query.
+          required: true
+          schema:
+            $ref: '#/components/schemas/Address'
+        - in: query
+          name: ledger_index
+          description: (Optional) The sequence number of the ledger to use, or a shortcut string to choose a ledger automatically. (See [Specifying Ledgers](https://xrpl.org/basic-data-types.html#specifying-ledgers))
+          required: false
+          schema:
+            $ref: '#/components/schemas/LedgerIndex'
+      responses:
+        '200':
+          description: Account Transactions object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountTransactions'
         '400':
           description: Invalid request
           content:
@@ -361,7 +429,7 @@ components:
       description: The identifying hash of a transaction.
       type: string
       # TODO: pattern, example
-    Transaction:
+    Transaction: # TODO
       type: object
     AccountInfo:
       required:
@@ -378,6 +446,31 @@ components:
         validated:
           type: boolean
           description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
+    AccountSettings:
+      # required:
+        # The following could be added in the future:
+        # - ledger_index
+        # - validated
+      properties:
+        # TODO: Convert schema from ripple-lib's JSON schema
+        passwordSpent:
+          type: boolean
+          description: TODO
+        disableMasterKey:
+          type: boolean
+          description: If the master key is disabled, `true`; `false` otherwise.
+        regularKey:
+          $ref: '#/components/schemas/Address'
+        # The following could be added in the future:
+        # ledger_index:
+        #   type: integer
+        #   description: (Omitted if `ledger_current_index` is provided instead) The sequence number of the ledger used when retrieving this information. The information does not contain any changes from ledgers newer than this one.
+        # validated:
+        #   type: boolean
+        #   description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
+    AccountTransactions:
+      type: object
+      # TODO
     AccountData: # https://developers.ripple.com/accountroot.html
       type: object
       required:

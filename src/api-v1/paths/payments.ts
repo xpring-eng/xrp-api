@@ -5,69 +5,11 @@ import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../types";
 import config from '../../../.secret_config';
 import { Payment } from "ripple-lib/dist/npm/transaction/payment";
-import { Instructions, Prepare } from "ripple-lib/dist/npm/transaction/types";
-import { FormattedSubmitResponse } from "ripple-lib/dist/npm/transaction/submit";
-
-const ERRORS = {
-  INVALID_BEARER_TOKEN: (function() {
-    const e = new Error('Invalid bearer token');
-    e.name = 'Unauthorized';
-    return e;
-  })(),
-  ACCOUNT_NOT_CONFIGURED: (function() {
-    const e = new Error('Check server configuration');
-    e.name = 'Account not configured';
-    return e;
-  })()
-};
+import { Instructions } from "ripple-lib/dist/npm/transaction/types";
+import { finishRes } from "../../finishRes";
+import { ERRORS } from "../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
-
-  // Simply logs result of validation to debug output
-  const validate = (res: ValidatableResponse, response: object): void => {
-    if (process.env.NODE_ENV != 'production') {
-      const validation = res.validateResponse(200, response);
-      if (validation) {
-        // red
-        log('\x1b[31m%s\x1b[0m', '/accounts/{address}/payments: validation:', validation);
-      } else {
-        // green
-        log('\x1b[32m%s\x1b[0m', '/accounts/{address}/payments: response validated');
-      }
-    }
-  };
-
-  interface ErrorsResponse {
-    errors: Error[];
-  }
-  function isErrorsResponse(json: FormattedSubmitResponse | Prepare | ErrorsResponse): json is ErrorsResponse {
-    return (json as ErrorsResponse).errors !== undefined;
-  }
-
-  function finishRes(res: ValidatableResponse, status: number, json: FormattedSubmitResponse | Prepare | ErrorsResponse): void {
-    interface MyError {
-      name: string;
-      message: string;
-    }
-    const serializedErrors: MyError[] = [];
-    if (isErrorsResponse(json)) {
-      json.errors.forEach(error => {
-        if (error instanceof Error) {
-          serializedErrors.push({
-            name: error.name,
-            message: error.message.replace(/"/g, "'")
-          });
-        } else {
-          log('Warning: Got non-Error:', error);
-          serializedErrors.push(error);
-        }
-      });
-      json.errors = serializedErrors;
-    }
-    validate(res, json);
-    res.status(status).json(json); // INVALID_BEARER_TOKEN -> Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
-  }
-
   async function POST(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     // TODO: parse X Address
     const address = req.body.payment.source_address;
