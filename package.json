@@ -49,7 +49,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-openapi": "^4.6.1",
-    "ripple-lib": "^1.2.3",
+    "ripple-lib": "^1.3.0",
     "source-map-support": "^0.5.12"
   },
   "devDependencies": {
