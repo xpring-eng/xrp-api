@@ -61,7 +61,12 @@ export class Server {
 
     // Error handler for business logic
     this.app.use((err: ServerError, req: Request, res: Response, next: NextFunction) => {
-      this.serverDebug('Error:', err);
+      this.serverDebug('Server error:', err);
+      // Error: [TimeoutError()]
+      // (node:40986) [DEP0079] DeprecationWarning: Custom inspection function on Objects via .inspect() is deprecated
+      // GET /v1/accounts/rHn1DJH1dqzdZ5PrkFpgQPn6Tbn8wKsrk9/transactions 500
+      // [WebSocket Error] websocket: read EHOSTUNREACH
+      // Disconnected from rippled. Code: 1006
       if (res.headersSent) {
         this.serverDebug('headers were previously sent, not responding with error');
         return next(err);
@@ -73,6 +78,28 @@ export class Server {
         err = {errors: [err]};
       }
       res.status(status).json(err);
+    });
+
+    this.app.use(function(req, res, next){
+      res.status(404);
+    
+      // respond with html page
+      // if (req.accepts('html')) {
+      //   res.render('404', { url: req.url });
+      //   return;
+      // }
+    
+      // TODO: missing v1? tell the user this!
+      // try doing a 301 redirect first...
+
+      // respond with json
+      if (req.accepts('json')) {
+        res.send({ error: 'Not found' });
+        return;
+      }
+    
+      // default to plain-text. send()
+      res.type('txt').send('Not found');
     });
   }
 

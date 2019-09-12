@@ -2,6 +2,8 @@ openapi: 3.0.1
 servers:
   - url: http://localhost:3000/v1
     description: Local development server
+  # - url: http://localhost:3000
+  #   description: Local development server (default)
   - url: https://xrpspec.com/v1
     description: Public development server
 info:
@@ -147,6 +149,7 @@ paths:
               Example_Payment:
                 summary: Send an XRP-to-XRP payment.
                 value:
+                  submit: true
                   payment:
                     source_address: 'rBEXjfD3MuXKATePRwrk4AqgqzuD9JjQqv'
                     source_tag: 123
@@ -577,7 +580,7 @@ components:
         - currency
     Currency:
       type: string
-      pattern: '^[0-9A-F]{40}$|^[A-Za-z0-9!@#$%^&*<>(){}\[\]\?|]{3}$'
+      pattern: '^[0-9A-F]{40}$|^[A-Za-z0-9!@#$%^&*<>(){}\[\]\?|]{3}$|^drops$'
       example: 'USD'
       description: "A currency code that is valid in the XRP Ledger, or `XRP` for ledger's native currency."
       externalDocs:

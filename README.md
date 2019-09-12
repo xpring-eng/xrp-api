@@ -100,6 +100,7 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
 
         curl -X GET \
           http://localhost:3000/v1/transactions/{TRANSACTION_ID}
+
 ### Docker Container
 
 You can also run the service in a docker container using the Dockerfile in this repo.
