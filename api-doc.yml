@@ -241,11 +241,12 @@ components:
       properties:
         message:
           type: string
-          description: A
+          description: A human-readable error message summarizing the problem(s) that occurred.
         errors:
           type: array
           items:
             $ref: '#/components/schemas/ErrorItem'
+          description: A list of errors that occurred when processing this request.
     ErrorItem:
       type: object
       required:
@@ -262,8 +263,10 @@ components:
       properties:
         server_version:
           type: string
+          description: The version number of this XRP-API server, in [SemVer format](https://semver.org/).
         rippled_servers:
           type: array
+          description: Server information from each `rippled` server this XRP-API server is connected to.
           items:
             $ref: '#/components/schemas/RippledServerInfo'
     RippledServerInfo:
@@ -484,8 +487,18 @@ components:
         #   description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
     AccountTransactions:
       type: object
-      # TODO
-    AccountData: # https://developers.ripple.com/accountroot.html
+      properties:
+        transactions:
+          type: array
+          description: A list of transactions to affect the account.
+          # TODO: $ref for items in this array
+        minLedgerVersion:
+          type: integer
+          description: The minimum ledger index searched when looking for transactions affecting this account.
+        validated:
+          type: boolean
+          description: If `true`, all the transaction outcomes in this response come from validated ledgers, so they are final and immutable.
+    AccountData:
       description: The raw [AccountRoot object](https://xrpl.org/accountroot.html) of the account, as stored in the XRP Ledger.
       type: object
       required:
