@@ -18,7 +18,8 @@
   "nodemonConfig": {
     "watch": [
       "src",
-      "api-doc.yml"
+      "api-doc.yml",
+      ".secret_config.js"
     ],
     "ext": "ts",
     "ignore": [
@@ -49,7 +50,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-openapi": "^4.6.1",
-    "ripple-lib": "^1.3.0",
+    "ripple-lib": "^1.3.3",
     "source-map-support": "^0.5.12"
   },
   "devDependencies": {
