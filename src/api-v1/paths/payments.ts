@@ -44,7 +44,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     if (q.source_amount) {
       payment.source.amount = q.source_amount;
     }
-    if (q.source_tag) {
+    if (q.source_tag !== undefined) {
       payment.source.tag = q.source_tag;
     }
     if (q.source_max_amount) {
@@ -57,7 +57,7 @@ export default function(api: RippleAPI, log: Function): Operations {
         payment.destination.amount = q.destination_amount;
       }
     }
-    if (q.destination_tag) {
+    if (q.destination_tag !== undefined) {
       payment.destination.tag = q.destination_tag;
     }
     if (q.destinationMinAmount) {
