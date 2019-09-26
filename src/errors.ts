@@ -8,7 +8,11 @@ const ERRORS = {
     const e = new Error('Check server configuration');
     e.name = 'Account not configured';
     return e;
-  })()
+  })(),
+  CODES: {
+    GET_SETTINGS: 1000,
+    UNSPECIFIED: 9000
+  }
 };
 
 export { ERRORS };

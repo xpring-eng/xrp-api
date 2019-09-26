@@ -9,6 +9,7 @@ import config from '../../../../../.secret_config';
 import { ERRORS } from "../../../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
+
   async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
       {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
@@ -26,7 +27,21 @@ export default function(api: RippleAPI, log: Function): Operations {
         // validated // TODO 
       }));
     }).catch(error => {
-      finishRes(res, 200, {errors: [error]}); // TODO: 400 for invalid?
+      const status = error.message === 'Account not found.' ? 404 : 400;
+      const message = error.data && error.data.error_message ? error.data.error_message :
+                      error.name || 'Error'
+      if (error.data && error.name) {
+        error.data.name = error.name // e.g. "RippledError"
+      }
+      error = error.data || error
+      if (error.code === undefined) {
+        error.code = ERRORS.CODES.GET_SETTINGS;
+      }
+      const response = {
+        message,
+        errors: [error]
+      }
+      finishRes(res, status, response); // Validates
     });
   }
 

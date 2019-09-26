@@ -7,10 +7,10 @@ import { Operations, ValidatableResponse } from "../../../../types";
 export default function(api: RippleAPI, log: Function): Operations {
 
   // Simply logs result of validation to debug output
-  const validate = (res: ValidatableResponse, response: object): void => {
+  const validate = (res: ValidatableResponse, statusCode: number, response: object): void => {
     // TODO: validate all responses
     if (process.env.NODE_ENV != 'production') {
-      const validation = res.validateResponse(200, response);
+      const validation = res.validateResponse(statusCode, response);
       if (validation) {
         // red
         log('\x1b[31m%s\x1b[0m', '/accounts/{address}/info: validation:', validation);
@@ -28,11 +28,26 @@ export default function(api: RippleAPI, log: Function): Operations {
       {account: req.params.address}
     );
     api.request('account_info', parameters).then((info: object) => {
-      validate(res, info);
+      validate(res, 200, info);
       res.status(200).json(info);
     }).catch(error => {
-      validate(res, {error});
-      res.status(200).json({error}); // TODO: 400 for invalid?
+      const status = error.data.error === 'actNotFound' ? 404 : 400;
+      const message = error.data && error.data.error_message ? error.data.error_message : 'Error'
+      error.data.name = error.name // e.g. "RippledError"
+      if (error.data.error_message) {
+        error.data.message = error.data.error_message
+        delete error.data.error_message
+      }
+      if (error.data.error_code) {
+        error.data.code = error.data.error_code
+        delete error.data.error_code
+      }
+      const response = {
+        message,
+        errors: [error.data]
+      }
+      validate(res, status, response);
+      res.status(status).json(response);
     });
   }
 

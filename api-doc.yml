@@ -62,6 +62,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
   '/accounts/{address}/settings': # Maps to ripple-lib's getSettings method
     get:
       tags:
@@ -92,6 +98,12 @@ paths:
                 $ref: '#/components/schemas/AccountSettings'
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
+        '404':
+          description: Not found
           content:
             application/json:
               schema:
