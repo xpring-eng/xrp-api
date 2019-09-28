@@ -1,4 +1,4 @@
-# XRP API Server
+# XRP-API Server
 
 An API server that provides a REST-like interface to the XRP Ledger.
 

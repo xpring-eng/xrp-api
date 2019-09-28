@@ -7,23 +7,27 @@ servers:
   - url: https://xrpspec.com/v1
     description: Public development server
 info:
-  description: XRP Server REST interface.
+  description: An API server that provides a REST-like interface to the XRP Ledger.
   version: 0.0.15 # TODO: Load from package.json
-  title: XRP Server REST
+  title: XRP-API
 tags:
   - name: Query
-    description: Methods to access data from the ledger.
+    description: Methods to access data from the XRP Ledger.
+  - name: Transact
+    description: Methods to submit transactions to the XRP Ledger.
+  - name: Meta
+    description: Methods to get information about the XRP-API server itself.
 paths:
   '/servers/info':
     get:
       tags:
-        - Query
-      summary: Retrieve server info.
+        - Meta
+      summary: Get Server Info
       operationId: getServerInfo
-      description: Retrieve information about the current status of the XRP Server and the rippled server(s) it is connected to.
+      description: Retrieve information about the current status of the XRP-API Server and the rippled server(s) it is connected to.
       responses:
         '200':
-          description: Server info response
+          description: The status of the XRP-API server and an array of statuses from the `rippled` server(s) it is connected to.
           content:
             application/json:
               schema:
@@ -32,10 +36,10 @@ paths:
     get:
       tags:
         - Query
-      summary: Get account info
+      summary: Get Account Info
       operationId: getAccountInfo
       description: |
-        Get information about an account. This includes its settings, activity, and XRP balance. It also includes the sequence number of the next valid transaction for this account, which you should use to prepare a transaction from this account. By default, this method returns data from the 'current' (in-progress) ledger, which may change before validation.
+        Get information about an account in the XRP Ledger. This includes its settings, activity, and XRP balance. It also includes the sequence number of the next valid transaction for this account, which you should use to prepare a transaction from this account. By default, this method returns data from the 'current' (in-progress) ledger, which may change before validation.
       parameters:
         - in: path
           name: address
@@ -51,13 +55,13 @@ paths:
             $ref: '#/components/schemas/LedgerIndex'
       responses:
         '200':
-          description: AccountInfo object
+          description: A successful response provides the account data, and information about the ledger version that was used to provide this data.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountInfo'
         '400':
-          description: Invalid request
+          description: This error case indicates that the request was not properly formatted.
           content:
             application/json:
               schema:
@@ -72,7 +76,7 @@ paths:
     get:
       tags:
         - Query
-      summary: Get account settings
+      summary: Get Account Settings
       operationId: getAccountSettings
       description: |
         Get an account's settings. These are the settings that can be modified by the user. By default, this method returns data from the 'current' (in-progress) ledger, which may change before validation.
@@ -91,13 +95,13 @@ paths:
             $ref: '#/components/schemas/LedgerIndex'
       responses:
         '200':
-          description: Account Settings object
+          description: A successful response contains the settings data for the requested account.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountSettings'
         '400':
-          description: Invalid request
+          description: This error case indicates that the request was not properly formatted.
           content:
             application/json:
               schema:
@@ -112,7 +116,7 @@ paths:
     get:
       tags:
         - Query
-      summary: Get account transactions
+      summary: Get Account Transactions
       operationId: getAccountTransactions
       description: |
         Get a selection of transactions that affected the specified account.
@@ -125,19 +129,19 @@ paths:
             $ref: '#/components/schemas/Address'
         - in: query
           name: ledger_index
-          description: (Optional) The sequence number of the ledger to use, or a shortcut string to choose a ledger automatically. (See [Specifying Ledgers](https://xrpl.org/basic-data-types.html#specifying-ledgers))
+          description: The sequence number of the ledger to use, or a shortcut string to choose a ledger automatically. (See [Specifying Ledgers](https://xrpl.org/basic-data-types.html#specifying-ledgers))
           required: false
           schema:
             $ref: '#/components/schemas/LedgerIndex'
       responses:
         '200':
-          description: Account Transactions object
+          description: A successful response provides a list of transactions that affected the specified account.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccountTransactions'
         '400':
-          description: Invalid request
+          description: This error case indicates that the request was not properly formatted.
           content:
             application/json:
               schema:
@@ -146,12 +150,12 @@ paths:
     post:
       tags:
         - Transact
-      summary: Submit a payment.
+      summary: Submit Payment
       operationId: submitPayment
       description: |
-        Submit a payment object to be processed. The server responds immediately with a message indicating that the transaction was received for processing.
+        Sign a payment transaction and submit it to the XRP Ledger network. The sending account must match an account address and secret the XRP-API server is configured with.
       requestBody:
-        description: A payment object (transaction object) and instructions.
+        description: A transaction object and instructions.
         required: true
         content:
           application/json:
@@ -175,13 +179,13 @@ paths:
                       currency: 'drops'
       responses:
         '200':
-          description: AccountInfo object
+          description: A successful response provides the native XRP Ledger format for the transaction, the transaction's identifying hash, and the preliminary result of processing the transaction.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionStatus'  
+                $ref: '#/components/schemas/TransactionStatus'
         '400':
-          description: AccountInfo object
+          description: This error case indicates that the request was not properly formatted.
           content:
             application/json:
               schema:
@@ -190,9 +194,9 @@ paths:
     get:
       tags:
         - Transact
-      summary: Check the status of a transaction.
+      summary: Get Transaction
       operationId: getTransaction
-      description: Get a transaction, including its status. By default, this method returns data from the 'validated' ledger, which has been finalized.
+      description: Look up the status and details of a transaction. By default, this method only returns data from ledger versions that have been validated by consensus.
       parameters:
         - in: path
           name: transaction_id
@@ -208,7 +212,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction'
         '400':
-          description: Invalid request
+          description: This error case indicates that the request was not properly formatted.
           content:
             application/json:
               schema:
@@ -219,7 +223,8 @@ paths:
       tags:
         - Meta
       operationId: getApiDoc
-      description: Returns API docs
+      summary: Get API Docs
+      description: Return the API specification this server is using.
       responses:
         '200':
           description: API specification document
@@ -229,14 +234,18 @@ paths:
                 $ref: '#/components/schemas/ApiDoc'
   '/ping':
     get:
+      tags:
+        - Meta
       operationId: getPing
-      description: 'Returns 200'
+      summary: Ping
+      description: Ping the server to confirm that it is online.
       responses:
         '200':
-          description: Ping response
+          description: A response with an empty body to indicate that the server is online and functional.
 components:
   schemas:
     RippleAPIError:
+      description: A wrapper for one or more error messages that occurred when processing a request.
       type: object
       required:
       - message
@@ -244,10 +253,12 @@ components:
       properties:
         message:
           type: string
+          description: A human-readable error message summarizing the problem(s) that occurred.
         errors:
           type: array
           items:
             $ref: '#/components/schemas/ErrorItem'
+          description: A list of errors that occurred when processing this request.
     ErrorItem:
       type: object
       required:
@@ -264,8 +275,10 @@ components:
       properties:
         server_version:
           type: string
+          description: The version number of this XRP-API server, in [SemVer format](https://semver.org/).
         rippled_servers:
           type: array
+          description: Server information from each `rippled` server this XRP-API server is connected to.
           items:
             $ref: '#/components/schemas/RippledServerInfo'
     RippledServerInfo:
@@ -436,14 +449,15 @@ components:
           format: int32
       description: Information about the fully-validated ledger with the highest sequence number (the most recent).
     Address:
-      description: The address of the XRP Ledger account that is initiating the transaction, or the public representation of a [RegularKey](https://developers.ripple.com/cryptographic-keys.html#regular-key-pair), which has the same format.
+      description: The address of an XRP Ledger account.
       type: string
       pattern: '^r[A-HJ-NP-Za-km-z1-9]{24,34}$'
       example: raqFu9wswvHYS4q5hZqZxVSYei73DQnKL8
     TransactionID:
       description: The identifying hash of a transaction.
       type: string
-      # TODO: pattern, example
+      pattern: '^[0-9A-F]{64}$'
+      example: E08D6E9754025BA2534A78707605E0601F03ACE063687A0CA1BDDACFCD1698C7
     Transaction: # TODO
       type: object
     AccountInfo:
@@ -485,8 +499,19 @@ components:
         #   description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
     AccountTransactions:
       type: object
-      # TODO
-    AccountData: # https://developers.ripple.com/accountroot.html
+      properties:
+        transactions:
+          type: array
+          description: A list of transactions to affect the account.
+          # TODO: $ref for items in this array
+        minLedgerVersion:
+          type: integer
+          description: The minimum ledger index searched when looking for transactions affecting this account.
+        validated:
+          type: boolean
+          description: If `true`, all the transaction outcomes in this response come from validated ledgers, so they are final and immutable.
+    AccountData:
+      description: The raw [AccountRoot object](https://xrpl.org/accountroot.html) of the account, as stored in the XRP Ledger.
       type: object
       required:
         - LedgerEntryType
@@ -499,11 +524,13 @@ components:
         - Sequence
       properties:
         Account:
-          type: string
+          $ref: '#/components/schemas/Address'
         Balance:
           type: string
+          description: The XRP balance of the account, in integer "drops of XRP", where 1000000 drops = 1 XRP.
         Flags:
           type: integer
+          description: A bitwise map of settings applied to this account.
         LedgerEntryType:
           type: string
         OwnerCount:
