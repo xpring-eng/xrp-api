@@ -8,6 +8,7 @@ import bodyParser from 'body-parser';
 import { initialize } from 'express-openapi';
 import path from 'path';
 import RippleApiService from './api-v1/services/ripple-api';
+import { ERRORS } from './errors';
 
 interface ServerOptions {
   rippleApiService: RippleApiService;
@@ -82,24 +83,17 @@ export class Server {
 
     this.app.use(function(req, res, next){
       res.status(404);
-    
-      // respond with html page
-      // if (req.accepts('html')) {
-      //   res.render('404', { url: req.url });
-      //   return;
-      // }
-    
-      // TODO: missing v1? tell the user this!
-      // try doing a 301 redirect first...
-
-      // respond with json
-      if (req.accepts('json')) {
-        res.send({ error: 'Not found' });
-        return;
+      const error: any = {}
+      if (req.path.startsWith('/v1') === false) {
+        error.code = ERRORS.CODES.MISSING_V1
+        error.message = 'Missing version prefix in path';
+        error.hint = 'Try starting the path with `/v1`'
+      } else {
+        error.code = ERRORS.CODES.NOT_FOUND
+        error.message = 'Path not found'
+        error.hint = 'Ensure that all path parameters are supplied'
       }
-    
-      // default to plain-text. send()
-      res.type('txt').send('Not found');
+      res.send({ message: 'Not found', errors: [error] });
     });
   }
 

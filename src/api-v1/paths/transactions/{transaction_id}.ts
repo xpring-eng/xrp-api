@@ -3,6 +3,8 @@
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../types";
+import { ERRORS } from "../../../errors";
+import { finishRes } from "../../../finishRes";
 
 export default function(api: RippleAPI, log: Function): Operations {
 
@@ -37,10 +39,24 @@ export default function(api: RippleAPI, log: Function): Operations {
     // TODO: validate transaction_id
     // TODO: options
     api.getTransaction(req.params.transaction_id).then((info: object) => {
-        // TODO: validate()
-        res.status(200).json(info);
+      // TODO: validate()
+      res.status(200).json(info);
     }).catch(error => {
-        res.status(200).json({error});
+      const status = error.name === 'NotFoundError' ? 404 : 400;
+      const message = error.data && error.data.error_message ? error.data.error_message :
+                      error.message || error.name || 'Error'
+      if (error.data && error.name) {
+        error.data.name = error.name
+      }
+      error = error.data || error
+      if (error.code === undefined) {
+        error.code = ERRORS.CODES.GET_TRANSACTION;
+      }
+      const response = {
+        message,
+        errors: [error]
+      }
+      finishRes(res, status, response); // Validates
     });
   }
 

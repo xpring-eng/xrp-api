@@ -146,6 +146,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
   '/payments':
     post:
       tags:
@@ -217,7 +223,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
-        # TODO: tx does not exist
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
   '/apiDocs':
     get:
       tags:
