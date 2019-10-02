@@ -13,7 +13,7 @@ An API server that provides a REST-like interface to the XRP Ledger.
 
 1. Clone this repository (or download and extract a copy).
 
-        git clone git@github.com:ripple/xrp-server.git
+        git clone git@github.com:ripple/xrp-api.git
 
 2. Install dependencies using Yarn.
 
@@ -35,7 +35,7 @@ An API server that provides a REST-like interface to the XRP Ledger.
 
     Replace the following parts of the config file:
 
-    - Set `SERVER_ADDRESS_HERE` to a rippled server's websockets address. In development, you may use the XRP Test Net: `wss://s.altnet.rippletest.net:51233`. This server does not use real XRP. Create a test net account with the [XRP Test Net Faucet](https://xrpl.org/xrp-test-net-faucet.html).
+    - Set `SERVER_ADDRESS_HERE` to a rippled server's websockets address. In development, you may use the XRP Test Net: `wss://s.altnet.rippletest.net:51233`. This server does not use real XRP. Create a test net account with the [XRP Test Net Faucet](https://xrpl.org/xrp-testnet-faucet.html).
     - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address.
     - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step.
     - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key.
