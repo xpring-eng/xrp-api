@@ -1,9 +1,9 @@
 import request from 'supertest';
-import { mockApp, rippleApi, mockedDebuglog } from "../../../../test/mocks";
+import { mockApp, rippleApi, mockedDebuglog } from "../../../fixtures/mocks";
 import { expect } from 'chai';
 import sinon from 'sinon';
 import { capture } from 'ts-mockito';
-import getServerInfoFixture from '../../../../test/fixtures/getServerInfo.json';
+import getServerInfoFixture from '../../../fixtures/getServerInfo.json';
 const path = '/v1/servers/info';
 
 describe(path, () => {

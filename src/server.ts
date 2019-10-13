@@ -54,7 +54,8 @@ export class Server {
         api: rippleApiService.api, // RippleAPI instance
         log: this.pathDebug
       },
-      paths: path.resolve(__dirname, '../dist/api-v1/paths/'), // Only supports .js files, not .ts
+      paths: path.resolve(__dirname, '../dist/api-v1/paths/'), 
+      pathsIgnore: new RegExp('\.(spec|test)$'),
       promiseMode: true // Required to use promises in operations
     });
 
@@ -85,7 +86,7 @@ export class Server {
       res.status(status).json(err);
     });
 
-    this.app.use(function(req, res, next){
+    this.app.use(function(req, res, _next){
       res.status(404);
       const error: any = {}
       if (req.path.startsWith('/v1') === false) {

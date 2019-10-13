@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { mockApp } from '../../../test/mocks';
+import { mockApp } from '../../fixtures/mocks';
 import { expect } from 'chai';
 
 const path = '/v1/apiDocs';

@@ -9,19 +9,19 @@ import { finishRes } from "../../../finishRes";
 export default function(api: RippleAPI, log: Function): Operations {
 
   // Simply logs result of validation to debug output
-  const validate = (res: ValidatableResponse, response: object): void => {
-    // TODO: validate all responses
-    if (process.env.NODE_ENV != 'production') {
-      const validation = res.validateResponse(200, response);
-      if (validation) {
-        // red
-        log('\x1b[31m%s\x1b[0m', '/accounts/{address}/info: validation:', validation);
-      } else {
-        // green
-        log('\x1b[32m%s\x1b[0m', '/accounts/{address}/info: response validated');
-      }
-    }
-  };
+  // const validate = (res: ValidatableResponse, response: object): void => {
+  //   // TODO: validate all responses
+  //   if (process.env.NODE_ENV != 'production') {
+  //     const validation = res.validateResponse(200, response);
+  //     if (validation) {
+  //       // red
+  //       log('\x1b[31m%s\x1b[0m', '/accounts/{address}/info: validation:', validation);
+  //     } else {
+  //       // green
+  //       log('\x1b[32m%s\x1b[0m', '/accounts/{address}/info: response validated');
+  //     }
+  //   }
+  // };
 
   async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     // const parameters = Object.assign({},
@@ -43,8 +43,7 @@ export default function(api: RippleAPI, log: Function): Operations {
       res.status(200).json(info);
     }).catch(error => {
       const status = error.name === 'NotFoundError' ? 404 : 400;
-      const message = error.data && error.data.error_message ? error.data.error_message :
-                      error.message || error.name || 'Error'
+      const message = error.data && error.data.error_message ? error.data.error_message : error.message || error.name || 'Error';
       if (error.data && error.name) {
         error.data.name = error.name
       }

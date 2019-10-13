@@ -1,12 +1,10 @@
 import request from 'supertest';
-import { mockApp, rippleApi, mockedDebuglog } from "../../../../../test/mocks";
-import { expect } from 'chai';
+import { mockApp, rippleApi } from "../../../../fixtures/mocks";
 import sinon from 'sinon';
-import { capture } from 'ts-mockito';
-// import getAccountInfoFixture from '../../../../../test/fixtures/getAccountInfo.json';
+// import getAccountInfoFixture from '../../../../fixtures/getAccountInfo.json';
 const path = '/v1/accounts/{address}/settings';
 
-describe(path, () => {
+describe.skip(path, () => {
   it('GET - returns account settings', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     // sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);

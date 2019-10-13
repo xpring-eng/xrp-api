@@ -10,34 +10,23 @@
     "watch": "tsc --watch",
     "serve": "node dist/index.js",
     "clean": "rm -r dist || true",
-    "check-types": "tsc",
-    "test": "npm run lint && npm run clean && npm run build && npm run check-types && mocha",
+    "test": "npm run lint && npm run clean && npm run build && mocha",
     "unit": "npm run build && mocha",
     "coverage": "npm run build && nyc mocha",
     "lint": "eslint ./ --ext .js,.ts"
   },
   "nodemonConfig": {
     "watch": [
-      "src",
+      "dist",
       "api-doc.yml",
       ".secret_config.js"
     ],
-    "ext": "ts",
     "ignore": [
-      "src/**/*.spec.ts"
+      "dist/**/*.spec.js"
     ],
     "exec": "node dist/index.js"
   },
   "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "**/*.d.ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
     "reporter": [
       "text-summary",
       "lcov",

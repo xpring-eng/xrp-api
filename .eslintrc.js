@@ -24,15 +24,16 @@ module.exports = {
       }
     ],
 
+    "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
-        "argsIgnorePattern": "^_"
+        "args": "none"
       }
     ],
 
     // note you must disable the base rule as it can report incorrect errors
     "semi": "off",
-    "@typescript-eslint/semi": ["error"]
+    "@typescript-eslint/semi": ["warn"]
   }
 }
