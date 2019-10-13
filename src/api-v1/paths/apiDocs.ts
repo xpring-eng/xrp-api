@@ -7,12 +7,12 @@ interface OpenAPIRequest extends Request {
 }
 
 export default function (): Operations {
-  function GET(req: OpenAPIRequest, res: Response, _next: NextFunction): void {
+  function get(req: OpenAPIRequest, res: Response, _next: NextFunction): void {
     res.json(req.apiDoc);
   }
 
   const operations = {
-    GET
+    get
   };
 
   return operations;

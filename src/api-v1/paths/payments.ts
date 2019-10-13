@@ -10,7 +10,7 @@ import { finishRes } from "../../finishRes";
 import { ERRORS } from "../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
-  async function POST(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     // TODO: parse X Address
     const address = req.body.payment.source_address;
     const accountWithSecret = config.accounts[address];
@@ -120,7 +120,7 @@ export default function(api: RippleAPI, log: Function): Operations {
   }
 
   const operations = {
-    POST
+    post
   };
 
   return operations as Operations;

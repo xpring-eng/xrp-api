@@ -7,8 +7,8 @@ export interface ValidatableOperation /*extends OperationFunction*/ {
 }
 
 export interface Operations {
-  GET?: ValidatableOperation | Operation;
-  POST?: ValidatableOperation | Operation;
+  get?: ValidatableOperation | Operation;
+  post?: ValidatableOperation | Operation;
 }
 
 export interface ValidatableResponse extends Response {

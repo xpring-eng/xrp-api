@@ -23,7 +23,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     }
   };
 
-  async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     // const parameters = Object.assign({},
     //   {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
     //   req.query,
@@ -61,7 +61,7 @@ export default function(api: RippleAPI, log: Function): Operations {
   }
 
   const operations = {
-    GET
+    get
   };
 
   return operations as Operations;
