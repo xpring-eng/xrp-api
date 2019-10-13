@@ -2,7 +2,6 @@
 //   Replace 3000 with the desired port
 
 import { debuglog } from 'util';
-import '@babel/polyfill'; // For async functions
 import express, { Request, Response, NextFunction, Application } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
