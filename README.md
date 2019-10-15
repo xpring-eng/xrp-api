@@ -54,7 +54,8 @@ As this server is still in active development, we do not recommend using it in p
 
 Considerations:
 - SSL/TLS must be used for all requests. An SSL/TLS termination proxy is recommended.
-- Restrictions should be made on signing, such as on the types of transactions, amount/velocity, and whitelisting of destinations. This feature is coming in the future.
+- Restrictions should be made on signing, such as on the types of transactions, amount/velocity, and whitelisting of destinations. This feature is coming in the future. 
+- If an error occurs, the server will exit to protect security & data integrity. We recommend using [nodemon](https://www.npmjs.com/package/nodemon) or [forever](https://www.npmjs.com/package/forever) to restart the server if any errors occur in production.
 
 ### Tutorial
 
