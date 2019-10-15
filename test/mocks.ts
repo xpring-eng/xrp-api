@@ -27,8 +27,7 @@ when(mockedRippleApiService.api).thenReturn(rippleApi);
 
 const mockedRippleApiServiceInstance = instance(mockedRippleApiService);
 
-const server = new Server({rippleApiService: mockedRippleApiServiceInstance});
-server.setDebuglog(debuglog);
+const server = new Server({rippleApiService: mockedRippleApiServiceInstance, debuglog});
 const app = server.expressApp();
 
 afterEach(() => {
