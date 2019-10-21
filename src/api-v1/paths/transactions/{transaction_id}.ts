@@ -9,6 +9,7 @@ import { finishRes } from "../../../finishRes";
 export default function(api: RippleAPI, log: Function): Operations {
 
   // Simply logs result of validation to debug output
+  // TODO: Add back in along with validation logic below
   // const validate = (res: ValidatableResponse, response: object): void => {
   //   // TODO: validate all responses
   //   if (process.env.NODE_ENV != 'production') {
