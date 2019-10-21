@@ -10,7 +10,7 @@ import { ERRORS } from "../../../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
 
-  async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
       {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
       req.query,
@@ -44,7 +44,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     });
   }
 
-  async function POST(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const address = req.params.address; // TODO: parse X Address
     const settings = req.body.settings; // TODO: validate
     // const instructions = ...; // TODO: add this in the future, if use cases require it (for multisigning?)
@@ -90,7 +90,7 @@ export default function(api: RippleAPI, log: Function): Operations {
   }
 
   const operations = {
-    GET, POST
+    get, post
   };
 
   return operations as Operations;

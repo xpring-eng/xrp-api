@@ -7,7 +7,7 @@ import { finishRes } from "../../../../finishRes";
 import { ERRORS } from "../../../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
-  async function GET(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+  async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const options = Object.assign({},
       req.query
     );
@@ -59,7 +59,7 @@ export default function(api: RippleAPI, log: Function): Operations {
   }
 
   const operations = {
-    GET
+    get
   };
 
   return operations as Operations;
