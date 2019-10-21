@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import request from 'supertest';
-import { mockApp, mockedDebuglog } from '../test/mocks';
+import { mockApp, mockedDebuglog } from './fixtures/mocks';
 import { capture } from 'ts-mockito';
 
 describe('Server', () => {

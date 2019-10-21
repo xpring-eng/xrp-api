@@ -5,38 +5,28 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon",
-    "build": "babel src --extensions '.ts' --ignore '**/*.spec.ts' --out-dir dist",
+    "dev": "npm run watch & nodemon",
+    "build": "tsc",
+    "watch": "tsc --watch",
     "serve": "node dist/index.js",
     "clean": "rm -r dist || true",
-    "check-types": "tsc",
-    "test": "npm run lint && npm run clean && npm run build && npm run check-types && mocha",
+    "test": "npm run lint && npm run clean && npm run build && mocha",
     "unit": "npm run build && mocha",
     "coverage": "npm run build && nyc mocha",
     "lint": "eslint ./ --ext .js,.ts"
   },
   "nodemonConfig": {
     "watch": [
-      "src",
+      "dist",
       "api-doc.yml",
       ".secret_config.js"
     ],
-    "ext": "ts",
     "ignore": [
-      "src/**/*.spec.ts"
+      "dist/**/*.spec.js"
     ],
-    "exec": "time npm run build && node dist/index.js"
+    "exec": "node dist/index.js"
   },
   "nyc": {
-    "extension": [
-      ".ts"
-    ],
-    "exclude": [
-      "**/*.d.ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
     "reporter": [
       "text-summary",
       "lcov",
@@ -46,7 +36,6 @@
     "instrument": true
   },
   "dependencies": {
-    "@babel/polyfill": "^7.6.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-openapi": "^4.6.1",
@@ -54,16 +43,11 @@
     "source-map-support": "^0.5.12"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
-    "@babel/preset-env": "^7.6.0",
-    "@babel/preset-typescript": "^7.6.0",
     "@types/chai": "^4.1.7",
     "@types/cors": "^2.8.5",
     "@types/express": "^4.16.1",
     "@types/mocha": "^5.2.6",
+    "@types/node": "^12.7.12",
     "@types/sinon": "^7.0.12",
     "@types/supertest": "^2.0.7",
     "@typescript-eslint/eslint-plugin": "^2.3.0",
@@ -77,6 +61,6 @@
     "supertest": "^4.0.2",
     "ts-mockito": "^2.3.1",
     "ts-node": "^8.2.0",
-    "typescript": "^3.4.5"
+    "typescript": "~3.6.0"
   }
 }
