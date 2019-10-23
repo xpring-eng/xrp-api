@@ -68,9 +68,9 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
         curl -X GET \
           http://localhost:3000/v1/accounts/{ACCOUNT_ADDRESS_HERE}/info
 
-2. Send a payment.
+2. Send a payment
 
-    In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. This example sends 20 XRP:
+    In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. If you are using the Test Net, you can use the address `rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe` as a destination.
 
         curl -X POST \
            http://localhost:3000/v1/payments \
