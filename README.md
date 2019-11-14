@@ -17,28 +17,12 @@ An API server that provides a REST-like interface to the XRP Ledger.
 
 2. Install dependencies using Yarn.
 
-        yarn
+        yarn install
 
-3. Copy the example configuration file to `.secret_config.js`.
+3. Set up your configuration file for the first time.
 
-        cp .secret_config-example.js .secret_config.js
+        yarn run setup
 
-4. Generate a random string to use as an API key.
-
-        xxd -l 16 -p /dev/urandom
-
-    If you do not have `xxd` (it comes with [vim](https://www.vim.org/)), you can choose a random string any way you like.
-
-5. Edit the configuration file. Instead of `vim`, you can use another text editor if you prefer.
-
-        vim .secret_config.js
-
-    Replace the following parts of the config file:
-
-    - Set `SERVER_ADDRESS_HERE` to a rippled server's websockets address. In development, you may use the XRP Test Net: `wss://s.altnet.rippletest.net:51233`. This server does not use real XRP. Create a test net account with the [XRP Test Net Faucet](https://xrpl.org/xrp-testnet-faucet.html).
-    - Set `ACCOUNT_ADDRESS_HERE` to your XRP Ledger address.
-    - Set `RANDOM_STRING_HERE` with the API key you generated in the previous step.
-    - Set `ACCOUNT_SECRET_HERE` to your XRP Ledger account secret key.
 
 ### Development
 
