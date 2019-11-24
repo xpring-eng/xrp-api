@@ -2,6 +2,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import got from 'got';
 import c from 'ansi-colors';
 import Handlebars from 'handlebars';
 const { prompt } = require('enquirer');
@@ -19,18 +20,27 @@ const cwd = process.cwd();
   const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   process.stdout.write(c.dim(randomString) + '\n');
 
-  const {serverUrl, accountAddress, accountSecret} = await prompt([{
+  const {serverUrl} = await prompt([{
       type: 'input',
       name: 'serverUrl',
       message: 'Network Server Address',
       initial: 'wss://s.altnet.rippletest.net:51233 (Testnet)',
       result: (val: string) => val.trim().split(' ').shift(),
       validate: (val: string) => val.trim().split(' ').shift()!.length > 0,
-    },
-    {
+    }]);
+
+  let accountInfo = null;
+  if (serverUrl === 'wss://s.altnet.rippletest.net:51233') {
+    console.log('▲ Generating Testnet account credentials...');
+    accountInfo = await got.post('https://faucet.altnet.rippletest.net/accounts', {json: true})
+      .then(({body}) => body.account)
+      .catch((err) => console.log('  ' + err.message));
+  }
+  const {accountAddress, accountSecret} = await prompt([{
       type: 'input',
       name: 'accountAddress',
       message: 'Account Public Address',
+      initial: accountInfo && accountInfo.address,
       result: (val: string) => val.trim(),
       validate: (val: string) => val.trim().length > 0
     },
@@ -38,6 +48,7 @@ const cwd = process.cwd();
       type: 'input',
       name: 'accountSecret',
       message: 'Account Private Key',
+      initial: accountInfo && accountInfo.secret,
       result: (val: string) => val.trim(),
       validate: (val: string) => val.trim().length > 0
     }
