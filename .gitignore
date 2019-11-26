@@ -3,7 +3,7 @@ node_modules
 https
 *.js.map
 dist
-.secret_config.js
+.secret_config.json
 
 target
 

@@ -4,13 +4,14 @@ import fs from 'fs';
 import path from 'path';
 import c from 'ansi-colors';
 import Handlebars from 'handlebars';
+import stripJsonComments from 'strip-json-comments';
 const { prompt } = require('enquirer');
 const cwd = process.cwd();
 
 (async function () {
   console.log(`${c.green('✔')} Creating a new secret file...`);
-  const secretExampleFileLoc = path.join(cwd, '.secret_config-example.js');
-  const secretDestinationFileLoc = path.join(cwd, '.secret_config.js');
+  const secretExampleFileLoc = path.join(cwd, '.secret_config-example.json');
+  const secretDestinationFileLoc = path.join(cwd, '.secret_config.json');
   const secretFileTemplate = fs.readFileSync(secretExampleFileLoc, {encoding: 'utf8'});
   fs.copyFileSync(secretExampleFileLoc, secretDestinationFileLoc);
 
@@ -45,6 +46,6 @@ const cwd = process.cwd();
 
   const secretTemplate = Handlebars.compile(secretFileTemplate);
   const secretTemplated = secretTemplate({SERVER_ADDRESS_HERE: serverUrl, ACCOUNT_ADDRESS_HERE: accountAddress, RANDOM_STRING_HERE: randomString, ACCOUNT_SECRET_HERE: accountSecret});
-  fs.writeFileSync(secretDestinationFileLoc, secretTemplated, {encoding: 'utf8'});
+  fs.writeFileSync(secretDestinationFileLoc, stripJsonComments(secretTemplated), {encoding: 'utf8'});
   console.log('✅ Setup complete! Start the server in dev mode: ' + c.bold('yarn dev'));
 })();

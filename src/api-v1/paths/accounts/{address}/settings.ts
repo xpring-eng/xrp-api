@@ -5,8 +5,9 @@ import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../../types";
 import { finishRes } from "../../../../finishRes";
-import config from '../../../../../.secret_config';
+import { getConfig } from "../../../../config";
 import { ERRORS } from "../../../../errors";
+const config = getConfig();
 
 export default function(api: RippleAPI, log: Function): Operations {
 

@@ -1,7 +1,8 @@
 import RippleApiService from './api-v1/services/ripple-api';
 import { Server } from './server';
-import config from '../.secret_config';
+import { getConfig } from './config';
 
+const config = getConfig();
 const rippleApiService = new RippleApiService({server: config.server});
 console.log('Using rippled server:', config.server);
 

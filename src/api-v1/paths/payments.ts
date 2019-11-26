@@ -3,11 +3,12 @@
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../types";
-import config from '../../../.secret_config';
+import { getConfig } from "../../config";
 import { Payment } from "ripple-lib/dist/npm/transaction/payment";
 import { Instructions } from "ripple-lib/dist/npm/transaction/types";
 import { finishRes } from "../../finishRes";
 import { ERRORS } from "../../errors";
+const config = getConfig();
 
 export default function(api: RippleAPI, log: Function): Operations {
   async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
