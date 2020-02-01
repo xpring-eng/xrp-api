@@ -24,6 +24,10 @@ See the full reference documentation on the XRP Ledger Dev Portal.
 
         git clone git@github.com:ripple/xrp-api.git
 
+    Change directory into the project.
+    
+        cd xrp-api
+
 2. Install dependencies using Yarn.
 
         yarn install
