@@ -1,6 +1,15 @@
-# XRP-API Server
+# XRP API Server
 
 An API server that provides a REST-like interface to the XRP Ledger.
+
+
+## [➡️ XRP API Reference Documentation](https://xrpl.org/xrp-api.html)
+
+See the full reference documentation on the XRP Ledger Dev Portal.
+
+## Building with TypeScript, JavaScript, or Node.js?
+
+[➡️ Use ripple-lib](https://github.com/ripple/ripple-lib)
 
 ### Requirements
 
