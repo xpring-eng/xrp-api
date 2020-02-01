@@ -106,8 +106,8 @@ export default function(api: RippleAPI, log: Function): Operations {
       if (req.body.submit === true && reqHasValidBearerToken) {
         const signed = api.sign(prepared.txJSON, accountWithSecret.secret);
         const result = await api.submit(signed.signedTransaction);
-        delete result.resultCode; // use `engine_result` instead
-        delete result.resultMessage; // use `engine_result_message` instead
+        delete result.resultCode;    // (use `engine_result` instead)
+        delete result.resultMessage; // (use `engine_result_message` instead)
         finishRes(res, 200, result);
         return;
       }
@@ -115,6 +115,21 @@ export default function(api: RippleAPI, log: Function): Operations {
       return;
     } catch (error) {
       log(`Unable to prepare/sign/submit: ${error}`);
+
+      // [RippledError(Account not found., { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
+      // error: 'actNotFound',
+      // error_code: 19,
+      // error_message: 'Account not found.',
+      // id: 3,
+      // ledger_current_index: 1377457,
+      // request:
+      //  { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
+      //    command: 'account_info',
+      //    id: 3 },
+      // status: 'error',
+      // type: 'response',
+      // validated: false })]
+
       finishRes(res, 400, {errors: [error]});
       return;
     }

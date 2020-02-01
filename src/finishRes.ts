@@ -7,6 +7,7 @@ import { ERRORS } from "./errors";
 const log = debuglog('paths');
 
 interface ErrorsResponse {
+  message: string;
   errors: Error[];
 }
 
@@ -42,10 +43,37 @@ export function finishRes(res: ValidatableResponse, status: number, json: Format
   if (isErrorsResponse(json)) {
     json.errors.forEach(error => {
       if (error instanceof Error) {
+
+        // `RippledError`s contain `error` (e.g. `actNotFound` when source account is not found)
+        const name = ((error as any).data && (error as any).data.error) || error.name;
+
+        // `RippledError`s contain `error_code` (e.g. `19` for `actNotFound`)
+        let code = (error as any).code || ((error as any).data && (error as any).data.error_code) || ERRORS.CODES.UNSPECIFIED;
+
+        if (name === 'DisconnectedError') {
+          // name: DisconnectedError
+          // message: websocket was closed
+          code = ERRORS.CODES.WEBSOCKET;
+          if (!json.message) {
+            json.message = 'Lost connection to rippled. Please try again.';
+          }
+        }
+
+        if (name === 'actNotFound') {
+          const data = (error as any).data;
+          if (!json.message && data.account && data.ledger_current_index && data.request.command) {
+            json.message = `The account (${data.account}) could not be found as of ledger ${data.ledger_current_index} (command: ${data.request.command})`;
+          }
+        }
+
+        if (!json.message) {
+          json.message = `${name}: ${error.message}`;
+        }
+
         serializedErrors.push({
-          name: error.name,
+          name,
           message: error.message.replace(/"/g, "'"),
-          code: (error as any).code || ERRORS.CODES.UNSPECIFIED
+          code
         });
       } else {
         log('Warning: Got non-Error:', error);
@@ -54,6 +82,7 @@ export function finishRes(res: ValidatableResponse, status: number, json: Format
     });
     json.errors = serializedErrors;
   }
+
   validate(res, status, json);
   res.status(status).json(json); // INVALID_BEARER_TOKEN -> Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
 }

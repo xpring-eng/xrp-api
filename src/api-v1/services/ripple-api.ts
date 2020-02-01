@@ -23,8 +23,13 @@ class RippleApiService {
     // WebSocket error handler
     this.api.on('error', (errorCode, errorMessage) => {
       console.log(`[WebSocket Error] ${errorCode}: ${errorMessage}`);
+
       // [WebSocket Error] websocket: read EHOSTUNREACH
       // Disconnected from rippled. Code: 1006
+
+      // [WebSocket Error] websocket: read ECONNRESET
+      // Disconnected from rippled. Code: 1006
+      
       if (this.api.isConnected()) {
         debug('Still connected to rippled.');
       } else {

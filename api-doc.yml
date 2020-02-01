@@ -462,8 +462,8 @@ components:
     Address:
       description: The address of an XRP Ledger account.
       type: string
-      pattern: '^r[A-HJ-NP-Za-km-z1-9]{24,34}$'
-      example: raqFu9wswvHYS4q5hZqZxVSYei73DQnKL8
+      pattern: '^r[A-HJ-NP-Za-km-z1-9]{24,34}$|^X[A-HJ-NP-Za-km-z1-9]{46}$|^T[A-HJ-NP-Za-km-z1-9]{46}$'
+      example: TVp3kyJBH9YhnHcxEwT5ccj3pWN1Z1qYWx3Eq37XV1yGjKj
     TransactionID:
       description: The identifying hash of a transaction.
       type: string

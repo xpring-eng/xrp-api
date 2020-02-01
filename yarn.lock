@@ -123,6 +123,13 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
+"@types/base-x@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/base-x/-/base-x-3.0.0.tgz#a1365259d1d3fa3ff973ab543192a6bdd4cb2f90"
+  integrity sha512-vnqSlpsv9uFX5/z8GyKWAfWHhLGJDBkrgRRsnxlsX23DHOlNyqP/eHQiv4TwnYcZULzQIxaWA/xRWU9Dyy4qzw==
+  dependencies:
+    "@types/node" "*"
+
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
@@ -541,6 +548,11 @@ base@^0.11.1:
     isobject "^3.0.1"
     mixin-deep "^1.2.0"
     pascalcase "^0.1.1"
+
+bignumber.js@8.1.1:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-8.1.1.tgz#4b072ae5aea9c20f6730e4e5d529df1271c4d885"
+  integrity sha512-QD46ppGintwPGuL1KqmwhR0O+N2cZUg8JG/VzwI2e28sM9TqHjQB10lI4QAaMHVbLzwVLLAwEglpKPViWX+5NQ==
 
 bignumber.js@^4.1.0:
   version "4.1.0"
@@ -1401,7 +1413,7 @@ express-normalize-query-params-middleware@^0.5.0:
   resolved "https://registry.yarnpkg.com/express-normalize-query-params-middleware/-/express-normalize-query-params-middleware-0.5.1.tgz#dbe1e8139aecb234fb6adb5c0059c75db9733d2a"
   integrity sha1-2+HoE5rssjT7attcAFnHXblzPSo=
 
-express-openapi@^4.6.1:
+express-openapi@^4.6.5:
   version "4.6.5"
   resolved "https://registry.yarnpkg.com/express-openapi/-/express-openapi-4.6.5.tgz#a4b607925c71d5f54caa098430683a89da3424ad"
   integrity sha512-jZWJXkphbpsqFrlrRF4BAnXhJImGW/T6YwuSpArjjDCK0rmsS0JF7etRAUDtmfpD06jFVLzpx0tgQ/hBN3e/wA==
@@ -3528,6 +3540,15 @@ ripple-address-codec@^3.0.4:
     base-x "3.0.4"
     create-hash "^1.1.2"
 
+ripple-address-codec@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.0.0.tgz#c20f39eea38def43d2379462e47bff4adabece30"
+  integrity sha512-PsKl9aytg6fZG2F4RtfPT0c1gj42suAQY9VvJVGz+DfQTdXQaTT9V/StVhaJ6jhVpl7oCd981BB9p2Kq+Kyrng==
+  dependencies:
+    "@types/base-x" "^3.0.0"
+    base-x "3.0.4"
+    create-hash "^1.1.2"
+
 ripple-binary-codec@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-0.2.4.tgz#555d64c52182a215222af6045b5170e43f0530b1"
@@ -3541,16 +3562,6 @@ ripple-binary-codec@^0.2.4:
     lodash "^4.17.15"
     ripple-address-codec "^3.0.4"
 
-ripple-hashes@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/ripple-hashes/-/ripple-hashes-0.3.4.tgz#d06f78fc39dde27749b33ad2461b39ba873c94ec"
-  integrity sha512-u2kgg9Yu9D44HWnC9R2lNg+amVLllJkMQmXZEEM2DAMFXigr4+ph1O8LLxLv+k0fbdjAjos4aUyWwcw6cxzYMw==
-  dependencies:
-    bignumber.js "^4.1.0"
-    create-hash "^1.1.2"
-    ripple-address-codec "^3.0.4"
-    ripple-binary-codec "^0.2.4"
-
 ripple-keypairs@^0.10.1:
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/ripple-keypairs/-/ripple-keypairs-0.10.2.tgz#b3a1d1e2fca85a11c5224b2a7e6da506c19720d0"
@@ -3563,18 +3574,18 @@ ripple-keypairs@^0.10.1:
     hash.js "^1.0.3"
     ripple-address-codec "^2.0.1"
 
-ripple-lib-transactionparser@0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/ripple-lib-transactionparser/-/ripple-lib-transactionparser-0.7.1.tgz#5ececb1e03d65d05605343f4b9dbb76d1089145b"
-  integrity sha1-Xs7LHgPWXQVgU0P0udu3bRCJFFs=
+ripple-lib-transactionparser@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/ripple-lib-transactionparser/-/ripple-lib-transactionparser-0.8.0.tgz#1dea607f8c16a410a4211386accc3388d7239272"
+  integrity sha512-M3HjfPABR6tpU5goQQh1b6tx1PbpDNMyYSKMkyW9LzYSMzJLFfWiQJ8wFFBrduJkwmtDfuolIVT0/f235a3YTw==
   dependencies:
-    bignumber.js "^4.1.0"
+    bignumber.js "8.1.1"
     lodash "^4.17.4"
 
-ripple-lib@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.3.3.tgz#b143d5df95c0744145c3e561853309ee30b95a6c"
-  integrity sha512-Rvgrptz6ZvalpoLR9kExcZ9y3F8LdTwgSjSsgEZPuWFm62Eu6cDUHPhQiw1jCFsYtilX3Ccf6Dn/vTgFZ6cjPg==
+ripple-lib@^1.4.0-b2:
+  version "1.4.0-b2"
+  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.4.0-b2.tgz#8ba1bb89f0f3d604d2e16db9aaaf12701c27083d"
+  integrity sha512-HdEQEQj/qUzvjidGk52KYMKw3YsZ70u6BVB/STbhf9W8wDRMS7/qmPdvEKVlTH6aw+1s8trIuWSX915nCyYK2w==
   dependencies:
     "@types/lodash" "^4.14.136"
     "@types/ws" "^3.2.0"
@@ -3582,11 +3593,10 @@ ripple-lib@^1.3.3:
     https-proxy-agent "2.2.1"
     jsonschema "1.2.2"
     lodash "^4.17.4"
-    ripple-address-codec "^3.0.4"
+    ripple-address-codec "^4.0.0"
     ripple-binary-codec "^0.2.4"
-    ripple-hashes "^0.3.4"
     ripple-keypairs "^0.10.1"
-    ripple-lib-transactionparser "0.7.1"
+    ripple-lib-transactionparser "0.8.0"
     ws "^3.3.1"
 
 run-async@^2.2.0:
