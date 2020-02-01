@@ -4,7 +4,7 @@ import { getConfig } from './config';
 
 const config = getConfig();
 const rippleApiService = new RippleApiService({server: config.server});
-console.log('Using rippled server:', config.server);
+console.log('Connecting to:', config.server);
 
 const server = new Server({rippleApiService});
 server.listen().then((port) => {

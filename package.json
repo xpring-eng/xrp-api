@@ -9,7 +9,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "serve": "node dist/index.js",
-    "setup": "node dist/setup/index.js",
+    "setup": "npm run build && node dist/setup/index.js",
     "clean": "rm -r dist || true",
     "test": "npm run lint && npm run clean && npm run build && mocha",
     "unit": "npm run build && mocha",
