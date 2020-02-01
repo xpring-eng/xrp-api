@@ -9,7 +9,7 @@ See the full reference documentation on the XRP Ledger Dev Portal.
 
 ## Building with TypeScript, JavaScript, or Node.js?
 
-[➡️ Use ripple-lib](https://github.com/ripple/ripple-lib)
+Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-lib) for a native integration experience and access to more advanced XRP Ledger features.
 
 ### Requirements
 
