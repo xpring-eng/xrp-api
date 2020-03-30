@@ -17,7 +17,7 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
 - [yarn](https://yarnpkg.com/en/)
 - An XRP Ledger account with XRP
 
-    For development, you can use the XRP Test Net and get some test XRP from the [XRP Test Net Faucet](https://developers.ripple.com/xrp-test-net-faucet.html). The setup script will do this for you automatically.
+    For development, you can use the XRP Testnet and get some test XRP from the [XRP Testnet Faucet](https://xrpl.org/xrp-testnet-faucet.html). The setup script will do this for you automatically.
 
 ### Initial setup
 
@@ -26,7 +26,7 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
         git clone git@github.com:ripple/xrp-api.git
 
     Change directory into the project.
-    
+
         cd xrp-api
 
 2. Install dependencies using Yarn.
@@ -56,8 +56,8 @@ If you would like to use xrp-api in production with real funds, please contact u
 Considerations:
 
 - SSL/TLS must be used for all requests. An SSL/TLS termination proxy is recommended.
-- Restrictions should be made on signing, such as on the types of transactions, amount/velocity, and whitelisting of destinations. This feature is coming in the future. 
-- If an error occurs, the server will exit to protect security & data integrity. We recommend using [nodemon](https://www.npmjs.com/package/nodemon) or [forever](https://www.npmjs.com/package/forever) to restart the server if any errors occur in production.
+- Restrictions should be made on signing, such as on the types of transactions, amount/velocity, and whitelisting of destinations. This feature is coming in the future.
+- If an error occurs, the server will exit to protect security & data integrity. We recommend using [PM2](https://www.npmjs.com/package/pm2), [nodemon](https://www.npmjs.com/package/nodemon), or [forever](https://www.npmjs.com/package/forever) to restart the server if it crashes in production.
 
 ### Tutorial
 
@@ -72,7 +72,7 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
 
 2. Send a payment
 
-    In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. If you are using the Test Net, you can use the address `rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe` as a destination.
+    In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. If you are using the Testnet, you can use the address `rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe` as a destination.
 
         curl -X POST \
            http://localhost:3000/v1/payments \
