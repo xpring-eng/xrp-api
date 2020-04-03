@@ -23,7 +23,7 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
 
 1. Clone this repository (or download and extract a copy).
 
-        git clone git@github.com:ripple/xrp-api.git
+        git clone git@github.com:xpring-eng/xrp-api.git
 
     Change directory into the project.
 
