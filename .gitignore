@@ -4,6 +4,7 @@ https
 *.js.map
 dist
 .secret_config.json
+.secret_config.js
 
 target
 
