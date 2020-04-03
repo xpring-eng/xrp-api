@@ -36,23 +36,28 @@ const cwd = process.cwd();
     accountInfo = await got.post('https://faucet.altnet.rippletest.net/accounts', {json: true})
       .then(({body}) => body.account)
       .catch((err) => console.log('  ' + err.message));
+  } else if (serverUrl === 'wss://s.devnet.rippletest.net:51233') {
+    console.log('▲ Generating Devnet account credentials...');
+    accountInfo = await got.post('https://faucet.devnet.rippletest.net/accounts', {json: true})
+      .then(({body}) => body.account)
+      .catch((err) => console.log('  ' + err.message));
   }
   const {accountAddress, accountSecret} = await prompt([{
-      type: 'input',
-      name: 'accountAddress',
-      message: 'Account Public Address',
-      initial: accountInfo && accountInfo.address,
-      result: (val: string) => val.trim(),
-      validate: (val: string) => val.trim().length > 0
-    },
-    {
-      type: 'input',
-      name: 'accountSecret',
-      message: 'Account Private Key',
-      initial: accountInfo && accountInfo.secret,
-      result: (val: string) => val.trim(),
-      validate: (val: string) => val.trim().length > 0
-    }
+    type: 'input',
+    name: 'accountAddress',
+    message: 'Account Public Address',
+    initial: accountInfo && accountInfo.address,
+    result: (val: string) => val.trim(),
+    validate: (val: string) => val.trim().length > 0
+  },
+  {
+    type: 'input',
+    name: 'accountSecret',
+    message: 'Account Private Key',
+    initial: accountInfo && accountInfo.secret,
+    result: (val: string) => val.trim(),
+    validate: (val: string) => val.trim().length > 0
+  }
   ]);
 
   const secretTemplate = Handlebars.compile(secretFileTemplate);
