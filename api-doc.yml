@@ -187,11 +187,11 @@ paths:
             type: string
       responses:
         '200':
-          description: '...'
+          description: A prepared Payment Transaction in the XRP Ledger's native JSON format.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentObjectAndInstructions'
+                $ref: '#/components/schemas/TransactionJSON'
         '400':
           description: The request was not properly formatted.
           content:
@@ -740,7 +740,7 @@ components:
     TransactionJSON:
       title: Transaction JSON
       type: object
-      description: The complete transaction in rippled JSON format. If the transaction was submitted, get the transaction hash from here.
+      description: The complete transaction in the XRP Ledger's native JSON format. If the transaction was submitted, get the transaction hash from here.
       properties:
         hash:
           type: string

@@ -1,4 +1,4 @@
-// GET /v3/payments/{source_address}/currency/value?destination=Xasdf
+// GET /v3/preparations/payments
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
@@ -68,33 +68,6 @@ export default function(api: RippleAPI, log: Function): Operations {
       };
       finishRes(res, status, response); // Validates
     }
-
-
-
-
-
-
-
-
-    // finishRes(res, 200, response);
-
-    // const hasOnlyDigits = (value: string) => {
-    //   return /^\d+$/.test(value);
-    // }
-
-    // if (hasOnlyDigits(options.minLedgerVersion)) {
-    //   options.minLedgerVersion = parseInt(options.minLedgerVersion);
-    // }
-
-    // if (!options.minLedgerVersion) {
-    //   const info = await api.getServerInfo();
-    //   const parts = info.completeLedgers.split('-');
-    //   if (hasOnlyDigits(parts[0])) {
-    //     options.minLedgerVersion = parseInt(parts[0]);
-    //   }
-    // }
-
-
   }
 
   const operations = {
