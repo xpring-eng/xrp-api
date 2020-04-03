@@ -61,7 +61,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountInfo'
         '400':
-          description: This error case indicates that the request was not properly formatted.
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:
@@ -101,7 +101,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountSettings'
         '400':
-          description: This error case indicates that the request was not properly formatted.
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:
@@ -141,7 +141,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccountTransactions'
         '400':
-          description: This error case indicates that the request was not properly formatted.
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:
@@ -191,7 +191,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionStatus'
         '400':
-          description: This error case indicates that the request was not properly formatted.
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:
@@ -218,7 +218,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction'
         '400':
-          description: This error case indicates that the request was not properly formatted.
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:

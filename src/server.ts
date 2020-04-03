@@ -24,7 +24,7 @@ export class Server {
     const rippleApiService = options.rippleApiService;
     this.serverDebug = (options.debuglog || debuglog)('server');
     this.pathDebug = (options.debuglog || debuglog)('paths');
-    
+
     this.app = express();
 
     // Use first: simple response logger
@@ -54,7 +54,7 @@ export class Server {
         api: rippleApiService.api, // RippleAPI instance
         log: this.pathDebug
       },
-      paths: path.resolve(__dirname, '../dist/api-v1/paths/'), 
+      paths: path.resolve(__dirname, '../dist/api-v1/paths/'),
       pathsIgnore: new RegExp('\.(spec|test)$'),
       promiseMode: true // Required to use promises in operations
     });

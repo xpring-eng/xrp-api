@@ -31,16 +31,16 @@ export default function(api: RippleAPI, log: Function): Operations {
       const status = error.message === 'Account not found.' ? 404 : 400;
       const message = error.data && error.data.error_message ? error.data.error_message : error.name || 'Error';
       if (error.data && error.name) {
-        error.data.name = error.name // e.g. "RippledError"
+        error.data.name = error.name; // e.g. "RippledError"
       }
-      error = error.data || error
+      error = error.data || error;
       if (error.code === undefined) {
         error.code = ERRORS.CODES.GET_SETTINGS;
       }
       const response = {
         message,
         errors: [error]
-      }
+      };
       finishRes(res, status, response); // Validates
     });
   }
