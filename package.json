@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "npm run watch & nodemon",
+    "dev": "tsc-watch --onSuccess \"npm run serve\"",
     "build": "tsc",
     "watch": "tsc --watch",
     "serve": "node dist/index.js",
@@ -58,15 +58,15 @@
     "@typescript-eslint/parser": "^2.3.0",
     "chai": "^4.2.0",
     "enquirer": "^2.3.2",
-    "eslint": "^5.16.0",
+    "eslint": "^6.8.0",
     "handlebars": "^4.5.1",
     "mocha": "^6.1.4",
-    "nodemon": "^1.19.2",
     "nyc": "^14.1.1",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2",
     "ts-mockito": "^2.3.1",
     "ts-node": "^8.2.0",
-    "typescript": "~3.6.0"
+    "tsc-watch": "^4.2.3",
+    "typescript": "^3.8.3"
   }
 }
