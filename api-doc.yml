@@ -1,10 +1,10 @@
 openapi: 3.0.1
 servers:
-  - url: http://localhost:3000/v1
+  - url: http://localhost:3000/v3
     description: Local development server
   # - url: http://localhost:3000
   #   description: Local development server (default)
-  - url: https://xrpspec.com/v1
+  - url: https://xrpspec.com/v3
     description: Public development server
 info:
   description: An API server that provides a REST-like interface to the XRP Ledger.
@@ -148,6 +148,52 @@ paths:
                 $ref: '#/components/schemas/RippleAPIError'
         '404':
           description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
+  '/preparations/payments':
+    get:
+      tags:
+        - Transact
+      summary: Prepare a Payment
+      operationId: preparePayment
+      description: |
+        Prepare a payment. Provide the source, destination, currency, and value (amount) as query parameters. XRP-API will perform some pre-flight checks, and auto-fill the Fee, Sequence, and LastLedgerSequence fields.
+      parameters:
+        - in: query
+          name: source
+          description: The address of the account sending the payment.
+          required: false
+          schema:
+            $ref: '#/components/schemas/Address'
+        - in: query
+          name: destination
+          description: The address of the account that will receive the payment.
+          required: false
+          schema:
+            $ref: '#/components/schemas/Address'
+        - in: query
+          name: currency
+          description: The currency to send.
+          required: false
+          schema:
+            $ref: '#/components/schemas/Currency'
+        - in: query
+          name: value
+          description: The value of the amount to send.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: '...'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentObjectAndInstructions'
+        '400':
+          description: The request was not properly formatted.
           content:
             application/json:
               schema:
