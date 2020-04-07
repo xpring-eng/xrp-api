@@ -1,5 +1,5 @@
-/* Note: Run `yarn setup` to automatically configure this secret_config.js file. */
-{
+/* Note: Run `yarn setup` to automatically generate an initial .secret_config.js file for testing and development. */
+module.exports = {
     "server": "{{SERVER_ADDRESS_HERE}}",
     "accounts": {
         "{{ACCOUNT_ADDRESS_HERE}}": {

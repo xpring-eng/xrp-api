@@ -11,8 +11,8 @@ const cwd = process.cwd();
 
 (async function () {
   console.log(`${c.green('✔')} Creating a new secret file...`);
-  const secretExampleFileLoc = path.join(cwd, '.secret_config-example.json');
-  const secretDestinationFileLoc = path.join(cwd, '.secret_config.json');
+  const secretExampleFileLoc = path.join(cwd, '.secret_config-example.js');
+  const secretDestinationFileLoc = path.join(cwd, '.secret_config.js');
   const secretFileTemplate = fs.readFileSync(secretExampleFileLoc, {encoding: 'utf8'});
   fs.copyFileSync(secretExampleFileLoc, secretDestinationFileLoc);
 
