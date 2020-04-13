@@ -13,7 +13,7 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
 
 ### Requirements
 
-- [Node v10 or higher](https://nodejs.org/en/download/)
+- [Node v10.4.0 or higher](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/)
 - An XRP Ledger account with XRP
 
@@ -117,3 +117,13 @@ You can also run the service in a docker container using the Dockerfile in this 
    ```docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>```
 
 4. You should now be able to run the steps in the tutorial.
+
+#### Debugging
+
+* We use log4js with 7-character category names and a shim that uses the NODE_DEBUG environment variable to enable logging of specific categories.
+* Available categories:
+  * `prp/pmt`: GET /v3/preparations/payments (<./src/api-v1/paths/preparations/payments.ts>)
+
+#### Notes
+
+* Requires Node.js 10.4.0+ for BigInt support.

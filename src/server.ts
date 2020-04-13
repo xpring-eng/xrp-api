@@ -61,7 +61,8 @@ export class Server {
 
     interface ServerError {
       status?: number;
-      errors: ServerError[];
+      message?: string;
+      errors?: ServerError[];
       // ...
     };
 
@@ -80,8 +81,13 @@ export class Server {
 
       const status = err.status || 500;
       delete err.status;
+      const message = err.message;
       if (!err.errors) {
         err = {errors: [err]};
+      }
+      if (message) {
+        // Include message first to improve readability.
+        err = Object.assign({message}, err);
       }
       res.status(status).json(err);
     });

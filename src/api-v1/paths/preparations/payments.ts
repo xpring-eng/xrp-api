@@ -5,17 +5,63 @@ import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../types";
 import { finishRes } from "../../../finishRes";
 import { ERRORS } from "../../../errors";
+import { isValidXAddress, xAddressToClassicAddress } from "ripple-address-codec";
+import * as log4js from 'log4js';
+const out_all = {
+  appenders: ['out'],
+  level: 'all'
+};
+const enable_categories = process.env.NODE_DEBUG?.split(',');
+if (enable_categories) {
+  const categories: any = {
+    default: out_all
+  };
+  enable_categories.forEach(cat => {
+    categories[cat] = out_all;
+  });
+  log4js.configure({
+    appenders: {
+      'out': {
+        type: 'stdout'
+      }
+    },
+    categories
+  });
+}
+const logger = log4js.getLogger('prp/pmt');
 
 export default function(api: RippleAPI, log: Function): Operations {
   async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+    logger.trace('GET /v3/preparations/payments');
+
     const options = Object.assign({},
       req.query
     );
 
-    const Amount = (() => {
-      if (options.currency === 'XRP') return api.xrpToDrops(options.value);
-      if (options.currency === 'drops') return options.value;
-      if (options.currency === undefined) return undefined;
+    type AmountInDrops = string | undefined;
+    let Amount: AmountInDrops;
+    if (options.currency === 'XRP') {
+      Amount = api.xrpToDrops(options.value);
+    } else if (options.currency === 'drops') {
+      Amount = options.value;
+    } else if (options.currency === undefined) {
+      // Ensure `value` is not set
+      if (options.value !== undefined) {
+        const status = 400;
+        const message = 'Missing `currency`';
+        const error: any = {
+          code: ERRORS.CODES.UNSUPPORTED_CURRENCY,
+          message: 'Since `value` is provided, `currency` is required',
+        };
+        const response = {
+          message,
+          errors: [error]
+        };
+        finishRes(res, status, response);
+        return;
+      }
+      Amount = undefined;
+    } else {
       const status = 400;
       const message = 'Unsupported currency';
       const error: any = {
@@ -27,7 +73,107 @@ export default function(api: RippleAPI, log: Function): Operations {
         errors: [error]
       };
       finishRes(res, status, response);
-    })();
+      return;
+    }
+
+    if (options.destination) {
+      const destination = getClassicAccountAndTag(options.destination); // TODO: test/handle invalid destination
+      const destinationHasNoTag = destination.tag === undefined;
+
+      const baseReserve = await api.connection.getReserveBase();
+      const amountLessThanBaseReserve = Amount && BigInt(Amount) < baseReserve;
+
+      if (destinationHasNoTag || amountLessThanBaseReserve) {
+
+        // The balance in XRP drops, or `undefined` if the account does not exist.
+        const {
+          destinationAccountBalance,
+          destinationRequiresTag
+        }: {
+          destinationAccountBalance?: string,
+          destinationRequiresTag?: boolean
+          } = await api.request('account_info', { // TODO: test
+          account: destination.classicAccount,
+          ledger_index: 'current'
+        }).then(res => {
+          const flags = api.parseAccountFlags(res.account_data.Flags);
+          return {
+            destinationAccountBalance: res.account_data.Balance,
+            destinationRequiresTag: flags.requireDestinationTag === true
+          }
+        }).catch(error => {
+          if (error.data.error === 'actNotFound') {
+            logger.info(error.data);
+            return {};
+          } else {
+            // If desired, we could add an option to skip pre-flight checks
+            error.message = 'Failed to pre-flight payment. Unable to retrieve destination account_info';
+            throw error; // Handled in server.ts (Error handler for business logic)
+          }
+        });
+
+        // [Pre-flight 1/2] If:
+        // - `destination` has no tag AND
+        // - Destination account exists AND
+        // - Destination account requires a destination tag
+        // Then:
+        // - Fail because the Destination account requires a destination tag, and one was not provided
+
+        if (destinationHasNoTag && destinationAccountBalance && destinationRequiresTag) {
+          const error = {
+            // Missing required input (destination tag)
+            // https://stackoverflow.com/questions/3050518
+            status: 422,
+
+            // If we permitted this payment, it would ultimately fail with:
+            // tecDST_TAG_NEEDED:	The Payment transaction omitted a destination tag,
+            // but the destination account has the lsfRequireDestTag flag enabled.
+            message: 'Destination requires a destination tag, and one was not provided',
+
+            errors: [
+              {
+                code: ERRORS.CODES.DESTINATION_TAG_NEEDED,
+                message: 'Destination account has the RequireDest (requireDestinationTag) flag enabled',
+                hint: 'Set a destination tag or use an X-address that contains a tag',
+                url: 'https://xrpl.org/source-and-destination-tags.html#requiring-tags',
+                ref: 'tecDST_TAG_NEEDED'
+              }
+            ]
+          }
+          throw error;
+        }
+
+        // [Pre-flight 2/2] If:
+        // - `amount` is less than the base reserve (currently 20 XRP) AND
+        // - Destination account does NOT exist
+        // Then:
+        // - Fail because the Destination account has not been funded and this payment is not large enough to fund it
+
+        if (amountLessThanBaseReserve && destinationAccountBalance === undefined) {
+          const error = {
+            // Refuse to prepare payment because amount is insufficient to fund destination
+            status: 422,
+
+            // If we permitted this payment, it would ultimately fail with:
+            // tecNO_DST_INSUF_XRP:	The account on the receiving end of the transaction does not exist,
+            // and the transaction is not sending enough XRP to create it.
+            // https://xrpl.org/tec-codes.html
+            message: 'Destination account does not exist, and payment would not send enough XRP to create it',
+
+            errors: [
+              {
+                code: ERRORS.CODES.NO_DESTINATION_INSUFFICIENT_XRP,
+                message: 'The account on the receiving end of the payment does not exist',
+                hint: 'Send enough XRP to create the account',
+                url: 'https://xrpl.org/reserves.html',
+                ref: 'tecNO_DST_INSUF_XRP'
+              }
+            ]
+          }
+          throw error;
+        }
+      }
+    }
 
     const removeUndefined = (obj: any) => {
       Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
@@ -41,15 +187,20 @@ export default function(api: RippleAPI, log: Function): Operations {
     });
 
     try {
+      logger.trace('Preparing', transaction);
       const prepared = await api.prepareTransaction(transaction);
       const response = JSON.parse(prepared.txJSON);
       finishRes(res, 200, response);
 
     } catch(error) {
+      logger.warn(error);
       // e.g. ValidationError(instance.Account is not exactly one from <xAddress>,<classicAddress>)
 
       const status = 400;
-      const message = error.data && error.data.error_message ? error.data.error_message : error.name || 'Error';
+      let message = error.data && error.data.error_message ? error.data.error_message : error.name || 'Error';
+      if (message === 'Account not found.') {
+        message = 'Source account not found.';
+      }
       if (error.data && error.name) {
         error.data.name = error.name; // e.g. "RippledError"
       }
@@ -75,4 +226,45 @@ export default function(api: RippleAPI, log: Function): Operations {
   };
 
   return operations as Operations;
+}
+
+export interface ClassicAccountAndTag {
+  classicAccount: string
+  tag: number | false | undefined
+}
+
+/**
+ * Given an address (account), get the classic account and tag.
+ * If an `expectedTag` is provided:
+ * 1. If the `Account` is an X-address, validate that the tags match.
+ * 2. If the `Account` is a classic address, return `expectedTag` as the tag.
+ *
+ * @param Account The address to parse.
+ * @param expectedTag If provided, and the `Account` is an X-address,
+ *                    this method throws an error if `expectedTag`
+ *                    does not match the tag of the X-address.
+ * @returns {ClassicAccountAndTag}
+ *          The classic account and tag.
+ */
+function getClassicAccountAndTag(
+  Account: string,
+  expectedTag?: number
+): ClassicAccountAndTag {
+  if (isValidXAddress(Account)) {
+    const classic = xAddressToClassicAddress(Account)
+    if (expectedTag !== undefined && classic.tag !== expectedTag) {
+      throw new Error(
+        'address includes a tag that does not match the tag specified in the transaction'
+      )
+    }
+    return {
+      classicAccount: classic.classicAddress,
+      tag: classic.tag
+    }
+  } else {
+    return {
+      classicAccount: Account,
+      tag: expectedTag
+    }
+  }
 }
