@@ -46,16 +46,16 @@ export default function(api: RippleAPI, log: Function): Operations {
       const status = error.name === 'NotFoundError' ? 404 : 400;
       const message = error.data && error.data.error_message ? error.data.error_message : error.message || error.name || 'Error';
       if (error.data && error.name) {
-        error.data.name = error.name
+        error.data.name = error.name;
       }
-      error = error.data || error
+      error = error.data || error;
       if (error.code === undefined) {
         error.code = ERRORS.CODES.GET_TRANSACTION;
       }
       const response = {
         message,
         errors: [error]
-      }
+      };
       finishRes(res, status, response); // Validates
     });
   }

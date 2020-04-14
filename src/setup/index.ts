@@ -22,13 +22,13 @@ const cwd = process.cwd();
   process.stdout.write(c.dim(randomString) + '\n');
 
   const {serverUrl} = await prompt([{
-      type: 'input',
-      name: 'serverUrl',
-      message: 'Network Server Address',
-      initial: 'wss://s.altnet.rippletest.net:51233 (Testnet)',
-      result: (val: string) => val.trim().split(' ').shift(),
-      validate: (val: string) => val.trim().split(' ').shift()!.length > 0,
-    }]);
+    type: 'input',
+    name: 'serverUrl',
+    message: 'Network Server Address',
+    initial: 'wss://s.altnet.rippletest.net:51233 (Testnet)',
+    result: (val: string) => val.trim().split(' ').shift(),
+    validate: (val: string) => val.trim().split(' ').shift()!.length > 0,
+  }]);
 
   const network = serverUrl === 'wss://s.altnet.rippletest.net:51233' ? 'altnet' : serverUrl === 'wss://s.devnet.rippletest.net:51233' ? 'devnet' : 'other';
   async function generateCredentials(network: 'altnet' | 'devnet'): Promise<{

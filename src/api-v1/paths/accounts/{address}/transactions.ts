@@ -14,7 +14,7 @@ export default function(api: RippleAPI, log: Function): Operations {
 
     const hasOnlyDigits = (value: string) => {
       return /^\d+$/.test(value);
-    }
+    };
 
     if (hasOnlyDigits(options.minLedgerVersion)) {
       options.minLedgerVersion = parseInt(options.minLedgerVersion);
@@ -29,7 +29,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     }
 
     try {
-      const transactions = await api.getTransactions(req.params.address, options)
+      const transactions = await api.getTransactions(req.params.address, options);
       const response = Object.assign({},
         {
           transactions,
@@ -44,16 +44,16 @@ export default function(api: RippleAPI, log: Function): Operations {
       const status = error.message === 'Account not found.' ? 404 : 400;
       const message = error.data && error.data.error_message ? error.data.error_message : error.name || 'Error';
       if (error.data && error.name) {
-        error.data.name = error.name // e.g. "RippledError"
+        error.data.name = error.name; // e.g. "RippledError"
       }
-      error = error.data || error
+      error = error.data || error;
       if (error.code === undefined) {
         error.code = ERRORS.CODES.GET_TRANSACTIONS;
       }
       const response = {
         message,
         errors: [error]
-      }
+      };
       finishRes(res, status, response); // Validates
     }
   }
