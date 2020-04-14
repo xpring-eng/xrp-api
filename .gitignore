@@ -5,6 +5,7 @@ https
 dist
 .secret_config.json
 .secret_config.js
+*.secret_config.js
 
 target
 
