@@ -19,9 +19,14 @@ const ERRORS = {
     GET_SETTINGS: 1000,
     GET_TRANSACTIONS: 1010,
     GET_TRANSACTION: 1020,
+    GET_PREPARATIONS_PAYMENTS: 1030,
+    DESTINATION_TAG_NEEDED: 143, // Matches tecDST_TAG_NEEDED https://xrpl.org/tec-codes.html
+    NO_DESTINATION_INSUFFICIENT_XRP: 125, // Matches tecNO_DST_INSUF_XRP https://xrpl.org/tec-codes.html
+    UNSUPPORTED_CURRENCY: 2000,
     ACCOUNT_NOT_CONFIGURED,
     WEBSOCKET: 7000, // DisconnectedError: websocket was closed
     MISSING_V1: 8000,
+    MISSING_V3: 8000,
     UNAUTHORIZED,
     UNSPECIFIED: 9000
   }

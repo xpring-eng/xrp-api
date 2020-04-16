@@ -61,7 +61,8 @@ export class Server {
 
     interface ServerError {
       status?: number;
-      errors: ServerError[];
+      message?: string;
+      errors?: ServerError[];
       // ...
     };
 
@@ -80,23 +81,28 @@ export class Server {
 
       const status = err.status || 500;
       delete err.status;
+      const message = err.message;
       if (!err.errors) {
         err = {errors: [err]};
+      }
+      if (message) {
+        // Include message first to improve readability.
+        err = Object.assign({message}, err);
       }
       res.status(status).json(err);
     });
 
-    this.app.use(function(req, res, _next){
+    this.app.use((req, res, _next) => {
       res.status(404);
-      const error: any = {}
-      if (req.path.startsWith('/v1') === false) {
-        error.code = ERRORS.CODES.MISSING_V1
+      const error: any = {};
+      if (req.path.startsWith('/v3') === false) {
+        error.code = ERRORS.CODES.MISSING_V3;
         error.message = 'Missing version prefix in path';
-        error.hint = 'Try starting the path with `/v1`'
+        error.hint = 'Try starting the path with `/v3`';
       } else {
-        error.code = ERRORS.CODES.NOT_FOUND
-        error.message = 'Path not found'
-        error.hint = 'Ensure that all path parameters are supplied'
+        error.code = ERRORS.CODES.NOT_FOUND;
+        error.message = 'Path not found';
+        error.hint = 'Ensure that all path parameters are supplied';
       }
       res.send({ message: 'Not found', errors: [error] });
     });

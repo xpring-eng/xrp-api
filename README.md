@@ -13,7 +13,7 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
 
 ### Requirements
 
-- [Node v10 or higher](https://nodejs.org/en/download/)
+- [Node v10.4.0 or higher](https://nodejs.org/en/download/)
 - [yarn](https://yarnpkg.com/en/)
 - An XRP Ledger account with XRP
 
@@ -74,14 +74,14 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
     In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address:
 
         curl -X GET \
-          http://localhost:3000/v1/accounts/{ACCOUNT_ADDRESS_HERE}/info
+          http://localhost:3000/v3/accounts/{ACCOUNT_ADDRESS_HERE}/info
 
 2. Send a payment
 
     In the following example, replace `{ACCOUNT_ADDRESS_HERE}` with your Address (2 locations), `{API_KEY_HERE}` with your API key, and `{DESTINATION_ADDRESS_HERE}` with a destination address. If you are using the Testnet, you can use the address `rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe` as a destination.
 
         curl -X POST \
-           http://localhost:3000/v1/payments \
+           http://localhost:3000/v3/payments \
            -H 'Authorization: Bearer {API_KEY_HERE}' \
            -H 'Content-Type: application/json' \
            -d '{
@@ -108,7 +108,7 @@ In this simple tutorial, we will get our account's XRP balance, send a payment, 
     In the following example, replace `{TRANSACTION_ID}` with the transaction's identifying hash from the previous step:
 
         curl -X GET \
-          http://localhost:3000/v1/transactions/{TRANSACTION_ID}
+          http://localhost:3000/v3/transactions/{TRANSACTION_ID}
 
 ### Docker Container
 
@@ -123,3 +123,13 @@ You can also run the service in a docker container using the Dockerfile in this 
    ```docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>```
 
 4. You should now be able to run the steps in the tutorial.
+
+#### Debugging
+
+* We use log4js with 7-character category names and a shim that uses the NODE_DEBUG environment variable to enable logging of specific categories.
+* Available categories:
+  * `prp/pmt`: GET /v3/preparations/payments (<./src/api-v1/paths/preparations/payments.ts>)
+
+#### Notes
+
+* Requires Node.js 10.4.0+ for BigInt support.
