@@ -7,7 +7,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { initialize } from 'express-openapi';
 import path from 'path';
-import RippleApiService from './api-v1/services/ripple-api';
+import RippleApiService from './api-v3/services/ripple-api';
 import { ERRORS } from './errors';
 
 interface ServerOptions {
@@ -54,7 +54,7 @@ export class Server {
         api: rippleApiService.api, // RippleAPI instance
         log: this.pathDebug
       },
-      paths: path.resolve(__dirname, '../dist/api-v1/paths/'),
+      paths: path.resolve(__dirname, '../dist/api-v3/paths/'),
       pathsIgnore: new RegExp('\.(spec|test)$'),
       promiseMode: true // Required to use promises in operations
     });
@@ -71,7 +71,8 @@ export class Server {
       this.serverDebug('Server error:', err);
       // Error: [TimeoutError()]
       // (node:40986) [DEP0079] DeprecationWarning: Custom inspection function on Objects via .inspect() is deprecated
-      // GET /v1/accounts/rHn1DJH1dqzdZ5PrkFpgQPn6Tbn8wKsrk9/transactions 500
+      //
+      // GET /v3/accounts/rHn1DJH1dqzdZ5PrkFpgQPn6Tbn8wKsrk9/transactions 500
       // [WebSocket Error] websocket: read EHOSTUNREACH
       // Disconnected from rippled. Code: 1006
       if (res.headersSent) {

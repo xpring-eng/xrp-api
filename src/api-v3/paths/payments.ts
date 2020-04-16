@@ -1,4 +1,8 @@
-// POST /v1/payments
+// PUT /v3/payments
+//   Sign and/or submit a payment transaction. Idempotent.
+
+// POST /v3/payments
+//   Create, sign, and/or submit a payment transaction. Not idempotent.
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
@@ -11,6 +15,42 @@ import { ERRORS } from "../../errors";
 const config = getConfig();
 
 export default function(api: RippleAPI, log: Function): Operations {
+  async function put(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
+    let signedTransaction = req.body.signedTransaction
+    if (signedTransaction === undefined) {
+      // Do not parse X-address, if present. This endpoint takes transactions fully-formed.
+      // It only signs and submits them. To prepare transactions (converting X-addresses, if necessary),
+      // use GET /v3/preparations/payments.
+
+      if (!api.isValidAddress(req.body.Account)) {
+        throw new Error('Invalid `Account`');
+      }
+
+      if (!config.accounts || !config.accounts[req.body.Account]) {
+        throw ERRORS.ACCOUNT_NOT_CONFIGURED;
+      }
+
+      const accountWithSecret = config.accounts[req.body.Account];
+
+      // Require valid Bearer Token
+      let reqHasValidBearerToken = false;
+      if (!accountWithSecret || 'Bearer ' + accountWithSecret.apiKey != req.headers.authorization) {
+        log(`[401] does not match apiKey, authorization: ${req.headers.authorization}`);
+        throw ERRORS.INVALID_BEARER_TOKEN;
+      } else {
+        reqHasValidBearerToken = true;
+      }
+
+      if (reqHasValidBearerToken) { // In the future, apply velocity limits here
+        signedTransaction = api.sign(JSON.stringify(req.body), accountWithSecret.secret).signedTransaction;
+      }
+    }
+    const result = await api.submit(signedTransaction);
+    delete result.resultCode;    // (use `engine_result` instead)
+    delete result.resultMessage; // (use `engine_result_message` instead)
+    finishRes(res, 200, result);
+  }
+
   async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     // TODO: parse X Address
     const address = req.body.payment.source_address;
@@ -136,6 +176,7 @@ export default function(api: RippleAPI, log: Function): Operations {
   }
 
   const operations = {
+    put,
     post
   };
 

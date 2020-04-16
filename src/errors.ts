@@ -1,4 +1,4 @@
-const UNAUTHORIZED = 8010;
+const UNAUTHORIZED = 401;
 const ACCOUNT_NOT_CONFIGURED = 6000;
 
 const ERRORS = {
@@ -6,6 +6,7 @@ const ERRORS = {
     const e = new Error('Invalid bearer token');
     e.name = 'Unauthorized';
     (e as any).code = UNAUTHORIZED;
+    (e as any).status = 401;
     return e;
   })(),
   ACCOUNT_NOT_CONFIGURED: (function() {
@@ -25,7 +26,6 @@ const ERRORS = {
     UNSUPPORTED_CURRENCY: 2000,
     ACCOUNT_NOT_CONFIGURED,
     WEBSOCKET: 7000, // DisconnectedError: websocket was closed
-    MISSING_V1: 8000,
     MISSING_V3: 8000,
     UNAUTHORIZED,
     UNSPECIFIED: 9000

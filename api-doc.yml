@@ -199,13 +199,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
   '/payments':
+    put:
+      tags:
+        - Transact
+      summary: Sign and/or submit a payment
+      operationId: signSubmitPayment
+      description: |
+        Sign a prepared payment transaction and/or submit a transaction to the XRP Ledger network. For signing, the sending account must match an account secret that the XRP-API server is configured with.
+      requestBody:
+        description: A transaction to sign and/or submit.
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/XRPLPaymentTransaction'
+                - $ref: '#/components/schemas/XRPLSignedTransaction'
+            examples:
+              xrplPaymentTransactionExample:
+                $ref: '#/components/examples/xrplPaymentTransactionExample'
+
+      responses:
+        '200':
+          description: A successful response provides the native XRP Ledger format for the transaction, the transaction's identifying hash, and the preliminary result of processing the transaction.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+        '400':
+          description: The request was not properly formatted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RippleAPIError'
     post:
       tags:
         - Transact
-      summary: Submit Payment
-      operationId: submitPayment
+      summary: Create, sign, and submit a payment
+      operationId: createSignSubmitPayment
       description: |
-        Sign a payment transaction and submit it to the XRP Ledger network. The sending account must match an account address and secret the XRP-API server is configured with.
+        Create and a payment transaction, and submit it to the XRP Ledger network. The sending account must match an account address and secret the XRP-API server is configured with.
       requestBody:
         description: A transaction object and instructions.
         required: true
@@ -299,6 +332,7 @@ paths:
       responses:
         '200':
           description: A response with an empty body to indicate that the server is online and functional.
+
 components:
   schemas:
     RippleAPIError:
@@ -708,9 +742,10 @@ components:
         signersCount:
           type: integer
           description: The number of signers that will be signing this transaction.
+
     TransactionStatus:
       title: TransactionStatus
-      description: Transaction status. If the transaction was submitted, `tx_json.hash` and `engine_result` will be returned. Otherwise, they will be omitted.
+      description: Transaction status. If the transaction was submitted, `tx_json.hash` and `engine_result` will be included.
       type: object
       properties:
         engine_result:
@@ -737,6 +772,75 @@ components:
           type: integer
           description: The ledger index of the latest validated ledger prior to submission. The earliest ledger index that the submitted transaction could appear in, as a result of this submission, is this value +1. Use this to bound your tx queries to find out the final status of this transaction. This is a validated ledger index because getting the latest current or closed ledger is not a guarantee—your transaction could make it into an earlier ledger index that also hasn't been validated yet.
 
+    XRPLTransaction:
+      type: object
+      required:
+        - TransactionType
+        - Account
+        - Flags
+        - LastLedgerSequence # could be optional, but we currently make the opinionated choice of making it required
+        - Fee
+        - Sequence
+      properties:
+        # hash:
+        #   type: string
+        #   description: (Optional) The hash value that uniquely identifies this transaction. Included only if the transaction was signed.
+
+        TransactionType:
+          type: string # TODO: enum of supported types
+          description: The transaction type, such as "Payment".
+
+        Account:
+          # description: Source account of the transaction.
+          $ref: '#/components/schemas/Address'
+
+        Flags:
+          type: integer
+          format: int64
+          description: Transaction-specific flags (bit field).
+          example: 2147483648
+
+        LastLedgerSequence:
+          type: integer
+          description: Highest ledger index this transaction can appear in. This field places a strict upper limit on how long the transaction can wait to be validated or rejected.
+          externalDocs:
+            description: Reliable Transaction Submission
+            url: https://developers.ripple.com/reliable-transaction-submission.html
+
+        Fee:
+          type: string
+          description: Transaction fee, in drops.
+
+        Sequence:
+          type: integer
+          description: The account sequence number (can serve as a nonce).
+
+    XRPLPaymentTransaction:
+      allOf:
+        - $ref: '#/components/schemas/XRPLTransaction' # Common Fields
+        - type: object
+          required:
+            - Destination
+            - Amount
+          properties:
+            Destination:
+              # description: Destination account to receive the payment.
+              $ref: '#/components/schemas/Address'
+            Amount:
+              type: string
+              description: The amount.
+
+    XRPLSignedTransaction:
+      title: Signed Transaction
+      type: object
+      description: A signed transaction.
+      required:
+        - signedTransaction
+      properties:
+        signedTransaction:
+          type: string
+          description: A signed transaction, represented as a hexadecimal string.
+
     TransactionJSON:
       title: Transaction JSON
       type: object
@@ -745,7 +849,6 @@ components:
         hash:
           type: string
           description: The hash value that uniquely identifies this transaction. Included only if the transaction was signed and submitted.
-        # optional, but automatically set by RippleAPI/ripple-lib
         LastLedgerSequence:
           type: integer
           description: Highest ledger index this transaction can appear in. This field places a strict upper limit on how long the transaction can wait to be validated or rejected.
@@ -773,6 +876,21 @@ components:
         Fee:
           type: string
           description: Transaction fee, in drops.
+
     ApiDoc:
       description: The requested apiDoc.
       type: object
+
+  # Common Examples
+  examples:
+    xrplPaymentTransactionExample:
+      value:
+        TransactionType: "Payment"
+        Account: "rNQao3Z1irwRjKWSs8heL4a8WKLPKfLrXs"
+        Destination: "r4FNkJtbKvCTjcE4UaeAtgpHGf8mAbeCoL"
+        Amount: "20000000"
+        Flags: 2147483648
+        LastLedgerSequence: 6279611
+        Fee: "12"
+        Sequence: 1
+      summary: A sample XRPL payment transaction

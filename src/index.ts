@@ -1,4 +1,4 @@
-import RippleApiService from './api-v1/services/ripple-api';
+import RippleApiService from './api-v3/services/ripple-api';
 import { Server } from './server';
 import { getConfig } from './config';
 
