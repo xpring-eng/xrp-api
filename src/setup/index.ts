@@ -30,29 +30,34 @@ const cwd = process.cwd();
     validate: (val: string) => val.trim().split(' ').shift()!.length > 0,
   }]);
 
-  let accountInfo = null;
-  if (serverUrl === 'wss://s.altnet.rippletest.net:51233') {
-    console.log('▲ Generating Testnet account credentials...');
-    accountInfo = await got.post('https://faucet.altnet.rippletest.net/accounts', {json: true})
+  const network = serverUrl === 'wss://s.altnet.rippletest.net:51233' ? 'altnet' : serverUrl === 'wss://s.devnet.rippletest.net:51233' ? 'devnet' : 'other';
+  async function generateCredentials(network: 'altnet' | 'devnet'): Promise<{
+    address: string,
+    secret: string
+  }> {
+    console.log(`▲ Generating ${network === 'altnet' ? 'Testnet' : 'Devnet'} account credentials...`);
+    return got.post(`https://faucet.${network}.rippletest.net/accounts`, {json: true})
       .then(({body}) => body.account)
       .catch((err) => console.log('  ' + err.message));
   }
+  const accountInfo = network === 'other' ? null : await generateCredentials(network);
+
   const {accountAddress, accountSecret} = await prompt([{
-      type: 'input',
-      name: 'accountAddress',
-      message: 'Account Public Address',
-      initial: accountInfo && accountInfo.address,
-      result: (val: string) => val.trim(),
-      validate: (val: string) => val.trim().length > 0
-    },
-    {
-      type: 'input',
-      name: 'accountSecret',
-      message: 'Account Private Key',
-      initial: accountInfo && accountInfo.secret,
-      result: (val: string) => val.trim(),
-      validate: (val: string) => val.trim().length > 0
-    }
+    type: 'input',
+    name: 'accountAddress',
+    message: 'Account Public Address',
+    initial: accountInfo && accountInfo.address,
+    result: (val: string) => val.trim(),
+    validate: (val: string) => val.trim().length > 0
+  },
+  {
+    type: 'input',
+    name: 'accountSecret',
+    message: 'Account Private Key',
+    initial: accountInfo && accountInfo.secret,
+    result: (val: string) => val.trim(),
+    validate: (val: string) => val.trim().length > 0
+  }
   ]);
 
   const secretTemplate = Handlebars.compile(secretFileTemplate);

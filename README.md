@@ -37,6 +37,12 @@ Instead of XRP API, you can use [ripple-lib](https://github.com/ripple/ripple-li
 
         yarn run setup
 
+For testing and development, you can use the [XRP Faucets](https://xrpl.org/xrp-testnet-faucet.html). At this time, the following public servers are available:
+
+- Testnet: `wss://s.altnet.rippletest.net:51233`
+
+- Devnet: `wss://s.devnet.rippletest.net:51233`
+
 ### Development
 
 To start the server in development mode:
