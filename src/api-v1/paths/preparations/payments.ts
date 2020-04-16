@@ -77,7 +77,13 @@ export default function(api: RippleAPI, log: Function): Operations {
     }
 
     if (options.destination) {
-      const destination = getClassicAccountAndTag(options.destination); // TODO: test/handle invalid destination
+      if (!api.isValidAddress(options.destination)) {
+        throw {
+          status: 400,
+          message: 'Invalid `destination` address'
+        };
+      }
+      const destination = getClassicAccountAndTag(options.destination);
       const destinationHasNoTag = destination.tag === undefined;
 
       const baseReserve = await api.connection.getReserveBase();
@@ -92,7 +98,7 @@ export default function(api: RippleAPI, log: Function): Operations {
         }: {
           destinationAccountBalance?: string,
           destinationRequiresTag?: boolean
-          } = await api.request('account_info', { // TODO: test
+          } = await api.request('account_info', {
           account: destination.classicAccount,
           ledger_index: 'current'
         }).then(res => {
