@@ -213,11 +213,11 @@ paths:
           application/json:
             schema:
               oneOf:
-                - $ref: '#/components/schemas/XRPLPaymentTransaction'
-                - $ref: '#/components/schemas/XRPLSignedTransaction'
+                - $ref: '#/components/schemas/PaymentTransaction'
+                - $ref: '#/components/schemas/SignedTransaction'
             examples:
-              xrplPaymentTransactionExample:
-                $ref: '#/components/examples/xrplPaymentTransactionExample'
+              paymentTransactionExample:
+                $ref: '#/components/examples/paymentTransactionExample'
 
       responses:
         '200':
@@ -594,7 +594,10 @@ components:
         transactions:
           type: array
           description: A list of transactions to affect the account.
-          # TODO: $ref for items in this array
+          minItems: 0
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Transaction'
         minLedgerVersion:
           type: integer
           description: The minimum ledger index searched when looking for transactions affecting this account.
@@ -772,19 +775,19 @@ components:
           type: integer
           description: The ledger index of the latest validated ledger prior to submission. The earliest ledger index that the submitted transaction could appear in, as a result of this submission, is this value +1. Use this to bound your tx queries to find out the final status of this transaction. This is a validated ledger index because getting the latest current or closed ledger is not a guarantee—your transaction could make it into an earlier ledger index that also hasn't been validated yet.
 
-    XRPLTransaction:
+    TransactionCommonFields:
       type: object
       required:
         - TransactionType
         - Account
         - Flags
-        - LastLedgerSequence # could be optional, but we currently make the opinionated choice of making it required
+        - LastLedgerSequence # could be optional, but we make the opinionated choice of requiring it
         - Fee
         - Sequence
       properties:
-        # hash:
-        #   type: string
-        #   description: (Optional) The hash value that uniquely identifies this transaction. Included only if the transaction was signed.
+        hash:
+          type: string
+          description: (Optional) The hash value that uniquely identifies this transaction. Included only if the transaction was signed.
 
         TransactionType:
           type: string # TODO: enum of supported types
@@ -815,9 +818,9 @@ components:
           type: integer
           description: The account sequence number (can serve as a nonce).
 
-    XRPLPaymentTransaction:
+    PaymentTransaction:
       allOf:
-        - $ref: '#/components/schemas/XRPLTransaction' # Common Fields
+        - $ref: '#/components/schemas/TransactionCommonFields'
         - type: object
           required:
             - Destination
@@ -830,7 +833,7 @@ components:
               type: string
               description: The amount.
 
-    XRPLSignedTransaction:
+    SignedTransaction:
       title: Signed Transaction
       type: object
       description: A signed transaction.
@@ -883,7 +886,7 @@ components:
 
   # Common Examples
   examples:
-    xrplPaymentTransactionExample:
+    paymentTransactionExample:
       value:
         TransactionType: "Payment"
         Account: "rNQao3Z1irwRjKWSs8heL4a8WKLPKfLrXs"
