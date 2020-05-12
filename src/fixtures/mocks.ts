@@ -1,6 +1,6 @@
 import { mock, instance, when, resetCalls } from 'ts-mockito';
 import { Server } from '../server';
-import RippleApiService from '../api-v1/services/ripple-api';
+import RippleApiService from '../api-v3/services/ripple-api';
 import { RippleAPI } from 'ripple-lib';
 
 class Debuglog {

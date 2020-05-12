@@ -4,19 +4,19 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { capture } from 'ts-mockito';
 // import getAccountInfoFixture from '../../../../fixtures/getAccountInfo.json';
-const path = '/v1/payments';
+const path = '/v3/payments';
 
 describe(path, () => {
   xit('POST - submits payment', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     // sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
-    
+
     request(mockApp)
       .get(path)
       .expect(200)
       .expect(res => {
         expect(res.text.length).to.be.greaterThan(400).lessThan(500);
-        
+
         expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/payments: response validated"]);
       })
       .end(done);
@@ -29,14 +29,14 @@ describe(path, () => {
   //     ledger_index: 'validated', // eslint-disable-line @typescript-eslint/camelcase
   //     account: '{address}'
   //   }).resolves(Object.assign({}, getAccountInfoFixture, {validated: true}));
-    
+
   //   request(mockApp)
   //     .get(path + '?ledger_index=validated')
   //     .expect(200)
   //     .expect(res => {
   //       expect(res.text.length).to.be.greaterThan(400).lessThan(500);
   //       expect(res.body.validated).to.equal(true);
-        
+
   //       expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/accounts/{address}/info: response validated"]);
   //     })
   //     .end(done);

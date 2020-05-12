@@ -2,7 +2,7 @@ import request from 'supertest';
 import { mockApp } from '../../fixtures/mocks';
 import { expect } from 'chai';
 
-const path = '/v1/apiDocs';
+const path = '/v3/apiDocs';
 describe(path, () => {
   it('GET - returns apiDocs', (done) => {
     request(mockApp)

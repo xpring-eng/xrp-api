@@ -126,10 +126,12 @@ You can also run the service in a docker container using the Dockerfile in this 
 
 #### Debugging
 
-* We use log4js with 7-character category names and a shim that uses the NODE_DEBUG environment variable to enable logging of specific categories.
+* We use [log4js](https://www.npmjs.com/package/log4js) with 7-character category names and a shim that uses the `NODE_DEBUG` environment variable to enable logging of specific categories.
+* Example: `NODE_DEBUG=prp/pmt node dev`
 * Available categories:
-  * `prp/pmt`: GET /v3/preparations/payments (<./src/api-v1/paths/preparations/payments.ts>)
+  * `prp/pmt`: GET **/v3/preparations/payments** ([./src/api-v3/paths/preparations/payments.ts](./src/api-v3/paths/preparations/payments.ts))
+* During development, add logging by using [the built-in log levels](https://github.com/xpring-eng/validation-count-reporter/wiki/log4js-node-Log-Levels)
 
 #### Notes
 
-* Requires Node.js 10.4.0+ for BigInt support.
+* Requires Node.js 10.4.0+ for `BigInt` support.
