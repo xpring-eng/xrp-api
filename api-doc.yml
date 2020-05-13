@@ -593,7 +593,7 @@ components:
     AppliedTransaction:
       description: An applied transaction contains the fields of the Transaction object as well as some additional fields.
       allOf:
-        - $ref: '#/components/schemas/Transaction'
+        - $ref: '#/components/schemas/TransactionCommonFields'
         - type: object
           required:
             - hash
@@ -660,7 +660,7 @@ components:
           minItems: 0
           uniqueItems: true
           items:
-            $ref: '#/components/schemas/Transaction'
+            $ref: '#/components/schemas/TransactionCommonFields'
         minLedgerVersion:
           type: integer
           description: The minimum ledger index searched when looking for transactions affecting this account.
@@ -830,7 +830,7 @@ components:
           type: string
           description: The complete transaction in hex string format.
         tx_json:
-          $ref: '#/components/schemas/Transaction'
+          $ref: '#/components/schemas/TransactionCommonFields'
 
         # Server implementations should handle this with a separate request until
         # https://github.com/ripple/rippled/issues/2851 is addressed.
@@ -839,7 +839,9 @@ components:
           description: The ledger index of the latest validated ledger prior to submission. The earliest ledger index that the submitted transaction could appear in, as a result of this submission, is this value +1. Use this to bound your tx queries to find out the final status of this transaction. This is a validated ledger index because getting the latest current or closed ledger is not a guarantee—your transaction could make it into an earlier ledger index that also hasn't been validated yet.
 
     TransactionCommonFields:
+      title: Transaction Common Fields
       type: object
+      description: The fields that are common to all transactions.
       required:
         - TransactionType
         - Account
@@ -906,39 +908,6 @@ components:
         signedTransaction:
           type: string
           description: A signed transaction, represented as a hexadecimal string.
-
-    Transaction:
-      title: Transaction
-      type: object
-      description: A transaction.
-      properties:
-        LastLedgerSequence:
-          type: integer
-          description: Highest ledger index this transaction can appear in. This field places a strict upper limit on how long the transaction can wait to be validated or rejected.
-          externalDocs:
-            description: Reliable Transaction Submission
-            url: https://developers.ripple.com/reliable-transaction-submission.html
-        TransactionType:
-          type: string
-          description: The transaction type.
-        Sequence:
-          type: integer
-          description: The sequence number (nonce).
-        # Amount:
-        #   type: string
-        #   description: The amount.
-        # Destination:
-        #   $ref: '#/components/schemas/Address'
-        Account:
-          $ref: '#/components/schemas/Address'
-        Flags:
-          type: integer
-          format: int64
-          description: Transaction-specific flags (bit field).
-          example: 2147483648
-        Fee:
-          type: string
-          description: Transaction fee, in drops.
 
     ApiDoc:
       description: The requested apiDoc.
