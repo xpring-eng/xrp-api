@@ -42,7 +42,10 @@ export default function(api: RippleAPI, log: Function): Operations {
       }
 
       if (reqHasValidBearerToken) { // In the future, apply velocity limits here
-        signedTransaction = api.sign(JSON.stringify(req.body), accountWithSecret.secret).signedTransaction;
+        const tx = Object.assign({}, req.body)
+        delete tx.min_ledger;
+        delete tx.max_ledger;
+        signedTransaction = api.sign(JSON.stringify(tx), accountWithSecret.secret).signedTransaction;
       }
     }
     const result = await api.submit(signedTransaction);

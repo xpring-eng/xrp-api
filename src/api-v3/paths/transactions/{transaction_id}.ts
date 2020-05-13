@@ -38,26 +38,52 @@ export default function(api: RippleAPI, log: Function): Operations {
     //   res.status(200).json({error});
     // });
     // TODO: validate transaction_id
-    // TODO: options
-    api.getTransaction(req.params.transaction_id).then((info: object) => {
-      // TODO: validate()
-      res.status(200).json(info);
-    }).catch(error => {
-      const status = error.name === 'NotFoundError' ? 404 : 400;
-      const message = error.data && error.data.error_message ? error.data.error_message : error.message || error.name || 'Error';
-      if (error.data && error.name) {
-        error.data.name = error.name;
+
+    if (req.headers.api_version === '2020-05-11') {
+      return api.getTransaction(req.params.transaction_id).then((info: object) => {
+        res.status(200).json(info);
+      }).catch(error => {
+        const status = error.name === 'NotFoundError' ? 404 : 400;
+        const message = error.data && error.data.error_message ? error.data.error_message : error.message || error.name || 'Error';
+        if (error.data && error.name) {
+          error.data.name = error.name;
+        }
+        error = error.data || error;
+        if (error.code === undefined) {
+          error.code = ERRORS.CODES.GET_TRANSACTION;
+        }
+        const response = {
+          message,
+          errors: [error]
+        };
+        finishRes(res, status, response);
+      });
+    } else {
+      const params: any = {
+        transaction: req.params.transaction_id
       }
-      error = error.data || error;
-      if (error.code === undefined) {
-        error.code = ERRORS.CODES.GET_TRANSACTION;
+      if (req.query.min_ledger) {
+        params.min_ledger = req.query.min_ledger;
       }
-      const response = {
-        message,
-        errors: [error]
-      };
-      finishRes(res, status, response); // Validates
-    });
+      if (req.query.max_ledger) {
+        params.max_ledger = req.query.max_ledger;
+      }
+      return api.request('tx', params).then((info: any) => {
+        // If not fully validated, return 404 with searched_all: false
+        if (info.validated !== true) { // In the future, we could add a way to access unvalidated ledger data
+          // finishRes(res, 404, {
+          //   errors: [ERRORS.TXN_NOT_VALIDATED]
+          // });
+          throw ERRORS.TXN_NOT_VALIDATED;
+        } else {
+          finishRes(res, 200, info);
+        }
+      }).catch((error: object) => {
+        finishRes(res, 404, {
+          errors: [error]
+        });
+      })
+    }
   }
 
   const operations = {

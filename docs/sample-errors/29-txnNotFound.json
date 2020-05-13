@@ -1,0 +1,18 @@
+{
+  "errors": [
+      {
+          "name": "txnNotFound",
+          "message": "Transaction not found.",
+          "code": 29,
+          "request": {
+              "command": "tx",
+              "id": 12,
+              "max_ledger": 7086568,
+              "min_ledger": 7085568,
+              "transaction": "147C00CD238A0F93E852C7264021DE9A092F69FDB1485A7CCFFEB234EFB61519"
+          },
+          "searched_all": true
+      }
+  ],
+  "message": "txnNotFound: Transaction not found."
+}

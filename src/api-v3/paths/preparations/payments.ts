@@ -196,7 +196,10 @@ export default function(api: RippleAPI, log: Function): Operations {
       logger.trace('Preparing', transaction);
       const prepared = await api.prepareTransaction(transaction);
       const response = JSON.parse(prepared.txJSON);
-      finishRes(res, 200, response);
+      finishRes(res, 200, Object.assign(response, {
+        min_ledger: await api.getLedgerVersion(),
+        max_ledger: response.LastLedgerSequence
+      }));
 
     } catch(error) {
       logger.warn(error);

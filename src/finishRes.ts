@@ -70,11 +70,26 @@ export function finishRes(res: ValidatableResponse, status: number, json: Format
           json.message = `${name}: ${error.message}`;
         }
 
-        serializedErrors.push({
+        const e: any = {
           name,
           message: error.message.replace(/"/g, "'"),
           code
-        });
+        }
+
+        // Add `request` and `searched_all`, if present
+        if ((error as any).data) {
+          if ((error as any).data.request) {
+            e.request = (error as any).data.request;
+          }
+          if ((error as any).data.searched_all !== undefined) {
+            e.searched_all = (error as any).data.searched_all;
+          }
+          if ((error as any).hint !== undefined) {
+            e.hint = (error as any).hint;
+          }
+        }
+
+        serializedErrors.push(e);
       } else {
         log('Warning: Got non-Error:', error);
         serializedErrors.push(error);

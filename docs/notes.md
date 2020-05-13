@@ -11,3 +11,7 @@
 
 1. Add in `api-doc.yml`
 2. Add in `./src/api-v3/paths/...`
+
+## rippled notes
+
+* `min_ledger` and `max_ledger` can be 1000 ledgers apart, and since they are inclusive, this technically allows you to search 1001 ledgers. (e.g. min_ledger = 5000, max_ledger = 6000)

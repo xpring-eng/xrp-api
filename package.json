@@ -1,6 +1,6 @@
 {
   "name": "xrp-api",
-  "version": "0.0.14",
+  "version": "0.1.0",
   "description": "An API server for the XRP Ledger",
   "main": "dist/index.js",
   "license": "MIT",
