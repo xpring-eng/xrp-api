@@ -1,0 +1,12 @@
+{
+  "errors": [
+      {
+          "name": "txnNotFound",
+          "message": "Transaction not found.",
+          "code": 1404,
+          "searched_all": false,
+          "hint": "The transaction has not been fully validated. Try again later"
+      }
+  ],
+  "message": "txnNotFound: Transaction not found."
+}

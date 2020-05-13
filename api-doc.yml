@@ -8,7 +8,7 @@ servers:
     description: Public development server
 info:
   description: An API server that provides a REST-like interface to the XRP Ledger.
-  version: 0.0.15 # TODO: Load from package.json
+  version: 0.1.0 # TODO: Load from package.json
   title: XRP-API
 tags:
   - name: Query
@@ -187,11 +187,11 @@ paths:
             type: string
       responses:
         '200':
-          description: A prepared Payment Transaction in the XRP Ledger's native JSON format.
+          description: A Prepared Payment Transaction, with min_ledger and max_ledger fields.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TransactionJSON'
+                $ref: '#/components/schemas/PreparedPaymentTransaction'
         '400':
           description: The request was not properly formatted.
           content:
@@ -278,6 +278,7 @@ paths:
   '/transactions/{transaction_id}':
     get:
       tags:
+        - Query
         - Transact
       summary: Get Transaction
       operationId: getTransaction
@@ -285,17 +286,31 @@ paths:
       parameters:
         - in: path
           name: transaction_id
-          description: The ID of the transaction to query.
+          description: The ID of the transaction to retrieve.
           required: true
           schema:
             $ref: '#/components/schemas/TransactionID'
+        - in: query
+          name: min_ledger
+          description: (Optional) Use this with max_ledger to specify a range of up to 1000 ledger indexes, starting with this ledger (inclusive). If the server cannot find the transaction, it confirms whether it was able to search all the ledgers in the requested range. (Requires rippled v1.5.0+)
+          required: false
+          example: 55420000
+          schema:
+            type: number
+        - in: query
+          name: max_ledger
+          description: (Optional) Use this with min_ledger to specify a range of up to 1000 ledger indexes, ending with this ledger (inclusive). If the server cannot find the transaction, it confirms whether it was able to search all the ledgers in the requested range. (Requires rippled v1.5.0+)
+          required: false
+          example: 55420500
+          schema:
+            type: number
       responses:
         '200':
-          description: Transaction object
+          description: Transaction object. (Note that this command may successfully find the transaction even if it is included in a ledger outside the range of min_ledger to max_ledger.)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction'
+                $ref: '#/components/schemas/AppliedTransaction'
         '400':
           description: The request was not properly formatted.
           content:
@@ -303,11 +318,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/RippleAPIError'
         '404':
-          description: Not found
+          description: The transaction was not included in a fully-validated ledger version that the server has available. If you provided both the min_ledger and max_ledger fields in the request, the 404 txnNotFound response includes the searched_all field (requires rippled v1.5.0+).
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RippleAPIError'
+                allOf:
+                  - $ref: '#/components/schemas/RippleAPIError'
+                  - type: object
+                    properties:
+                      searched_all:
+                        type: boolean
+                        description: (Omitted unless the request provided min_ledger and max_ledger) If true, the server was able to search all of the specified ledger versions, and the transaction was in none of them. If false, the server did not have all of the specified ledger versions available, so it is not sure if one of them might contain the transaction. (Requires rippled v1.5.0+)
+        '500':
+          description: One of the [Universal Errors](https://xrpl.org/error-formatting.html#universal-errors) occurred.
+
   '/apiDocs':
     get:
       tags:
@@ -549,8 +573,47 @@ components:
       type: string
       pattern: '^[0-9A-F]{64}$'
       example: E08D6E9754025BA2534A78707605E0601F03ACE063687A0CA1BDDACFCD1698C7
-    Transaction: # TODO
-      type: object
+
+    PreparedPaymentTransaction:
+      description: A payment transaction with min_ledger and max_ledger fields.
+      allOf:
+        - $ref: '#/components/schemas/PaymentTransaction'
+        - type: object
+          required:
+            - min_ledger
+            - max_ledger
+          properties:
+            min_ledger:
+              type: integer
+              description: Assuming this transaction has not been submitted in the past, this is the lowest ledger index this transaction can appear in.
+            max_ledger:
+              type: integer
+              description: Highest ledger index this transaction can appear in. Same value as LastLedgerSequence.
+
+    AppliedTransaction:
+      description: An applied transaction contains the fields of the Transaction object as well as some additional fields.
+      allOf:
+        - $ref: '#/components/schemas/Transaction'
+        - type: object
+          required:
+            - hash
+            - ledger_index
+            - meta
+            - validated
+          properties:
+            hash:
+              type: string
+              description: The hash value that uniquely identifies this transaction. Included only if the transaction was signed and submitted.
+            ledger_index:
+              type: integer # unsigned
+              description: The ledger index of the ledger that includes this transaction.
+            meta:
+              type: object
+              description: Various metadata about the transaction.
+            validated:
+              type: boolean
+              description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
+
     AccountInfo:
       required:
         - account_data
@@ -767,7 +830,7 @@ components:
           type: string
           description: The complete transaction in hex string format.
         tx_json:
-          $ref: '#/components/schemas/TransactionJSON'
+          $ref: '#/components/schemas/Transaction'
 
         # Server implementations should handle this with a separate request until
         # https://github.com/ripple/rippled/issues/2851 is addressed.
@@ -844,14 +907,11 @@ components:
           type: string
           description: A signed transaction, represented as a hexadecimal string.
 
-    TransactionJSON:
-      title: Transaction JSON
+    Transaction:
+      title: Transaction
       type: object
-      description: The complete transaction in the XRP Ledger's native JSON format. If the transaction was submitted, get the transaction hash from here.
+      description: A transaction.
       properties:
-        hash:
-          type: string
-          description: The hash value that uniquely identifies this transaction. Included only if the transaction was signed and submitted.
         LastLedgerSequence:
           type: integer
           description: Highest ledger index this transaction can appear in. This field places a strict upper limit on how long the transaction can wait to be validated or rejected.
@@ -864,11 +924,11 @@ components:
         Sequence:
           type: integer
           description: The sequence number (nonce).
-        Amount:
-          type: string
-          description: The amount.
-        Destination:
-          $ref: '#/components/schemas/Address'
+        # Amount:
+        #   type: string
+        #   description: The amount.
+        # Destination:
+        #   $ref: '#/components/schemas/Address'
         Account:
           $ref: '#/components/schemas/Address'
         Flags:
