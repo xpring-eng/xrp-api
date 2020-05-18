@@ -811,7 +811,7 @@ components:
 
     TransactionStatus:
       title: TransactionStatus
-      description: Transaction status. If the transaction was submitted, `tx_json.hash` and `engine_result` will be included.
+      description: Transaction status returned immediately after submitting. If the transaction was submitted, `tx_json.hash` and `engine_result` will be included.
       type: object
       properties:
         engine_result:
@@ -831,12 +831,33 @@ components:
           description: The complete transaction in hex string format.
         tx_json:
           $ref: '#/components/schemas/TransactionCommonFields'
-
-        # Server implementations should handle this with a separate request until
-        # https://github.com/ripple/rippled/issues/2851 is addressed.
+        accepted:
+          type: boolean
+          description: The value true indicates that the transaction was applied, queued, broadcast, or kept for later. The value false indicates that none of those happened, so the transaction cannot possibly succeed as long as you do not submit it again and have not already submitted it another time. (Requires rippled v1.5.0+)
+        account_sequence_available:
+          type: number
+          description: The next Sequence Number available for the sending account after all pending and queued transactions.
+        account_sequence_next:
+          type: number
+          description: The next Sequence Number for the sending account after all transactions that have been provisionally applied, but not transactions in the queue.
+        applied:
+          type: boolean
+          description: The value true indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version.
+        broadcast:
+          type: boolean
+          description: The value true indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version.
+        kept:
+          type: boolean
+          description: The value true indicates that the transaction was kept to be retried later.
+        queued:
+          type: boolean
+          description: The value true indicates the transaction was put in the Transaction Queue, which means it is likely to be included in a future ledger version.
+        open_ledger_cost:
+          type: string
+          description: The current open ledger cost before processing this transaction. Transactions with a lower cost are likely to be queued.
         validated_ledger_index:
           type: integer
-          description: The ledger index of the latest validated ledger prior to submission. The earliest ledger index that the submitted transaction could appear in, as a result of this submission, is this value +1. Use this to bound your tx queries to find out the final status of this transaction. This is a validated ledger index because getting the latest current or closed ledger is not a guarantee—your transaction could make it into an earlier ledger index that also hasn't been validated yet.
+          description: The ledger index of the newest validated ledger at the time of submission. This provides a lower bound on the ledger versions that the transaction can appear in as a result of this request. (The transaction could only have been validated in this ledger version or earlier if it had already been submitted before.)
 
     TransactionCommonFields:
       title: Transaction Common Fields
