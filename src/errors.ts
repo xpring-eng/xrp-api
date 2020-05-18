@@ -11,7 +11,7 @@ const ERRORS = {
     return e;
   })(),
   TXN_NOT_VALIDATED: (function() {
-    const e = new Error('Transaction not found.');
+    const e = new Error('Transaction not found');
     e.name = 'txnNotFound';
     (e as any).code = TXN_NOT_VALIDATED;
     (e as any).status = 404;
@@ -23,6 +23,22 @@ const ERRORS = {
     const e = new Error('Check server configuration');
     e.name = 'Account not configured';
     (e as any).code = ACCOUNT_NOT_CONFIGURED;
+    return e;
+  })(),
+  MISSING_V3: (function() {
+    const e = new Error('Missing version prefix in path');
+    e.name = 'Not found';
+    (e as any).code = 404;
+    (e as any).status = 404;
+    (e as any).hint = 'Try starting the path with `/v3`';
+    return e;
+  })(),
+  NOT_FOUND: (function() {
+    const e = new Error('Path not found');
+    e.name = 'Not found';
+    (e as any).code = 404;
+    (e as any).status = 404;
+    (e as any).hint = 'Ensure that all path parameters are supplied';
     return e;
   })(),
   CODES: {

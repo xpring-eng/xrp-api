@@ -2,19 +2,19 @@ import request from 'supertest';
 import { mockApp, rippleApi } from "../../../../fixtures/mocks";
 import sinon from 'sinon';
 // import getAccountInfoFixture from '../../../../fixtures/getAccountInfo.json';
-const path = '/v1/accounts/{address}/settings';
+const path = '/v3/accounts/{address}/settings';
 
 describe.skip(path, () => {
   it('GET - returns account settings', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     // sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
-    
+
     request(mockApp)
       .get(path)
       .expect(200)
       // .expect(res => {
       //   expect(res.text.length).to.be.greaterThan(400).lessThan(500);
-        
+
       //   expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/accounts/{address}/info: response validated"]);
       // })
       .end(done);
@@ -26,14 +26,14 @@ describe.skip(path, () => {
     //   ledger_index: 'validated', // eslint-disable-line @typescript-eslint/camelcase
     //   account: '{address}'
     // }).resolves(Object.assign({}, getAccountInfoFixture, {validated: true}));
-    
+
     request(mockApp)
       .get(path + '?ledger_index=validated')
       .expect(200)
       // .expect(res => {
       //   expect(res.text.length).to.be.greaterThan(400).lessThan(500);
       //   expect(res.body.validated).to.equal(true);
-        
+
       //   expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/accounts/{address}/info: response validated"]);
       // })
       .end(done);

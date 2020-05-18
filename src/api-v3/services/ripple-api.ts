@@ -17,9 +17,9 @@ class RippleApiService {
       console.error('[CONFIG] Missing required field: `server`. Check `.secret_config.js`.');
       process.exit(1);
     }
-    
+
     this.api = new RippleAPI(options);
-    
+
     // WebSocket error handler
     this.api.on('error', (errorCode, errorMessage) => {
       console.log(`[WebSocket Error] ${errorCode}: ${errorMessage}`);
@@ -29,7 +29,7 @@ class RippleApiService {
 
       // [WebSocket Error] websocket: read ECONNRESET
       // Disconnected from rippled. Code: 1006
-      
+
       if (this.api.isConnected()) {
         debug('Still connected to rippled.');
       } else {
@@ -37,19 +37,19 @@ class RippleApiService {
         this.connectWithRetry();
       }
     });
-    
+
     this.api.on('connected', () => {
       debug('Connected to rippled.');
       this.api.getLedgerVersion().then(v => {
         console.log('Ledger version:', v.toLocaleString());
       });
     });
-    
+
     this.api.on('disconnected', code => {
       console.log('Disconnected from rippled. Code:', code);
       // code === 1000 : normal disconnection
     });
-    
+
     this.connectWithRetry();
   }
 
@@ -78,18 +78,20 @@ class RippleApiService {
   }
 
   // Connect before every API call
+  // TODO: Modify ripple-lib to auto-connect if necessary
+  // TODO: Support the use of multiple rippled servers
   public connectHandleFunction(): NextHandleFunction {
     return (req: http.IncomingMessage, res: http.ServerResponse, next: NextFunction): void => {
       const request = req as MessageWithPath;
       // Whitelist paths that do not strictly require rippled
-      if (request.path === '/v1/apiDocs') {
+      if (request.path === '/v3/apiDocs') {
         return next();
       }
       this.api.connect().then(() => {
         return next();
       }).catch(err => { // Important: catch connect() errors, or you'll have an unhandled promise rejection
         // Whitelist paths that would like rippled, but still work without it
-        if (request.path === '/v1/servers/info') {
+        if (request.path === '/v3/servers/info') {
           return next();
         }
         debug('connectHandleFunction() caught err:', err);

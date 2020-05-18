@@ -1,0 +1,44 @@
+{
+  "type": "payment",
+  "address": "rDJFnv5sEfp42LMFiX3mVQKczpFTdxYDzM",
+  "sequence": 11143426,
+  "id": "992D01C798E3DAC2A368D3550352A6198686D3205C491A6CA7442BBE158955E2",
+  "specification": {
+      "source": {
+          "address": "rDJFnv5sEfp42LMFiX3mVQKczpFTdxYDzM",
+          "maxAmount": {
+              "currency": "XRP",
+              "value": "20"
+          }
+      },
+      "destination": {
+          "address": "rPm88mdDuXLgxzpmZPXf6wPQ1ZTHRNvYVr"
+      }
+  },
+  "outcome": {
+      "result": "tesSUCCESS",
+      "timestamp": "2020-05-15T06:40:52.000Z",
+      "fee": "0.000012",
+      "balanceChanges": {
+          "rDJFnv5sEfp42LMFiX3mVQKczpFTdxYDzM": [
+              {
+                  "currency": "XRP",
+                  "value": "-20.000012"
+              }
+          ],
+          "rPm88mdDuXLgxzpmZPXf6wPQ1ZTHRNvYVr": [
+              {
+                  "currency": "XRP",
+                  "value": "20"
+              }
+          ]
+      },
+      "orderbookChanges": {},
+      "ledgerVersion": 7145670,
+      "indexInLedger": 2,
+      "deliveredAmount": {
+          "currency": "XRP",
+          "value": "20"
+      }
+  }
+}

@@ -1,3 +1,6 @@
---require source-map-support/register
---full-trace
-dist/**/*.spec.js
+--reporter spec
+--timeout 5000
+--slow 500
+--require ts-node/register
+--watch-extensions ts
+./src/**/*.spec.{ts,js}

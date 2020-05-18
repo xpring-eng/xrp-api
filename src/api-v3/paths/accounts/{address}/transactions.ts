@@ -1,4 +1,4 @@
-// GET /v1/accounts/{address}/transactions
+// GET /v3/accounts/{address}/transactions
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";

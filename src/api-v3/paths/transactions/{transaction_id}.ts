@@ -1,43 +1,13 @@
-// GET /v1/transactions/{transaction_id}
+// GET /v3/transactions/{transaction_id}
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
-import { Operations, ValidatableResponse } from "../../../types";
+import { Operations, ValidatableResponse, AppliedTransaction } from "../../../types";
 import { ERRORS } from "../../../errors";
-import { finishRes } from "../../../finishRes";
 
 export default function(api: RippleAPI, log: Function): Operations {
 
-  // Simply logs result of validation to debug output
-  // TODO: Add back in along with validation logic below
-  // const validate = (res: ValidatableResponse, response: object): void => {
-  //   // TODO: validate all responses
-  //   if (process.env.NODE_ENV != 'production') {
-  //     const validation = res.validateResponse(200, response);
-  //     if (validation) {
-  //       // red
-  //       log('\x1b[31m%s\x1b[0m', '/accounts/{address}/info: validation:', validation);
-  //     } else {
-  //       // green
-  //       log('\x1b[32m%s\x1b[0m', '/accounts/{address}/info: response validated');
-  //     }
-  //   }
-  // };
-
   async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
-    // const parameters = Object.assign({},
-    //   {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
-    //   req.query,
-    //   {account: req.params.address}
-    // );
-    // api.request('account_info', parameters).then((info: object) => {
-    //   validate(res, info);
-    //   res.status(200).json(info);
-    // }).catch(error => {
-    //   validate(res, {error});
-    //   res.status(200).json({error});
-    // });
-    // TODO: validate transaction_id
 
     if (req.headers.api_version === '2020-05-11') {
       return api.getTransaction(req.params.transaction_id).then((info: object) => {
@@ -56,7 +26,7 @@ export default function(api: RippleAPI, log: Function): Operations {
           message,
           errors: [error]
         };
-        finishRes(res, status, response);
+        res.status(status).json(response);
       });
     } else {
       const params: any = {
@@ -68,18 +38,18 @@ export default function(api: RippleAPI, log: Function): Operations {
       if (req.query.max_ledger) {
         params.max_ledger = req.query.max_ledger;
       }
-      return api.request('tx', params).then((info: any) => {
-        // If not fully validated, return 404 with searched_all: false
+      return api.request('tx', params).then((info: AppliedTransaction) => {
+        // If not fully validated, return 404 with `searched_all: false`
         if (info.validated !== true) { // In the future, we could add a way to access unvalidated ledger data
-          // finishRes(res, 404, {
-          //   errors: [ERRORS.TXN_NOT_VALIDATED]
-          // });
-          throw ERRORS.TXN_NOT_VALIDATED;
+          // Do not throw, which would be caught in the `catch` below
+          res.status(404).json({
+            errors: [ERRORS.TXN_NOT_VALIDATED]
+          });
         } else {
-          finishRes(res, 200, info);
+          res.status(200).json(info);
         }
       }).catch((error: object) => {
-        finishRes(res, 404, {
+        res.status(404).json({
           errors: [error]
         });
       })

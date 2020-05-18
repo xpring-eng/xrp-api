@@ -1,0 +1,10 @@
+{
+  "message": "Server is missing ledger history in the specified range",
+  "errors": [
+      {
+          "name": "MissingLedgerHistoryError",
+          "message": "Server is missing ledger history in the specified range",
+          "code": 1020
+      }
+  ]
+}

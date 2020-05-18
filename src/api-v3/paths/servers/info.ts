@@ -1,4 +1,4 @@
-// GET /v1/servers/info
+// GET /v3/servers/info
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";

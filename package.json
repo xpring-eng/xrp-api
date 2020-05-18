@@ -11,8 +11,7 @@
     "serve": "node dist/index.js",
     "setup": "npm run build && node dist/setup/index.js",
     "clean": "rm -r dist || true",
-    "test": "npm run lint && npm run clean && npm run build && mocha",
-    "unit": "npm run build && mocha",
+    "test": "npm run build && mocha",
     "coverage": "npm run build && nyc mocha",
     "lint": "eslint ./ --ext .js,.ts"
   },
@@ -26,15 +25,6 @@
       "dist/**/*.spec.js"
     ],
     "exec": "node dist/index.js"
-  },
-  "nyc": {
-    "reporter": [
-      "text-summary",
-      "lcov",
-      "html"
-    ],
-    "sourceMap": true,
-    "instrument": true
   },
   "dependencies": {
     "@types/got": "^9.6.9",
