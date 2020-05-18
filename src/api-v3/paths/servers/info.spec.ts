@@ -4,19 +4,19 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { capture } from 'ts-mockito';
 import getServerInfoFixture from '../../../fixtures/getServerInfo.json';
-const path = '/v1/servers/info';
+const path = '/v3/servers/info';
 
 describe(path, () => {
   it('GET - returns server info', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     sinon.stub(rippleApi, 'getServerInfo').resolves(getServerInfoFixture);
-    
+
     request(mockApp)
       .get(path)
       .expect(200)
       .expect(res => {
         expect(res.text.length).to.be.greaterThan(1900).lessThan(2000);
-        
+
         expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","response validated"]);
       })
       .end(done);

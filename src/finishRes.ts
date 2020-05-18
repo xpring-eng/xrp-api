@@ -1,6 +1,9 @@
+// Deprecated - use validateAllResponses middleware instead
+
 import { ValidatableResponse } from "./types";
 import { FormattedSubmitResponse } from "ripple-lib/dist/npm/transaction/submit";
 import { Prepare } from "ripple-lib/dist/npm/transaction/types";
+
 import { debuglog } from "util";
 import { ERRORS } from "./errors";
 
@@ -21,10 +24,10 @@ const validate = (res: ValidatableResponse, statusCode: number, response: object
     const validation = res.validateResponse(statusCode, response);
     if (validation) {
       // red
-      log('\x1b[31m%s\x1b[0m', res.req ? res.req.path : '', 'validation:', validation);
+      log('\x1b[31m%s\x1b[0m', `${res.req ? res.req.path : ''} validation:`, validation);
     } else {
       // green
-      log('\x1b[32m%s\x1b[0m', res.req ? res.req.path : '', 'response validated');
+      log('\x1b[32m%s\x1b[0m', `${res.req ? res.req.path : ''} response validated`);
     }
   }
 };

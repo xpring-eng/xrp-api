@@ -1,5 +1,5 @@
-// GET /v1/accounts/{address}/settings
-// POST /v1/accounts/{address}/settings
+// GET /v3/accounts/{address}/settings
+// POST /v3/accounts/{address}/settings
 
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
@@ -25,7 +25,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     }).then((settings) => {
       finishRes(res, 200, Object.assign(settings, {
         // ledger_index, // TODO
-        // validated // TODO 
+        // validated // TODO
       }));
     }).catch(error => {
       const status = error.message === 'Account not found.' ? 404 : 400;
@@ -49,7 +49,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     const address = req.params.address; // TODO: parse X Address
     const settings = req.body.settings; // TODO: validate
     // const instructions = ...; // TODO: add this in the future, if use cases require it (for multisigning?)
-    
+
     // TODO: make sure response includes 'validated: true | false'
 
     const accountWithSecret = config.accounts[address];

@@ -1,0 +1,20 @@
+{
+  "message": "ledgerIndexMalformed",
+  "errors": [
+      {
+          "error": "invalidParams",
+          "id": 2,
+          "request": {
+              "account": "rNQao3Z1irwRjKWSs8heL4a8WKLPKfLrXs",
+              "command": "account_info",
+              "id": 2,
+              "ledger_index": "foo"
+          },
+          "status": "error",
+          "type": "response",
+          "name": "RippledError",
+          "message": "ledgerIndexMalformed",
+          "code": 31
+      }
+  ]
+}

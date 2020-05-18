@@ -6,19 +6,19 @@
 // import { capture } from 'ts-mockito';
 
 // const fixture_getAccountInfo = require('../../../../../test/fixtures/getAccountInfo');
-// const path = '/v1/accounts/{address}/info';
+// const path = '/v3/accounts/{address}/info';
 
 // describe(path, () => {
 //   it('GET - returns account info', (done) => {
 //     sinon.stub(rippleApi, 'isConnected').returns(true);
 //     sinon.stub(rippleApi, 'request').resolves(fixture_getAccountInfo);
-    
+
 //     request(mockApp)
 //       .get(path)
 //       .expect(200)
 //       .expect(res => {
 //         expect(res.text.length).to.be.greaterThan(400).lessThan(500);
-        
+
 //         expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","response validated"]);
 //       })
 //       .end(done);

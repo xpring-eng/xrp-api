@@ -1,0 +1,61 @@
+{
+  "Account": "rDJFnv5sEfp42LMFiX3mVQKczpFTdxYDzM",
+  "Amount": "20000000",
+  "Destination": "rPm88mdDuXLgxzpmZPXf6wPQ1ZTHRNvYVr",
+  "Fee": "12",
+  "Flags": 2147483648,
+  "LastLedgerSequence": 7145671,
+  "Sequence": 11143426,
+  "SigningPubKey": "02E6CB923A531044CB194A2F7477B38C6D2B499FA67FFC38203CEADC7D8A7DFF54",
+  "TransactionType": "Payment",
+  "TxnSignature": "304402202F0CB7D6F36D82EB85DD2ACDD0EBFD7491AF0DBAD7FBF4C54BC5C9EB9971554F022010F10F80EDFC1C96CE5F756A695979A8F190494F914CC72DEC1AB6553BE7A12A",
+  "date": 642840052,
+  "hash": "992D01C798E3DAC2A368D3550352A6198686D3205C491A6CA7442BBE158955E2",
+  "inLedger": 7145670,
+  "ledger_index": 7145670,
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rDJFnv5sEfp42LMFiX3mVQKczpFTdxYDzM",
+            "Balance": "25709039757",
+            "Flags": 0,
+            "OwnerCount": 0,
+            "Sequence": 11143427
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "31794F29F9E987DC45A7997416503E0E3A5C0D114B050845B76F2D9D9FF9DC1F",
+          "PreviousFields": {
+            "Balance": "25729039769",
+            "Sequence": 11143426
+          },
+          "PreviousTxnID": "7286910D140B839F03A22719EAE121722774238596DF9E77173094861862D56D",
+          "PreviousTxnLgrSeq": 7145670
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rPm88mdDuXLgxzpmZPXf6wPQ1ZTHRNvYVr",
+            "Balance": "253335013",
+            "Flags": 0,
+            "OwnerCount": 0,
+            "Sequence": 11144289
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "8EEC72369A874DEC57AC3C11F40714D79D56F0079AA1948B38CC044D3F6F79FF",
+          "PreviousFields": {
+            "Balance": "233335013"
+          },
+          "PreviousTxnID": "7286910D140B839F03A22719EAE121722774238596DF9E77173094861862D56D",
+          "PreviousTxnLgrSeq": 7145670
+        }
+      }
+    ],
+    "TransactionIndex": 2,
+    "TransactionResult": "tesSUCCESS",
+    "delivered_amount": "20000000"
+  },
+  "validated": true
+}
