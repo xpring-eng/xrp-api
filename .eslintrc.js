@@ -4,7 +4,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/parser/README.md
   parserOptions: {
-    project: './tsconfig.json'
+    project: './tsconfig.eslint.json'
   },
 
   plugins: ['@typescript-eslint'],
@@ -34,6 +34,10 @@ module.exports = {
 
     // note you must disable the base rule as it can report incorrect errors
     "semi": "off",
-    "@typescript-eslint/semi": ["warn"]
+    "@typescript-eslint/semi": ["warn"],
+
+    // note you must disable the base rule as it can report incorrect errors
+    "camelcase": "off",
+    "@typescript-eslint/camelcase": ["off"]
   }
 }

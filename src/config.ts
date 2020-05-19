@@ -1,5 +1,3 @@
-let memoizedConfig: any = null;
-
 interface SecretConfig {
   server: string;
   accounts: {
@@ -9,6 +7,8 @@ interface SecretConfig {
     };
   };
 }
+
+let memoizedConfig: SecretConfig;
 
 export function getConfig(): SecretConfig {
   if (!memoizedConfig) {

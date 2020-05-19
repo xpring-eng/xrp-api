@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 import { initialize } from 'express-openapi';
 import path from 'path';
 import RippleApiService from './api-v3/services/ripple-api';
-import { ERRORS } from './errors';
+import { ERRORS, XrpApiError } from './errors';
 import { ValidatableResponse } from "./types";
 import { FormattedSubmitResponse } from "ripple-lib/dist/npm/transaction/submit";
 import { Prepare } from "ripple-lib/dist/npm/transaction/types";
@@ -25,11 +25,11 @@ interface ErrorsResponse {
 
 type ResponseValidation = {
   errors: {
-    errorCode: string, // e.g. "additionalProperties.openapi.responseValidation"
-    message: string, // e.g. "account_data should NOT have additional properties"
-    path: string // e.g. "account_data"
-  }[],
-  message: 'The response was not valid.'
+    errorCode: string; // e.g. "additionalProperties.openapi.responseValidation"
+    message: string; // e.g. "account_data should NOT have additional properties"
+    path: string; // e.g. "account_data"
+  }[];
+  message: 'The response was not valid.';
 } | undefined;
 
 export class Server {
@@ -68,24 +68,25 @@ export class Server {
     /**
      * Transform errors and validate all responses
      */
-    const validateAllResponses = (req: Request, res: ValidatableResponse, next: NextFunction) => {
+    const validateAllResponses = (req: Request, res: ValidatableResponse, next: NextFunction): void => {
       if (process.env.NODE_ENV != 'production') {
         const send = res.send;
         const resJson = res.json;
         const log = this.pathDebug;
 
-        const expressOpenAPISendOrJson = (sendOrJson: Function, args: any): ValidatableResponse => {
+        const expressOpenAPISendOrJson = (sendOrJson: Function, args: any): ValidatableResponse => { // eslint-disable-line @typescript-eslint/no-explicit-any
           if (res.get('x-express-openapi-validation-error-for') !== undefined) {
             return sendOrJson.apply(res, args);
           }
           const body = args[0];
           if (typeof res.validateResponse !== 'function') {
+            // We know we cannot validate 404s
             if (body.errors && body.errors[0].code !== 404) {
               console.error('TypeError: res.validateResponse is not a function. Check `api-doc.yml`.');
             }
             return sendOrJson.apply(res, args);
           }
-          let validation: ResponseValidation = res.validateResponse(res.statusCode, body) as ResponseValidation;
+          const validation: ResponseValidation = res.validateResponse(res.statusCode, body) as ResponseValidation;
           if (validation) {
             // red
             log('\x1b[31m%s\x1b[0m', `${res.req ? decodeURI(res.req.path) : ''} validation:`, validation);
@@ -97,11 +98,11 @@ export class Server {
             log('\x1b[32m%s\x1b[0m', `${res.req ? decodeURI(res.req.path) : ''} response validated`);
           }
           return sendOrJson.apply(res, args);
-        }
+        };
 
         res.send = function expressOpenAPISend(...args) {
           return expressOpenAPISendOrJson(send, args);
-        }
+        };
 
         res.json = function expressOpenAPIJson(...args) {
 
@@ -120,14 +121,15 @@ export class Server {
           if (json) {
             const serializedErrors: MyError[] = [];
             if (isErrorsResponse(json)) {
-              json.errors.forEach(error => {
-                if (error instanceof Error) {
+              json.errors.forEach(err => {
+                if (err instanceof Error) {
+                  const error: XrpApiError = err as XrpApiError;
 
                   // `RippledError`s contain `error` (e.g. `actNotFound` when source account is not found)
-                  const name = ((error as any).data && (error as any).data.error) || error.name;
+                  const name = (error.data?.error) || error.name;
 
                   // `RippledError`s contain `error_code` (e.g. `19` for `actNotFound`)
-                  let code = (error as any).code || ((error as any).data && (error as any).data.error_code) || ERRORS.CODES.UNSPECIFIED;
+                  let code = error.code || (error.data && error.data.error_code) || ERRORS.CODES.UNSPECIFIED;
 
                   if (name === 'DisconnectedError') {
                     // name: DisconnectedError
@@ -139,8 +141,8 @@ export class Server {
                   }
 
                   if (name === 'actNotFound') {
-                    const data = (error as any).data;
-                    if (!json.message && data.account && data.ledger_current_index && data.request.command) {
+                    const data = error.data;
+                    if (!json.message && data?.account && data.ledger_current_index && data.request?.command) {
                       json.message = `The account (${data.account}) could not be found as of ledger ${data.ledger_current_index} (command: ${data.request.command})`;
                     }
                   }
@@ -149,29 +151,29 @@ export class Server {
                     json.message = `${name}: ${error.message}`;
                   }
 
-                  const e: any = {
+                  const e: XrpApiError = {
                     name,
                     message: error.message.replace(/"/g, "'"),
                     code
-                  }
+                  };
 
                   // Add `request` and `searched_all`, if present
-                  if ((error as any).data) {
-                    if ((error as any).data.request) {
-                      e.request = (error as any).data.request;
+                  if (error.data) {
+                    if (error.data.request) {
+                      e.request = error.data.request;
                     }
-                    if ((error as any).data.searched_all !== undefined) {
-                      e.searched_all = (error as any).data.searched_all;
+                    if (error.data.searched_all !== undefined) {
+                      e.searched_all = error.data.searched_all;
                     }
-                    if ((error as any).hint !== undefined) {
-                      e.hint = (error as any).hint;
+                    if (error.hint !== undefined) {
+                      e.hint = error.hint;
                     }
                   }
 
-                  serializedErrors.push(e);
+                  serializedErrors.push(e as MyError);
                 } else {
-                  log('Warning: Got non-Error:', error);
-                  serializedErrors.push(error);
+                  log('Warning: Got non-Error:', err);
+                  serializedErrors.push(err);
                 }
               });
               json.errors = serializedErrors;
@@ -179,10 +181,10 @@ export class Server {
           }
 
           return expressOpenAPISendOrJson(resJson, args);
-        }
+        };
       }
       next();
-    }
+    };
 
     this.app.use(validateAllResponses as RequestHandler);
 

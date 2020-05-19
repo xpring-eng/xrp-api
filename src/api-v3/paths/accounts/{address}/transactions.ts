@@ -3,7 +3,6 @@
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../../types";
-import { finishRes } from "../../../../finishRes";
 import { ERRORS } from "../../../../errors";
 
 export default function(api: RippleAPI, log: Function): Operations {
@@ -12,7 +11,7 @@ export default function(api: RippleAPI, log: Function): Operations {
       req.query
     );
 
-    const hasOnlyDigits = (value: string) => {
+    const hasOnlyDigits = (value: string): boolean => {
       return /^\d+$/.test(value);
     };
 
@@ -37,7 +36,7 @@ export default function(api: RippleAPI, log: Function): Operations {
           validated: true
         }
       );
-      finishRes(res, 200, response);
+      res.status(200).json(response);
     } catch(error) {
       // e.g. ValidationError: instance.options.minLedgerVersion is not exactly one from [subschema 0],[subschema 1]
 
@@ -54,7 +53,7 @@ export default function(api: RippleAPI, log: Function): Operations {
         message,
         errors: [error]
       };
-      finishRes(res, status, response); // Validates
+      res.status(status).json(response);
     }
   }
 

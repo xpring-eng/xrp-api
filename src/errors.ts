@@ -1,44 +1,69 @@
+/**
+ * XRP-API Errors
+ */
+
+interface XrpApiError extends Error {
+  code?: number;
+  status?: number;
+  data?: {
+    error?: string;
+    error_code?: number;
+    account?: string;
+    ledger_current_index?: number;
+    request?: {
+      command: string;
+    };
+    searched_all?: boolean;
+  };
+  hint?: string;
+  request?: {
+    command: string;
+  };
+  searched_all?: boolean;
+}
+
 const UNAUTHORIZED = 401;
 const TXN_NOT_VALIDATED = 1404;
 const ACCOUNT_NOT_CONFIGURED = 6000;
 
 const ERRORS = {
   INVALID_BEARER_TOKEN: (function() {
-    const e = new Error('Invalid bearer token');
+    const e: XrpApiError = new Error('Invalid bearer token');
     e.name = 'Unauthorized';
-    (e as any).code = UNAUTHORIZED;
-    (e as any).status = 401;
+    e.code = UNAUTHORIZED;
+    e.status = 401;
     return e;
   })(),
   TXN_NOT_VALIDATED: (function() {
-    const e = new Error('Transaction not found');
+    const e: XrpApiError = new Error('Transaction not found');
     e.name = 'txnNotFound';
-    (e as any).code = TXN_NOT_VALIDATED;
-    (e as any).status = 404;
-    (e as any).data = {searched_all: false};
-    (e as any).hint = 'The transaction has not been fully validated. Try again later';
+    e.code = TXN_NOT_VALIDATED;
+    e.status = 404;
+    e.data = {searched_all: false};
+    e.hint = 'The transaction has not been fully validated. Try again later';
     return e;
   })(),
   ACCOUNT_NOT_CONFIGURED: (function() {
-    const e = new Error('Check server configuration');
+    const e: XrpApiError = new Error('Check server configuration');
     e.name = 'Account not configured';
-    (e as any).code = ACCOUNT_NOT_CONFIGURED;
+    e.code = ACCOUNT_NOT_CONFIGURED;
+    e.status = 400;
     return e;
   })(),
   MISSING_V3: (function() {
-    const e = new Error('Missing version prefix in path');
+    const e: XrpApiError = new Error('Missing version prefix in path');
     e.name = 'Not found';
-    (e as any).code = 404;
-    (e as any).status = 404;
-    (e as any).hint = 'Try starting the path with `/v3`';
+    e.code = 404;
+    e.status = 404;
+    e.hint = 'Try starting the path with `/v3`';
     return e;
   })(),
   NOT_FOUND: (function() {
-    const e = new Error('Path not found');
+    const e: XrpApiError = new Error('Path not found');
     e.name = 'Not found';
-    (e as any).code = 404;
-    (e as any).status = 404;
-    (e as any).hint = 'Ensure that all path parameters are supplied';
+    e.code = 404;
+    e.status = 404;
+    e.hint = 'Ensure that all path parameters are supplied';
     return e;
   })(),
   CODES: {
@@ -60,4 +85,4 @@ const ERRORS = {
   }
 };
 
-export { ERRORS };
+export { ERRORS, XrpApiError };

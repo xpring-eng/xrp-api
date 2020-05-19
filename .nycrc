@@ -3,7 +3,7 @@
   "exclude": ["src/**/*.d.ts"],
   "extension": [".ts"],
   "require": ["ts-node/register"],
-  "reporter": ["text-summary", "html"],
+  "reporter": ["text-summary", "html", "json"],
   "sourceMap": true,
   "instrument": true,
   "cache": true

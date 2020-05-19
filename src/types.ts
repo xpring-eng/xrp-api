@@ -22,9 +22,9 @@ export interface ValidatableResponse extends Response {
  * XRP Ledger types
  */
 interface ApiMemo {
-  MemoData?: string
-  MemoType?: string
-  MemoFormat?: string
+  MemoData?: string;
+  MemoType?: string;
+  MemoFormat?: string;
 }
 
 interface TransactionCommonFields {
@@ -36,7 +36,13 @@ interface TransactionCommonFields {
   Flags?: number;
   LastLedgerSequence?: number;
   Memos?: {Memo: ApiMemo}[];
-  Signers: any[],
+  Signers?: {
+    Signer: {
+      Account: string;
+      TxnSignature: string;
+      SigningPubKey: string;
+    };
+  }[];
   SourceTag?: number;
   SigningPubKey?: string; // Automatically added when signing
   TxnSignature?: string; // Automatically added when signing
@@ -51,7 +57,7 @@ export interface AppliedTransaction extends TransactionCommonFields {
     AffectedNodes: object[];
     DeliveredAmount?: string | object; // To avoid errors when reading transactions, instead use the delivered_amount field, which is provided for all Payment transactions, partial or not.
     TransactionIndex: number;
-    TransactionResult: string,
+    TransactionResult: string;
     delivered_amount?: string | object;
   };
   validated: boolean;
