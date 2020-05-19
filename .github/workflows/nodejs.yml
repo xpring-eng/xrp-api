@@ -26,6 +26,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
     - run: yarn run lint
-    - run: yarn run coverage
+    - run: IN_CI_ENVIRONMENT=1 yarn run coverage
     - name: Upload report to Codecov
       run: bash <(curl -s https://codecov.io/bash)
