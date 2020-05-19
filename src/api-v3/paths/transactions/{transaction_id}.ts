@@ -29,16 +29,9 @@ export default function(api: RippleAPI, log: Function): Operations {
         res.status(status).json(response);
       });
     } else {
-      const params: any = {
+      return api.request('tx', Object.assign({}, {
         transaction: req.params.transaction_id
-      }
-      if (req.query.min_ledger) {
-        params.min_ledger = req.query.min_ledger;
-      }
-      if (req.query.max_ledger) {
-        params.max_ledger = req.query.max_ledger;
-      }
-      return api.request('tx', params).then((info: AppliedTransaction) => {
+      }, req.query)).then((info: AppliedTransaction) => {
         // If not fully validated, return 404 with `searched_all: false`
         if (info.validated !== true) { // In the future, we could add a way to access unvalidated ledger data
           // Do not throw, which would be caught in the `catch` below
@@ -52,7 +45,7 @@ export default function(api: RippleAPI, log: Function): Operations {
         res.status(404).json({
           errors: [error]
         });
-      })
+      });
     }
   }
 
