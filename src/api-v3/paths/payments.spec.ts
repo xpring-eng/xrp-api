@@ -1,8 +1,6 @@
-import request from 'supertest';
-import { mockApp, rippleApi, mockedDebuglog } from "../../fixtures/mocks";
-import { expect } from 'chai';
 import sinon from 'sinon';
-import { capture } from 'ts-mockito';
+import request from 'supertest';
+import { mockApp, rippleApi } from "../../fixtures/mocks";
 
 const path = '/v3/payments';
 
