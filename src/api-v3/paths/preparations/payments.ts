@@ -3,17 +3,19 @@
 import { RippleAPI } from "ripple-lib";
 import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../types";
-import { finishRes } from "../../../finishRes";
-import { ERRORS } from "../../../errors";
+import { ERRORS, XrpApiError } from "../../../errors";
 import { isValidXAddress, xAddressToClassicAddress } from "ripple-address-codec";
 import * as log4js from 'log4js';
+import { TransactionJSON } from "ripple-lib/dist/npm/transaction/types";
 const out_all = {
   appenders: ['out'],
   level: 'all'
 };
 const enable_categories = process.env.NODE_DEBUG?.split(',');
 if (enable_categories) {
-  const categories: any = {
+  const categories: {
+    [category: string]: { appenders: string[]; level: string; enableCallStack?: boolean | undefined };
+  } = {
     default: out_all
   };
   enable_categories.forEach(cat => {
@@ -29,6 +31,42 @@ if (enable_categories) {
   });
 }
 const logger = log4js.getLogger('prp/pmt');
+
+/**
+ * Given an address (account), get the classic account and tag.
+ * If an `expectedTag` is provided:
+ * 1. If the `Account` is an X-address, validate that the tags match.
+ * 2. If the `Account` is a classic address, return `expectedTag` as the tag.
+ *
+ * @param Account The address to parse.
+ * @param expectedTag If provided, and the `Account` is an X-address,
+ *                    this method throws an error if `expectedTag`
+ *                    does not match the tag of the X-address.
+ * @returns {ClassicAccountAndTag}
+ *          The classic account and tag.
+ */
+function getClassicAccountAndTag(
+  Account: string,
+  expectedTag?: number
+): ClassicAccountAndTag {
+  if (isValidXAddress(Account)) {
+    const classic = xAddressToClassicAddress(Account);
+    if (expectedTag !== undefined && classic.tag !== expectedTag) {
+      throw new Error(
+        'address includes a tag that does not match the tag specified in the transaction'
+      );
+    }
+    return {
+      classicAccount: classic.classicAddress,
+      tag: classic.tag
+    };
+  } else {
+    return {
+      classicAccount: Account,
+      tag: expectedTag
+    };
+  }
+}
 
 export default function(api: RippleAPI, log: Function): Operations {
   async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
@@ -47,32 +85,18 @@ export default function(api: RippleAPI, log: Function): Operations {
     } else if (options.currency === undefined) {
       // Ensure `value` is not set
       if (options.value !== undefined) {
-        const status = 400;
-        const message = 'Missing `currency`';
-        const error: any = {
-          code: ERRORS.CODES.UNSUPPORTED_CURRENCY,
-          message: 'Since `value` is provided, `currency` is required',
-        };
-        const response = {
-          message,
-          errors: [error]
-        };
-        finishRes(res, status, response);
+        const error: XrpApiError = new Error('Since `value` is provided, `currency` is required');
+        error.code = ERRORS.CODES.UNSUPPORTED_CURRENCY;
+        error.name = 'Missing `currency`';
+        res.status(400).json(error);
         return;
       }
       Amount = undefined;
     } else {
-      const status = 400;
-      const message = 'Unsupported currency';
-      const error: any = {
-        code: ERRORS.CODES.UNSUPPORTED_CURRENCY,
-        message: 'If provided, `currency` must be `XRP` or `drops`',
-      };
-      const response = {
-        message,
-        errors: [error]
-      };
-      finishRes(res, status, response);
+      const error: XrpApiError = new Error('If provided, `currency` must be `XRP` or `drops`');
+      error.code = ERRORS.CODES.UNSUPPORTED_CURRENCY;
+      error.name = 'Unsupported currency';
+      res.status(400).json(error);
       return;
     }
 
@@ -96,9 +120,9 @@ export default function(api: RippleAPI, log: Function): Operations {
           destinationAccountBalance,
           destinationRequiresTag
         }: {
-          destinationAccountBalance?: string,
-          destinationRequiresTag?: boolean
-          } = await api.request('account_info', {
+          destinationAccountBalance?: string;
+          destinationRequiresTag?: boolean;
+        } = await api.request('account_info', {
           account: destination.classicAccount,
           ledger_index: 'current'
         }).then(res => {
@@ -106,7 +130,7 @@ export default function(api: RippleAPI, log: Function): Operations {
           return {
             destinationAccountBalance: res.account_data.Balance,
             destinationRequiresTag: flags.requireDestinationTag === true
-          }
+          };
         }).catch(error => {
           if (error.data.error === 'actNotFound') {
             logger.info(error.data);
@@ -145,7 +169,7 @@ export default function(api: RippleAPI, log: Function): Operations {
                 ref: 'tecDST_TAG_NEEDED'
               }
             ]
-          }
+          };
           throw error;
         }
 
@@ -175,13 +199,15 @@ export default function(api: RippleAPI, log: Function): Operations {
                 ref: 'tecNO_DST_INSUF_XRP'
               }
             ]
-          }
+          };
           throw error;
         }
       }
     }
 
-    const removeUndefined = (obj: any) => {
+    const removeUndefined = (obj: {
+      [key: string]: string | object | undefined;
+    }): object => {
       Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
       return obj;
     };
@@ -190,17 +216,16 @@ export default function(api: RippleAPI, log: Function): Operations {
       Account: options.source,
       Destination: options.destination,
       Amount
-    });
+    }) as TransactionJSON;
 
     try {
       logger.trace('Preparing', transaction);
       const prepared = await api.prepareTransaction(transaction);
       const response = JSON.parse(prepared.txJSON);
-      finishRes(res, 200, Object.assign(response, {
+      res.status(200).json(Object.assign(response, {
         min_ledger: await api.getLedgerVersion(),
         max_ledger: response.LastLedgerSequence
       }));
-
     } catch(error) {
       logger.warn(error);
       // e.g. ValidationError(instance.Account is not exactly one from <xAddress>,<classicAddress>)
@@ -226,7 +251,7 @@ export default function(api: RippleAPI, log: Function): Operations {
         errors: [error],
         Transaction: transaction
       };
-      finishRes(res, status, response); // Validates
+      res.status(status).json(response);
     }
   }
 
@@ -238,42 +263,6 @@ export default function(api: RippleAPI, log: Function): Operations {
 }
 
 export interface ClassicAccountAndTag {
-  classicAccount: string
-  tag: number | false | undefined
-}
-
-/**
- * Given an address (account), get the classic account and tag.
- * If an `expectedTag` is provided:
- * 1. If the `Account` is an X-address, validate that the tags match.
- * 2. If the `Account` is a classic address, return `expectedTag` as the tag.
- *
- * @param Account The address to parse.
- * @param expectedTag If provided, and the `Account` is an X-address,
- *                    this method throws an error if `expectedTag`
- *                    does not match the tag of the X-address.
- * @returns {ClassicAccountAndTag}
- *          The classic account and tag.
- */
-function getClassicAccountAndTag(
-  Account: string,
-  expectedTag?: number
-): ClassicAccountAndTag {
-  if (isValidXAddress(Account)) {
-    const classic = xAddressToClassicAddress(Account)
-    if (expectedTag !== undefined && classic.tag !== expectedTag) {
-      throw new Error(
-        'address includes a tag that does not match the tag specified in the transaction'
-      )
-    }
-    return {
-      classicAccount: classic.classicAddress,
-      tag: classic.tag
-    }
-  } else {
-    return {
-      classicAccount: Account,
-      tag: expectedTag
-    }
-  }
+  classicAccount: string;
+  tag: number | false | undefined;
 }

@@ -10,13 +10,12 @@ import { Operations, ValidatableResponse } from "../../types";
 import { getConfig } from "../../config";
 import { Payment } from "ripple-lib/dist/npm/transaction/payment";
 import { Instructions } from "ripple-lib/dist/npm/transaction/types";
-import { finishRes } from "../../finishRes";
 import { ERRORS } from "../../errors";
 const config = getConfig();
 
 export default function(api: RippleAPI, log: Function): Operations {
   async function put(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
-    let signedTransaction = req.body.signedTransaction
+    let signedTransaction = req.body.signedTransaction;
     if (signedTransaction === undefined) {
       // Do not parse X-address, if present. This endpoint takes transactions fully-formed.
       // It only signs and submits them. To prepare transactions (converting X-addresses, if necessary),
@@ -51,7 +50,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     const result = await api.request('submit', {
       tx_blob: signedTransaction
     });
-    finishRes(res, 200, result);
+    res.status(200).json(result);
   }
 
   async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
@@ -62,15 +61,13 @@ export default function(api: RippleAPI, log: Function): Operations {
 
     if (req.body.submit === true) {
       if (!config.accounts || !config.accounts[address]) {
-        finishRes(res, 400, {errors: [ERRORS.ACCOUNT_NOT_CONFIGURED]});
-        return;
+        throw ERRORS.ACCOUNT_NOT_CONFIGURED;
       }
 
       // Require valid Bearer Token
       if (!accountWithSecret || 'Bearer ' + accountWithSecret.apiKey != req.headers.authorization) {
         log(`[401] does not match apiKey, authorization: ${req.headers.authorization}`);
-        finishRes(res, 401, {errors: [ERRORS.INVALID_BEARER_TOKEN]});
-        return;
+        throw ERRORS.INVALID_BEARER_TOKEN;
       } else {
         reqHasValidBearerToken = true;
       }
@@ -151,10 +148,10 @@ export default function(api: RippleAPI, log: Function): Operations {
         const result = await api.submit(signed.signedTransaction);
         delete result.resultCode;    // (use `engine_result` instead)
         delete result.resultMessage; // (use `engine_result_message` instead)
-        finishRes(res, 200, result);
+        res.status(200).json(result);
         return;
       }
-      finishRes(res, 200, prepared);
+      res.status(200).json(prepared);
       return;
     } catch (error) {
       log(`Unable to prepare/sign/submit: ${error}`);
@@ -173,7 +170,7 @@ export default function(api: RippleAPI, log: Function): Operations {
       // type: 'response',
       // validated: false })]
 
-      finishRes(res, 400, {errors: [error]});
+      res.status(400).json({errors: [error]});
       return;
     }
   }

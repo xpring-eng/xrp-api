@@ -6,7 +6,8 @@ import got from 'got';
 import c from 'ansi-colors';
 import Handlebars from 'handlebars';
 import stripJsonComments from 'strip-json-comments';
-const { prompt } = require('enquirer');
+import { prompt } from 'enquirer';
+
 const cwd = process.cwd();
 
 (async function () {
@@ -26,14 +27,14 @@ const cwd = process.cwd();
     name: 'serverUrl',
     message: 'Network Server Address',
     initial: 'wss://s.altnet.rippletest.net:51233 (Testnet)',
-    result: (val: string) => val.trim().split(' ').shift(),
-    validate: (val: string) => val.trim().split(' ').shift()!.length > 0,
+    result: (val: string) => val.trim().split(' ').shift() || '',
+    validate: (val: string) => (val.trim().split(' ').shift() || '').length > 0,
   }]);
 
   const network = serverUrl === 'wss://s.altnet.rippletest.net:51233' ? 'altnet' : serverUrl === 'wss://s.devnet.rippletest.net:51233' ? 'devnet' : 'other';
   async function generateCredentials(network: 'altnet' | 'devnet'): Promise<{
-    address: string,
-    secret: string
+    address: string;
+    secret: string;
   }> {
     console.log(`▲ Generating ${network === 'altnet' ? 'Testnet' : 'Devnet'} account credentials...`);
     return got.post(`https://faucet.${network}.rippletest.net/accounts`, {json: true})

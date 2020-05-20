@@ -1,0 +1,8 @@
+{
+	"compilerOptions": { "strict": true },
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.spec.ts",
+		"*.js"
+	]
+}
