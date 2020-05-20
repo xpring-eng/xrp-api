@@ -1,7 +1,7 @@
 // GET /v3/accounts/{address}/info
 
+import { NextFunction, Request } from "express";
 import { RippleAPI } from "ripple-lib";
-import { Request, NextFunction } from "express";
 import { Operations, ValidatableResponse } from "../../../../types";
 
 export default function(api: RippleAPI, log: Function): Operations {
