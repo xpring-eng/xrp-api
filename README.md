@@ -117,10 +117,11 @@ You can also run the service in a docker container using the Dockerfile in this 
 1. Be sure you have done the secret_config step from the Initial Setup section.
 2. Build the container.
 
-    ```docker build . -t <some_tag>```
+        docker build . -t <some_tag>
+
 3. Run the container.
 
-   ```docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>```
+       docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>
 
 4. You should now be able to run the steps in the tutorial.
 
@@ -130,7 +131,7 @@ You can also run the service in a docker container using the Dockerfile in this 
 * Example: `NODE_DEBUG=prp/pmt node dev`
 * Available categories:
   * `prp/pmt`: GET **/v3/preparations/payments** ([./src/api-v3/paths/preparations/payments.ts](./src/api-v3/paths/preparations/payments.ts))
-* During development, add logging by using [the built-in log levels](https://github.com/xpring-eng/validation-count-reporter/wiki/log4js-node-Log-Levels)
+* During development, add logging by using [the built-in log levels](http://stritti.github.io/log4js/docu/users-guide.html#loglevel)
 
 #### Notes
 
