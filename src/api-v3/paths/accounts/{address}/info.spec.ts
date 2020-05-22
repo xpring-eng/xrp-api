@@ -10,10 +10,6 @@ import accountInfoLedgerIndexFooResponseFixture from '../../../../fixtures/accou
 const path = '/v3/accounts/{address}/info';
 
 describe(path, () => {
-  afterEach(() => {
-    sinon.restore();
-  });
-
   it('GET - returns account info', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
@@ -77,9 +73,5 @@ describe(path, () => {
         expect(capture(mockedDebuglog.log).byCallIndex(0)).to.deep.equal(["\u001b[31m%s\u001b[0m","/v3/accounts/{address}/info validation:",{"message":"The response was not valid.","errors":[{"path":"account_data","errorCode":"additionalProperties.openapi.responseValidation","message":"account_data should NOT have additional properties"}]}]);
       })
       .end(done);
-  });
-
-  afterEach(() => {
-    sinon.restore();
   });
 });

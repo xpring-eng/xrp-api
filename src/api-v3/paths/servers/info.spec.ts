@@ -52,8 +52,4 @@ describe(path, () => {
       })
       .end(done);
   });
-
-  afterEach(() => {
-    sinon.restore();
-  });
 });
