@@ -1,62 +1,51 @@
-import request from 'supertest';
-import { mockApp, rippleApi, mockedDebuglog } from "../../fixtures/mocks";
-import { expect } from 'chai';
 import sinon from 'sinon';
-import { capture } from 'ts-mockito';
-// import getAccountInfoFixture from '../../../../fixtures/getAccountInfo.json';
+import request from 'supertest';
+import { mockApp, rippleApi } from "../../fixtures/mocks";
+
 const path = '/v3/payments';
 
+interface ErrorWithData extends Error {
+  data?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
 describe(path, () => {
-  xit('POST - submits payment', (done) => {
-    sinon.stub(rippleApi, 'isConnected').returns(true);
-    // sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
+  it('returns `Account not found.` when the account does not exist', (done) => {
+    const err = new Error('Account not found.') as ErrorWithData;
+    err.name = 'RippledError';
+    err.data = { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
+      error: 'actNotFound',
+      error_code: 19,
+      error_message: 'Account not found.',
+      id: 3,
+      ledger_current_index: 1377457,
+      request:
+     { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
+       command: 'account_info',
+       id: 3 },
+      status: 'error',
+      type: 'response',
+      validated: false };
+    sinon.stub(rippleApi, 'preparePayment').throws(err);
 
+    // GIVEN a source_account that does not exist
+    const nonExistentAccount = 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN';
+
+    // WHEN creating a payment
     request(mockApp)
-      .get(path)
-      .expect(200)
-      .expect(res => {
-        expect(res.text.length).to.be.greaterThan(400).lessThan(500);
-
-        expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/payments: response validated"]);
+      .post(path)
+      .send({
+        payment: {
+          source_address: nonExistentAccount,
+          source_amount: {value: '100', currency: 'XRP'},
+          destination_address: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
+          destination_amount: {value: '100', currency: 'XRP'}
+        },
+        submit: false
       })
+      // THEN return "Account not found." error (actNotFound)
+      .expect(400, {"errors":[{"name":"actNotFound","message":"Account not found.","code":19,"request":{"account":"rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN","command":"account_info","id":3}}],"message":"The account (rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN) could not be found as of ledger 1377457 (command: account_info)"})
       .end(done);
   });
-
-  // it('GET - passes along ledger_index', (done) => {
-  //   sinon.stub(rippleApi, 'isConnected').returns(true);
-  //   sinon.stub(rippleApi, 'request').withArgs('account_info', {
-  //     // Use camelcase for rippled API
-  //     ledger_index: 'validated', // eslint-disable-line @typescript-eslint/camelcase
-  //     account: '{address}'
-  //   }).resolves(Object.assign({}, getAccountInfoFixture, {validated: true}));
-
-  //   request(mockApp)
-  //     .get(path + '?ledger_index=validated')
-  //     .expect(200)
-  //     .expect(res => {
-  //       expect(res.text.length).to.be.greaterThan(400).lessThan(500);
-  //       expect(res.body.validated).to.equal(true);
-
-  //       expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[32m%s\u001b[0m","/accounts/{address}/info: response validated"]);
-  //     })
-  //     .end(done);
-  // });
-
-  // it('GET - fails validation when response is invalid', (done) => {
-  //   sinon.stub(rippleApi, 'isConnected').returns(true);
-  //   const getAccountInfoResponse = Object.assign({}, getAccountInfoFixture);
-  //   // For testing only:
-  //   (getAccountInfoResponse.account_data as any).foo = 'bar'; // eslint-disable-line @typescript-eslint/no-explicit-any
-  //   sinon.stub(rippleApi, 'request').resolves(getAccountInfoResponse);
-
-  //   request(mockApp)
-  //     .get(path)
-  //     .expect(200)
-  //     .expect(() => {
-  //       expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","/accounts/{address}/info: validation:",{"message":"The response was not valid.","errors":[{"path":"account_data","errorCode":"additionalProperties.openapi.responseValidation","message":"account_data should NOT have additional properties"}]}]);
-  //     })
-  //     .end(done);
-  // });
 
   afterEach(() => {
     sinon.restore();

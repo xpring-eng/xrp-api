@@ -155,21 +155,6 @@ export default function(api: RippleAPI, log: Function): Operations {
       return;
     } catch (error) {
       log(`Unable to prepare/sign/submit: ${error}`);
-
-      // [RippledError(Account not found., { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
-      // error: 'actNotFound',
-      // error_code: 19,
-      // error_message: 'Account not found.',
-      // id: 3,
-      // ledger_current_index: 1377457,
-      // request:
-      //  { account: 'rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN',
-      //    command: 'account_info',
-      //    id: 3 },
-      // status: 'error',
-      // type: 'response',
-      // validated: false })]
-
       res.status(400).json({errors: [error]});
       return;
     }
