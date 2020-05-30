@@ -121,7 +121,7 @@ You can also run the service in a docker container using the Dockerfile in this 
 
 3. Run the container.
 
-       docker run -it -p 3000:3000 -v <path_to_secret_config>/.secret_config.js:/xrp-api/.secret_config.js <some_tag>
+       docker run -it -p 3000:3000 -v $PWD/.secret_config.js:/xrp-api/.secret_config.js <some_tag>
 
 4. You should now be able to run the steps in the tutorial.
 
