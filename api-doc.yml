@@ -187,7 +187,7 @@ paths:
             type: string
         - in: query
           name: maxLedgerVersionOffset
-          description: Offset from the current validated ledger version to the highest ledger version that the transaction can be included in. For example, for a transaction that will be valid for approximately 25-30 minutes, use a value of `500`.
+          description: Offset from the current validated ledger version to the highest ledger version that the transaction can be included in. This effectively serves as the transaction's expiration time, after which it is invalid. Transactions are typically validated within 2-3 ledgers, but transactions that are signed manually and/or offline may need longer validity times. A ledger is created every 3-4 seconds. For example, a value of `500` would prepare a transaction that will be valid for approximately 25-30 minutes.
           required: false
           schema:
             type: string
