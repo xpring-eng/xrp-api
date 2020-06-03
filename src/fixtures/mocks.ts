@@ -2,6 +2,7 @@ import { mock, instance, when, resetCalls } from 'ts-mockito';
 import { Server } from '../server';
 import RippleApiService from '../api-v3/services/ripple-api';
 import { RippleAPI } from 'ripple-lib';
+import sinon from 'sinon';
 
 class Debuglog {
   public setKey(_key: string): void {}
@@ -32,6 +33,11 @@ const app = server.expressApp();
 
 afterEach(() => {
   resetCalls(mockedDebuglog);
+});
+
+afterEach(() => {
+  // Reset all stubs after each test
+  sinon.restore();
 });
 
 export {

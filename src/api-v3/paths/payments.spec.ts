@@ -46,8 +46,4 @@ describe(path, () => {
       .expect(400, {"errors":[{"name":"actNotFound","message":"Account not found.","code":19,"request":{"account":"rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN","command":"account_info","id":3}}],"message":"The account (rLRnD5g6eb3TWrvfHoZ8y2mRznuu7GJzeN) could not be found as of ledger 1377457 (command: account_info)"})
       .end(done);
   });
-
-  afterEach(() => {
-    sinon.restore();
-  });
 });

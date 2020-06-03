@@ -206,7 +206,7 @@ export default function(api: RippleAPI, log: Function): Operations {
     }
 
     const removeUndefined = (obj: {
-      [key: string]: string | object | undefined;
+      [key: string]: string | number | object | undefined;
     }): object => {
       Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
       return obj;
@@ -217,10 +217,13 @@ export default function(api: RippleAPI, log: Function): Operations {
       Destination: options.destination,
       Amount
     }) as TransactionJSON;
+    const instructions = removeUndefined({
+      maxLedgerVersionOffset: options.maxLedgerVersionOffset ? parseInt(options.maxLedgerVersionOffset) : undefined
+    });
 
     try {
       logger.trace('Preparing', transaction);
-      const prepared = await api.prepareTransaction(transaction);
+      const prepared = await api.prepareTransaction(transaction, instructions);
       const response = JSON.parse(prepared.txJSON);
       res.status(200).json(Object.assign(response, {
         min_ledger: await api.getLedgerVersion(),

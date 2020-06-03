@@ -14,9 +14,6 @@ describe(path, () => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     sinon.stub(rippleApi, 'getLedgerVersion').returns(Promise.resolve(7145670));
   });
-  afterEach(() => {
-    sinon.restore();
-  });
 
   it('finds a tx', (done) => {
     sinon.stub(rippleApi, 'request').resolves(txFixture);
