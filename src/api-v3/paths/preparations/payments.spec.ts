@@ -65,6 +65,7 @@ describe(path, () => {
   });
 
   it('prepares a payment with a custom maxLedgerVersionOffset', (done) => {
+    // GIVEN mocked networking and a max ledger version offset
     sinon.stub(rippleApi.connection, 'getReserveBase').resolves(20000000);
     sinon.stub(rippleApi, 'request').withArgs('account_info', sinon.match.any).resolves({
       account_data: {
@@ -89,8 +90,6 @@ describe(path, () => {
         sequence: 7
       }
     });
-
-    // GIVEN a maxLedgerVersionOffset
     const maxLedgerVersionOffset = 500;
 
     // WHEN preparing a payment
