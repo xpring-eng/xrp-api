@@ -48,7 +48,7 @@ describe(path, () => {
       .get(path)
       .expect(200)
       .expect(() => {
-        expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","validation:",{"message":"The response was not valid.","errors":[{"path":"rippled_servers[0]","errorCode":"additionalProperties.openapi.responseValidation","message":"rippled_servers[0] should NOT have additional properties"}]}]);
+        expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","validation:",{"message":"The response was not valid.","errors":[{"path":"rippled_servers[0]","errorCode":"additionalProperties.openapi.responseValidation","message":"should NOT have additional properties"}]}]);
       })
       .end(done);
   });

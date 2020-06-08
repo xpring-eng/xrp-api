@@ -657,6 +657,7 @@ components:
         # validated:
         #   type: boolean
         #   description: True if this data is from a validated ledger version; if omitted or set to false, this data is not final.
+      additionalProperties: false
     AccountTransactions:
       type: object
       properties:

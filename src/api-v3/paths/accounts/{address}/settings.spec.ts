@@ -1,11 +1,13 @@
 import request from 'supertest';
-import { mockApp, rippleApi } from "../../../../fixtures/mocks";
+import { mockApp, rippleApi, mockedDebuglog } from "../../../../fixtures/mocks";
 import sinon from 'sinon';
-// import getAccountInfoFixture from '../../../../fixtures/getAccountInfo.json';
+import { expect } from 'chai';
+import { capture } from 'ts-mockito';
+
 const path = '/v3/accounts/{address}/settings';
 
-describe.skip(path, () => {
-  it('GET - returns account settings', (done) => {
+describe(path, () => {
+  it.skip('GET - returns account settings', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     // sinon.stub(rippleApi, 'request').resolves(getAccountInfoFixture);
 
@@ -20,7 +22,7 @@ describe.skip(path, () => {
       .end(done);
   });
 
-  it('GET - passes along ledger_index', (done) => {
+  it.skip('GET - passes along ledger_index', (done) => {
     sinon.stub(rippleApi, 'isConnected').returns(true);
     // sinon.stub(rippleApi, 'request').withArgs('account_info', {
     //   ledger_index: 'validated', // eslint-disable-line @typescript-eslint/camelcase
@@ -39,19 +41,52 @@ describe.skip(path, () => {
       .end(done);
   });
 
-  // it('GET - fails validation when response is invalid', (done) => {
-  //   sinon.stub(rippleApi, 'isConnected').returns(true);
-  //   const getAccountInfoResponse = Object.assign({}, getAccountInfoFixture);
-  //   // For testing only:
-  //   (getAccountInfoResponse.account_data as any).foo = 'bar'; // eslint-disable-line @typescript-eslint/no-explicit-any
-  //   sinon.stub(rippleApi, 'request').resolves(getAccountInfoResponse);
+  it.skip('GET settings - request fails validation when request is invalid', (done) => {
+    sinon.stub(rippleApi, 'isConnected').returns(true);
+    const invalidGetSettingsResponse = {
+      foo: 'bar'
+    }
+    sinon.stub(rippleApi, 'request').resolves(invalidGetSettingsResponse);
 
-  //   request(mockApp)
-  //     .get(path)
-  //     .expect(200)
-  //     .expect(() => {
-  //       expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","/accounts/{address}/info: validation:",{"message":"The response was not valid.","errors":[{"path":"account_data","errorCode":"additionalProperties.openapi.responseValidation","message":"account_data should NOT have additional properties"}]}]);
-  //     })
-  //     .end(done);
-  // });
+    request(mockApp)
+      .get(path)
+      // .expect(200)
+      .expect((x) => {
+        console.log(x);
+        expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","/accounts/{address}/info: validation:",{"message":"The response was not valid.","errors":[{"path":"account_data","errorCode":"additionalProperties.openapi.responseValidation","message":"account_data should NOT have additional properties"}]}]);
+      })
+      .end(done);
+  });
+
+  it.skip('GET settings - request fails for X-address with tag', (done) => {
+    sinon.stub(rippleApi, 'isConnected').returns(true);
+    const invalidGetSettingsResponse = {
+      foo: 'bar'
+    }
+    sinon.stub(rippleApi, 'request').resolves(invalidGetSettingsResponse);
+
+    request(mockApp)
+      .get(path.replace('{address}', 'XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD28Sq49uo34VyjnmK5H'))
+      // .expect(200)
+      .expect((x) => {
+        // '{"message":"Error","errors":[{"name":"Error","message":"This command does not support the use of a tag. Use an address without a tag.","code":1000}]}'
+        // console.log(x);
+        // expect(capture(mockedDebuglog.log).first()).to.deep.equal(["\u001b[31m%s\u001b[0m","/accounts/{address}/info: validation:",{"message":"The response was not valid.","errors":[{"path":"account_data","errorCode":"additionalProperties.openapi.responseValidation","message":"account_data should NOT have additional properties"}]}]);
+      })
+      .end(done);
+  });
+
+  it('GET settings - fails if rippled returns an invalid result', (done) => {
+    sinon.stub(rippleApi, 'isConnected').returns(true);
+    const invalidGetSettingsResponse = {
+      foo: 'bar'
+    }
+    sinon.stub(rippleApi, 'request').resolves(invalidGetSettingsResponse);
+
+    request(mockApp)
+      .get(path.replace('{address}', 'XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD2gYsjNFQLKYW33DzBm'))
+      .expect(400)
+      .expect('{"message":"TypeError","errors":[{"name":"TypeError","message":"Cannot read property \'Flags\' of undefined","code":1000}]}')
+      .end(done);
+  });
 });

@@ -26,7 +26,7 @@ interface ErrorsResponse {
 type ResponseValidation = {
   errors: {
     errorCode: string; // e.g. "additionalProperties.openapi.responseValidation"
-    message: string; // e.g. "account_data should NOT have additional properties"
+    message: string; // e.g. "should NOT have additional properties"
     path: string; // e.g. "account_data"
   }[];
   message: 'The response was not valid.';
