@@ -641,15 +641,41 @@ components:
         # - ledger_index
         # - validated
       properties:
-        # TODO: Convert schema from ripple-lib's JSON schema
+        disallowIncomingXRP:
+          type: boolean
+          description: (Optional) Client applications should not send XRP to this account. Not enforced by rippled.
+        domain:
+          type: string
+          description: (Optional) The domain that owns this account, as a hexadecimal string representing the ASCII for the domain in lowercase.
+        emailHash:
+          type: string
+          nullable: true
+          description: (Optional) Hash of an email address to be used for generating an avatar image. Conventionally, clients use Gravatar to display this image. Use `null` to clear.
+        requireDestinationTag:
+          type: boolean
+          description: (Optional) Account requires incoming payments to specify a destination tag.
         passwordSpent:
           type: boolean
-          description: TODO
+          description: (Optional) Account has used its free SetRegularKey transaction.
         disableMasterKey:
           type: boolean
           description: If the master key is disabled, `true`; `false` otherwise.
         regularKey:
           $ref: '#/components/schemas/Address'
+        signers:
+          type: object
+          description: (Optional) Settings that determine what sets of accounts can be used to sign a transaction on behalf of this account using multisigning.
+        tickSize:
+          type: number
+          description: (Optional) Tick size to use for offers involving a currency issued by this address. The exchange rates of those offers is rounded to this many significant digits. Valid values are 3 to 15 inclusive, or 0 to disable.
+        transferRate:
+          type: number
+          nullable: true
+          description: (Optional) The fee to charge when users transfer this account’s issuances, as the decimal amount that must be sent to deliver 1 unit. Has precision up to 9 digits beyond the decimal point. Use `null` to set no fee.
+        walletLocator:
+          type: string
+          nullable: true
+          description: (Optional) Transaction hash or any other 64 character hexadecimal string, that may or may not represent the result of a hash operation. Use `null` to clear.
         # The following could be added in the future:
         # ledger_index:
         #   type: integer
