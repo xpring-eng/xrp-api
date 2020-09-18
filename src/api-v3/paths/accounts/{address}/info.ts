@@ -6,6 +6,24 @@ import { Operations, ValidatableResponse } from "../../../../types";
 
 export default function(api: RippleAPI, log: Function): Operations {
 
+  /**
+   * @swagger
+   * /v3/accounts/{address}/info:
+   *   get:
+   *     description: Gets account information for an address
+   *     parameters:
+   *       - name: address
+   *         description: XRP address
+   *         in: path
+   *         required: true
+   *         schema:
+   *           type: string
+   *     produces:
+   *      - application/json
+   *     responses:
+   *       '200':
+   *          description: OK
+   */
   async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
       {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger

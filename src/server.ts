@@ -12,6 +12,8 @@ import { ERRORS, XrpApiError } from './errors';
 import { ValidatableResponse } from "./types";
 import { FormattedSubmitResponse } from "ripple-lib/dist/npm/transaction/submit";
 import { Prepare } from "ripple-lib/dist/npm/transaction/types";
+import swaggerUi = require('swagger-ui-express');
+import swaggerJSDoc from "swagger-jsdoc";
 
 interface ServerOptions {
   rippleApiService: RippleApiService;
@@ -57,6 +59,44 @@ export class Server {
       });
       next();
     });
+
+    const swaggerOptions: swaggerJSDoc.Options = {
+      definition: {
+        info: {
+          title: 'XRP REST API',
+          version: '0.0.1',
+          description: 'XRP REST API',
+        },
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              description: 'API Key',
+              type: 'http',
+              scheme: 'bearer',
+              in: 'header',
+            },
+          }
+        },
+        security: {
+          bearerAuth: [],
+        },
+        basePath: '/',
+        openapi: '3.0.0',
+      },
+      // path to files with swagger annotations
+      // Note: relative to package.json
+      // Note: since we transpile and then start, reference the dist directory + transpiled js files
+      apis: [
+        'dist/api-v3/paths/accounts/{address}/info.js',
+        'dist/api-v3/paths/accounts/{address}/settings.js',
+      ],
+    };
+
+    // initialize swagger-jsdoc
+    const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    this.app.get('/api-docs', swaggerUi.setup(undefined, undefined, swaggerOptions))
 
     // Connect to rippled before every API call
     // this.app.use(rippleApiService.connectHandleFunction());
