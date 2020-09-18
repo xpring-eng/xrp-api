@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsc-watch --onSuccess \"npm run serve\"",
-    "build": "tscn -c",
+    "build": "tsc -c",
     "watch": "tsc -c --watch",
     "serve": "node dist/index.js",
     "setup": "npm run build && node dist/setup/index.js",
