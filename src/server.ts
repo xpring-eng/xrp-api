@@ -14,6 +14,7 @@ import { FormattedSubmitResponse } from "ripple-lib/dist/npm/transaction/submit"
 import { Prepare } from "ripple-lib/dist/npm/transaction/types";
 import swaggerUi = require('swagger-ui-express');
 import swaggerJSDoc from "swagger-jsdoc";
+import YAML from "yamljs";
 
 interface ServerOptions {
   rippleApiService: RippleApiService;
@@ -83,19 +84,14 @@ export class Server {
         basePath: '/',
         openapi: '3.0.0',
       },
-      // path to files with swagger annotations
-      // Note: relative to package.json
-      // Note: since we transpile and then start, reference the dist directory + transpiled js files
-      apis: [
-        'dist/api-v3/paths/accounts/{address}/info.js',
-        'dist/api-v3/paths/accounts/{address}/settings.js',
-      ],
     };
 
     // initialize swagger-jsdoc
-    const swaggerSpec = swaggerJSDoc(swaggerOptions);
+    const swaggerDocument = YAML.load('./dist/api-doc.yml');
 
-    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    //const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     this.app.get('/api-docs', swaggerUi.setup(undefined, undefined, swaggerOptions))
 
     // Connect to rippled before every API call

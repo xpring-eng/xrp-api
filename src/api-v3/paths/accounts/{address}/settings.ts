@@ -10,25 +10,6 @@ const config = getConfig();
 
 export default function(api: RippleAPI, log: Function): Operations {
 
-
-  /**
-   * @swagger
-   * /v3/accounts/{address}/settings:
-   *   get:
-   *     description: Gets account settings for an address
-   *     parameters:
-   *       - name: address
-   *         description: XRP address
-   *         in: path
-   *         required: true
-   *         schema:
-   *           type: string
-   *     produces:
-   *      - application/json
-   *     responses:
-   *       '200':
-   *          description: OK
-   */
   async function get(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const parameters = Object.assign({},
       {'ledger_index': 'current'}, // default to 'current' (in-progress) ledger
@@ -60,46 +41,6 @@ export default function(api: RippleAPI, log: Function): Operations {
     });
   }
 
-  /**
-   * @swagger
-   * /v3/accounts/{address}/settings:
-   *   post:
-   *     description: Updates account settings for an address
-   *     security:
-   *       - bearerAuth: []
-   *     parameters:
-   *       - name: address
-   *         description: XRP address
-   *         in: path
-   *         required: true
-   *         schema:
-   *           type: string
-   *     requestBody:
-   *       description: settings json
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *           example:
-   *             {
-   *               "settings": {
-   *                 "domain": "ripple.com",
-   *                 "memos": [
-   *                   {
-   *                     "type": "test",
-   *                     "format": "text/plain",
-   *                     "data": "texted data"
-   *                   }
-   *                  ]
-   *               }
-   *             }
-   *     produces:
-   *      - application/json
-   *     responses:
-   *       '200':
-   *          description: OK
-   */
   async function post(req: Request, res: ValidatableResponse, _next: NextFunction): Promise<void> {
     const address = req.params.address; // TODO: parse X Address
     const settings = req.body.settings; // TODO: validate
