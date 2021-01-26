@@ -6,8 +6,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsc-watch --onSuccess \"npm run serve\"",
-    "build": "tsc",
-    "watch": "tsc --watch",
+    "copyFile": "cp api-doc.yml dist/",
+    "build": "tsc && npm run copyFile",
+    "watch": "tsc --watch && npm run copyFile",
     "serve": "node dist/index.js",
     "setup": "npm run build && node dist/setup/index.js",
     "clean": "rm -r dist || true",
@@ -28,6 +29,9 @@
   },
   "dependencies": {
     "@types/got": "^9.6.9",
+    "@types/swagger-jsdoc": "^3.0.2",
+    "@types/swagger-ui-express": "^4.1.2",
+    "@types/yamljs": "^0.2.31",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-openapi": "^6.0.0",
@@ -36,7 +40,10 @@
     "ripple-address-codec": "^4.1.1",
     "ripple-lib": "^1.6.6-beta.2",
     "source-map-support": "^0.5.12",
-    "strip-json-comments": "^3.0.1"
+    "strip-json-comments": "^3.0.1",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
