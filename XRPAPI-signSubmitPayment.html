@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>Sign and/or submit a payment - XRP-API</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Blocking JS resources -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link href="https://dactyl.link/template_assets/dactyl.css" rel="stylesheet" />
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(".multicode").minitabs();
+            make_code_expandable();
+        });
+    </script>
+
+</head>
+
+<body class="sidebar-both  " data-spy="scroll" data-target="#page-toc-wrapper" data-offset="0">
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white px-2">
+  <a href="/" class="navbar-brand"><h1>XRP-API</h1></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHolder" aria-controls="navbarHolder" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarHolder">
+    <ul class="nav navbar-nav">
+          <li class="nav-item active-parent">
+            <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+          </li>
+    </ul><!-- /.navbar-nav -->
+
+
+
+  </div><!--/#navbarHolder-->
+</nav>
+  <div class="container-fluid" role="document" id="main_content_wrapper">
+    <div class="row">
+      <!-- Right sidebar first so it's at the beginning for mobile layouts -->
+      <aside class="right-sidebar col-lg-3 order-lg-4" role="complementary">
+<div class="card" id="page-toc-wrapper">
+  <div class="card-header">
+    <h4>In this page:</h4>
+  </div>
+  <ul id="page-toc" class="list-group card-body" role="directory">
+    <li class="level-1"><a class="nav-link" href="#sign-andor-submit-a-payment">Sign and/or submit a payment</a></li>
+    <li class="level-2"><a class="nav-link" href="#request-format">Request Format</a></li>
+    <li class="level-2"><a class="nav-link" href="#response-formats">Response Formats</a></li>
+    <li class="level-3"><a class="nav-link" href="#200-ok">200 OK</a></li>
+    <li class="level-3"><a class="nav-link" href="#400-bad-request">400 Bad Request</a></li>
+  </ul>
+</div>      </aside>
+
+      <!-- main column -->
+      <main class="main col-md-7 col-lg-6 order-md-3  " role="main" id="main_content_body">
+<nav class="breadcrumbs-wrap p-0 p-md-3" aria-label="breadcrumb">
+  <ul class="breadcrumb">
+    
+
+    <li class="active breadcrumb-item"><a href="index.html">Index</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-methods.html">All XRP-API Methods</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-Transact-methods.html">Transact Methods</a></li>
+    <li class="active breadcrumb-item">Sign and/or submit a payment</li>
+  </ul>
+</nav><!--/.breadcrumbs-wrap-->            <section class="pt-3 p-md-3">
+              <article class="dactyl-content">
+                <h1 id="sign-andor-submit-a-payment">Sign and/or submit a payment</h1>
+<p>Sign a prepared payment transaction and/or submit a transaction to the XRP Ledger network. For signing, the sending account must match an account secret that the XRP-API server is configured with.</p>
+<h2 id="request-format">Request Format</h2>
+<div class="codehilite"><pre><span></span><code><span class="err">PUT /payments</span>
+
+<span class="err">{</span>
+<span class="err">    "TransactionType": "Payment",</span>
+<span class="err">    "Account": "rNQao3Z1irwRjKWSs8heL4a8WKLPKfLrXs",</span>
+<span class="err">    "Destination": "r4FNkJtbKvCTjcE4UaeAtgpHGf8mAbeCoL",</span>
+<span class="err">    "Amount": "20000000",</span>
+<span class="err">    "Flags": 2147483648,</span>
+<span class="err">    "LastLedgerSequence": 6279611,</span>
+<span class="err">    "Fee": "12",</span>
+<span class="err">    "Sequence": 1</span>
+<span class="err">}</span>
+</code></pre></div>
+<p>A transaction to sign and/or submit.</p>
+<p><strong>Media type:</strong> application/json</p>
+<h2 id="response-formats">Response Formats</h2>
+<h3 id="200-ok">200 OK</h3>
+<p>A successful response provides the native XRP Ledger format for the transaction, the transaction's identifying hash, and the preliminary result of processing the transaction.</p>
+<p><strong>Media type:</strong> application/json</p>
+<p>Formatted as a <a href="XRPAPI-data-types-transactionstatus.html">TransactionStatus</a></p>
+<p>The response uses the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>engine_result</code></td>
+<td>String</td>
+<td>May be omitted</td>
+<td>Code indicating the preliminary result of the transaction, for example <code>tesSUCCESS</code>. Not final until included in a fully validated <code>TransactionResult</code>.</td>
+</tr>
+<tr>
+<td><code>engine_result_code</code></td>
+<td>Integer</td>
+<td>May be omitted</td>
+<td>Numeric code indicating the preliminary result of the transaction, directly correlated to <code>engine_result</code>.</td>
+</tr>
+<tr>
+<td><code>engine_result_message</code></td>
+<td>String</td>
+<td>May be omitted</td>
+<td>Human-readable explanation of the transaction's preliminary result.</td>
+</tr>
+<tr>
+<td><code>tx_blob</code></td>
+<td>String</td>
+<td>May be omitted</td>
+<td>The complete transaction in hex string format.</td>
+</tr>
+<tr>
+<td><code>tx_json</code></td>
+<td>Object (<a href="XRPAPI-data-types-transaction_common_fields.html">Transaction Common Fields</a>)</td>
+<td>May be omitted</td>
+<td>The fields that are common to all transactions.</td>
+</tr>
+<tr>
+<td><code>accepted</code></td>
+<td>Boolean</td>
+<td>May be omitted</td>
+<td>The value true indicates that the transaction was applied, queued, broadcast, or kept for later. The value false indicates that none of those happened, so the transaction cannot possibly succeed as long as you do not submit it again and have not already submitted it another time. (Requires rippled v1.5.0+)</td>
+</tr>
+<tr>
+<td><code>account_sequence_available</code></td>
+<td>Number</td>
+<td>May be omitted</td>
+<td>The next Sequence Number available for the sending account after all pending and queued transactions.</td>
+</tr>
+<tr>
+<td><code>account_sequence_next</code></td>
+<td>Number</td>
+<td>May be omitted</td>
+<td>The next Sequence Number for the sending account after all transactions that have been provisionally applied, but not transactions in the queue.</td>
+</tr>
+<tr>
+<td><code>applied</code></td>
+<td>Boolean</td>
+<td>May be omitted</td>
+<td>The value true indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version.</td>
+</tr>
+<tr>
+<td><code>broadcast</code></td>
+<td>Boolean</td>
+<td>May be omitted</td>
+<td>The value true indicates that this transaction was applied to the open ledger. In this case, the transaction is likely, but not guaranteed, to be validated in the next ledger version.</td>
+</tr>
+<tr>
+<td><code>kept</code></td>
+<td>Boolean</td>
+<td>May be omitted</td>
+<td>The value true indicates that the transaction was kept to be retried later.</td>
+</tr>
+<tr>
+<td><code>queued</code></td>
+<td>Boolean</td>
+<td>May be omitted</td>
+<td>The value true indicates the transaction was put in the Transaction Queue, which means it is likely to be included in a future ledger version.</td>
+</tr>
+<tr>
+<td><code>open_ledger_cost</code></td>
+<td>String</td>
+<td>May be omitted</td>
+<td>The current open ledger cost before processing this transaction. Transactions with a lower cost are likely to be queued.</td>
+</tr>
+<tr>
+<td><code>validated_ledger_index</code></td>
+<td>Integer</td>
+<td>May be omitted</td>
+<td>The ledger index of the newest validated ledger at the time of submission. This provides a lower bound on the ledger versions that the transaction can appear in as a result of this request. (The transaction could only have been validated in this ledger version or earlier if it had already been submitted before.)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="400-bad-request">400 Bad Request</h3>
+<p>The request was not properly formatted.</p>
+<p><strong>Media type:</strong> application/json</p>
+<p>Formatted as a <a href="XRPAPI-data-types-rippleapierror.html">RippleAPIError</a></p>
+<p>The response uses the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>message</code></td>
+<td>String</td>
+<td>May be omitted</td>
+<td>A human-readable error message summarizing the problem(s) that occurred.</td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td>Array of <a href="XRPAPI-data-types-erroritem.html">ErrorItem</a></td>
+<td>May be omitted</td>
+<td>A list of errors that occurred when processing this request.</td>
+</tr>
+</tbody>
+</table>
+              </article>
+            </section>
+      </main>
+      <!-- Left sidebar last so it's at the end for mobile -->
+      <aside class="sidebar col-md-5 col-lg-3 order-md-1" role="complementary">
+
+
+<nav class="nav flex-column dactyl-tree-nav">
+  <div class="nav-item nav-parent">
+    <a class="nav-link" href="index.html">Index</a>
+  </div>
+    
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1" aria-expanded="true" aria-controls="tree_nav_group_1"></a>
+    <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1">
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_1" aria-expanded="false" aria-controls="tree_nav_group_1_1"></a>
+    <a class="nav-link" href="XRPAPI-Query-methods.html">Query Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_1">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountInfo.html">Get Account Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountSettings.html">Get Account Settings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountTransactions.html">Get Account Transactions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getTransaction.html">Get Transaction</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1_2" aria-expanded="true" aria-controls="tree_nav_group_1_2"></a>
+    <a class="nav-link" href="XRPAPI-Transact-methods.html">Transact Methods</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1_2">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-preparePayment.html">Prepare a Payment</a>
+  </div>
+
+      
+  <div class="nav-item active">
+    <a class="nav-link nav-leaf" href="XRPAPI-signSubmitPayment.html">Sign and/or submit a payment</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-createSignSubmitPayment.html">Create, sign, and submit a payment</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_3" aria-expanded="false" aria-controls="tree_nav_group_1_3"></a>
+    <a class="nav-link" href="XRPAPI-Meta-methods.html">Meta Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_3">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getServerInfo.html">Get Server Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getApiDoc.html">Get API Docs</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getPing.html">Ping</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_4" aria-expanded="false" aria-controls="tree_nav_group_1_4"></a>
+    <a class="nav-link" href="XRPAPI-data-types.html">XRP-API Data Types</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_4">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippleapierror.html">RippleAPIError</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-erroritem.html">ErrorItem</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverinfo.html">ServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippledserverinfo.html">RippledServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-load.html">Load</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-lastclose.html">LastClose</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverstate.html">ServerState</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-validatedledger.html">ValidatedLedger</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-address.html">Address</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionid.html">TransactionID</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-preparedpaymenttransaction.html">PreparedPaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-appliedtransaction.html">AppliedTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountinfo.html">AccountInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountsettings.html">AccountSettings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accounttransactions.html">AccountTransactions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountdata.html">AccountData</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-ledgerindex.html">LedgerIndex</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object_and_instructions.html">Payment object and instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object.html">Payment Object</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-amount.html">Amount</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-currency.html">Currency</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_instructions.html">Transaction Instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionstatus.html">TransactionStatus</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_common_fields.html">Transaction Common Fields</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-paymenttransaction.html">PaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-signed_transaction.html">Signed Transaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-apidoc.html">ApiDoc</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+    </nav>
+
+  </div>
+
+</nav>      </aside>
+    </div><!--/.row (main layout)-->
+  </div>
+
+<footer class="dactyl-footer px-2" role="contentinfo">
+
+  <section class="container-fluid p-5 pl-sm-0">
+
+
+    <div class="absolute_bottom_footer">
+    </div><!-- /.absolute_bottom_footer -->
+
+  </section>
+</footer>
+
+<!-- Jump to top button -->
+<a href="#main_content_wrapper" class="jump-to-top btn btn-primary btn-lg" role="button" title="Return to top of page">Top</a>
+<!-- Non-blocking resources -->
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- Dactyl JS -->
+<script src="https://dactyl.link/template_assets/dactyl.js"></script>
+<!-- fontawesome icons -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+</body>
+</html>

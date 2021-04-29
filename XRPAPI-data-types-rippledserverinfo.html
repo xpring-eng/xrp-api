@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>RippledServerInfo - XRP-API</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Blocking JS resources -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link href="https://dactyl.link/template_assets/dactyl.css" rel="stylesheet" />
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(".multicode").minitabs();
+            make_code_expandable();
+        });
+    </script>
+
+</head>
+
+<body class="sidebar-both  " data-spy="scroll" data-target="#page-toc-wrapper" data-offset="0">
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white px-2">
+  <a href="/" class="navbar-brand"><h1>XRP-API</h1></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHolder" aria-controls="navbarHolder" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarHolder">
+    <ul class="nav navbar-nav">
+          <li class="nav-item active-parent">
+            <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+          </li>
+    </ul><!-- /.navbar-nav -->
+
+
+
+  </div><!--/#navbarHolder-->
+</nav>
+  <div class="container-fluid" role="document" id="main_content_wrapper">
+    <div class="row">
+      <!-- Right sidebar first so it's at the beginning for mobile layouts -->
+      <aside class="right-sidebar col-lg-3 order-lg-4" role="complementary">
+<div class="card" id="page-toc-wrapper">
+  <div class="card-header">
+    <h4>In this page:</h4>
+  </div>
+  <ul id="page-toc" class="list-group card-body" role="directory">
+    <li class="level-1"><a class="nav-link" href="#rippledserverinfo">RippledServerInfo</a></li>
+  </ul>
+</div>      </aside>
+
+      <!-- main column -->
+      <main class="main col-md-7 col-lg-6 order-md-3  " role="main" id="main_content_body">
+<nav class="breadcrumbs-wrap p-0 p-md-3" aria-label="breadcrumb">
+  <ul class="breadcrumb">
+    
+
+    <li class="active breadcrumb-item"><a href="index.html">Index</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-methods.html">All XRP-API Methods</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-data-types.html">XRP-API Data Types</a></li>
+    <li class="active breadcrumb-item">RippledServerInfo</li>
+  </ul>
+</nav><!--/.breadcrumbs-wrap-->            <section class="pt-3 p-md-3">
+              <article class="dactyl-content">
+                <h1 id="rippledserverinfo">RippledServerInfo</h1>
+<ul>
+<li><strong>Type:</strong> Object</li>
+</ul>
+<p>This type can contain the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buildVersion</code></td>
+<td>String</td>
+<td>Required</td>
+<td>The version number of the running rippled version.</td>
+</tr>
+<tr>
+<td><code>completeLedgers</code></td>
+<td>String</td>
+<td>Required</td>
+<td>Range expression indicating the sequence numbers of the ledger versions the local rippled has in its database. It is possible to be a disjoint sequence, e.g. “2500-5000,32570-7695432”.</td>
+</tr>
+<tr>
+<td><code>fetchPack</code></td>
+<td>Number</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>hostID</code></td>
+<td>String</td>
+<td>Required</td>
+<td>On an admin request, returns the hostname of the server running the rippled instance; otherwise, returns a unique four letter word.</td>
+</tr>
+<tr>
+<td><code>ioLatencyMs</code></td>
+<td>Number</td>
+<td>Required</td>
+<td>Amount of time spent waiting for I/O operations to be performed, in milliseconds. If this number is not very, very low, then the rippled server is probably having serious load issues.</td>
+</tr>
+<tr>
+<td><code>jqTransOverflow</code></td>
+<td>String</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>load</code></td>
+<td>Object (<a href="XRPAPI-data-types-load.html">Load</a>)</td>
+<td>Optional</td>
+<td><em>(Admin only)</em> Detailed information about the current load state of the server.</td>
+</tr>
+<tr>
+<td><code>lastClose</code></td>
+<td>Object (<a href="XRPAPI-data-types-lastclose.html">LastClose</a>)</td>
+<td>Required</td>
+<td>Information about the last time the server closed a ledger.</td>
+</tr>
+<tr>
+<td><code>loadFactor</code></td>
+<td>Number</td>
+<td>Required</td>
+<td>The load factor the server is currently enforcing, as a multiplier on the base transaction fee. The load factor is determined by the highest of the individual server’s load factor, cluster’s load factor, and the overall network’s load factor.</td>
+</tr>
+<tr>
+<td><code>peerDisconnects</code></td>
+<td>String</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>peerDisconnectsResources</code></td>
+<td>String</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>peers</code></td>
+<td>Integer</td>
+<td>Required</td>
+<td>How many other rippled servers the node is currently connected to.</td>
+</tr>
+<tr>
+<td><code>pubkeyNode</code></td>
+<td>String</td>
+<td>Required</td>
+<td>Public key used to verify this node for internal communications; this key is automatically generated by the server the first time it starts up. (If deleted, the node can just create a new pair of keys.)</td>
+</tr>
+<tr>
+<td><code>pubkeyValidator</code></td>
+<td>String</td>
+<td>Optional</td>
+<td><em>(Admin only)</em> Public key used by this node to sign ledger validations.</td>
+</tr>
+<tr>
+<td><code>serverState</code></td>
+<td>String (<a href="XRPAPI-data-types-serverstate.html">ServerState</a>)</td>
+<td>Required</td>
+<td>A string indicating to what extent the server is participating in the network. See <a href="https://developers.ripple.com/rippled-server-states.html">Possible Server States</a> for more details.</td>
+</tr>
+<tr>
+<td><code>serverStateDurationUs</code></td>
+<td>String</td>
+<td>Optional</td>
+<td>The amount of time, in microseconds, that the server has continuously been in the present state (<code>full</code>, <code>syncing</code>, etc.)</td>
+</tr>
+<tr>
+<td><code>stateAccounting</code></td>
+<td>Object</td>
+<td>Optional</td>
+<td>Total duration spent in and every transition to various server states. This can be useful for tracking the long-term health of your server's connectivity to the network.</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td>String</td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td><code>uptime</code></td>
+<td>Number</td>
+<td>Optional</td>
+<td>Number of consecutive seconds that the server has been operational.</td>
+</tr>
+<tr>
+<td><code>validatedLedger</code></td>
+<td>Object (<a href="XRPAPI-data-types-validatedledger.html">ValidatedLedger</a>)</td>
+<td>Required</td>
+<td>Information about the fully-validated ledger with the highest sequence number (the most recent).</td>
+</tr>
+<tr>
+<td><code>validationQuorum</code></td>
+<td>Number</td>
+<td>Required</td>
+<td>Minimum number of trusted validations required in order to validate a ledger version. Some circumstances may cause the server to require more validations.</td>
+</tr>
+<tr>
+<td><code>validatorList</code></td>
+<td>Object</td>
+<td>Optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+              </article>
+            </section>
+      </main>
+      <!-- Left sidebar last so it's at the end for mobile -->
+      <aside class="sidebar col-md-5 col-lg-3 order-md-1" role="complementary">
+
+
+<nav class="nav flex-column dactyl-tree-nav">
+  <div class="nav-item nav-parent">
+    <a class="nav-link" href="index.html">Index</a>
+  </div>
+    
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1" aria-expanded="true" aria-controls="tree_nav_group_1"></a>
+    <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1">
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_1" aria-expanded="false" aria-controls="tree_nav_group_1_1"></a>
+    <a class="nav-link" href="XRPAPI-Query-methods.html">Query Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_1">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountInfo.html">Get Account Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountSettings.html">Get Account Settings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountTransactions.html">Get Account Transactions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getTransaction.html">Get Transaction</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_2" aria-expanded="false" aria-controls="tree_nav_group_1_2"></a>
+    <a class="nav-link" href="XRPAPI-Transact-methods.html">Transact Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_2">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-preparePayment.html">Prepare a Payment</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-signSubmitPayment.html">Sign and/or submit a payment</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-createSignSubmitPayment.html">Create, sign, and submit a payment</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_3" aria-expanded="false" aria-controls="tree_nav_group_1_3"></a>
+    <a class="nav-link" href="XRPAPI-Meta-methods.html">Meta Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_3">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getServerInfo.html">Get Server Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getApiDoc.html">Get API Docs</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getPing.html">Ping</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1_4" aria-expanded="true" aria-controls="tree_nav_group_1_4"></a>
+    <a class="nav-link" href="XRPAPI-data-types.html">XRP-API Data Types</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1_4">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippleapierror.html">RippleAPIError</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-erroritem.html">ErrorItem</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverinfo.html">ServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item active">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippledserverinfo.html">RippledServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-load.html">Load</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-lastclose.html">LastClose</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverstate.html">ServerState</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-validatedledger.html">ValidatedLedger</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-address.html">Address</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionid.html">TransactionID</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-preparedpaymenttransaction.html">PreparedPaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-appliedtransaction.html">AppliedTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountinfo.html">AccountInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountsettings.html">AccountSettings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accounttransactions.html">AccountTransactions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountdata.html">AccountData</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-ledgerindex.html">LedgerIndex</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object_and_instructions.html">Payment object and instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object.html">Payment Object</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-amount.html">Amount</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-currency.html">Currency</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_instructions.html">Transaction Instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionstatus.html">TransactionStatus</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_common_fields.html">Transaction Common Fields</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-paymenttransaction.html">PaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-signed_transaction.html">Signed Transaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-apidoc.html">ApiDoc</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+    </nav>
+
+  </div>
+
+</nav>      </aside>
+    </div><!--/.row (main layout)-->
+  </div>
+
+<footer class="dactyl-footer px-2" role="contentinfo">
+
+  <section class="container-fluid p-5 pl-sm-0">
+
+
+    <div class="absolute_bottom_footer">
+    </div><!-- /.absolute_bottom_footer -->
+
+  </section>
+</footer>
+
+<!-- Jump to top button -->
+<a href="#main_content_wrapper" class="jump-to-top btn btn-primary btn-lg" role="button" title="Return to top of page">Top</a>
+<!-- Non-blocking resources -->
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- Dactyl JS -->
+<script src="https://dactyl.link/template_assets/dactyl.js"></script>
+<!-- fontawesome icons -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+</body>
+</html>

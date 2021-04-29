@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>AccountData - XRP-API</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- Blocking JS resources -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link href="https://dactyl.link/template_assets/dactyl.css" rel="stylesheet" />
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(".multicode").minitabs();
+            make_code_expandable();
+        });
+    </script>
+
+</head>
+
+<body class="sidebar-both  " data-spy="scroll" data-target="#page-toc-wrapper" data-offset="0">
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-white px-2">
+  <a href="/" class="navbar-brand"><h1>XRP-API</h1></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHolder" aria-controls="navbarHolder" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarHolder">
+    <ul class="nav navbar-nav">
+          <li class="nav-item active-parent">
+            <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+          </li>
+    </ul><!-- /.navbar-nav -->
+
+
+
+  </div><!--/#navbarHolder-->
+</nav>
+  <div class="container-fluid" role="document" id="main_content_wrapper">
+    <div class="row">
+      <!-- Right sidebar first so it's at the beginning for mobile layouts -->
+      <aside class="right-sidebar col-lg-3 order-lg-4" role="complementary">
+<div class="card" id="page-toc-wrapper">
+  <div class="card-header">
+    <h4>In this page:</h4>
+  </div>
+  <ul id="page-toc" class="list-group card-body" role="directory">
+    <li class="level-1"><a class="nav-link" href="#accountdata">AccountData</a></li>
+  </ul>
+</div>      </aside>
+
+      <!-- main column -->
+      <main class="main col-md-7 col-lg-6 order-md-3  " role="main" id="main_content_body">
+<nav class="breadcrumbs-wrap p-0 p-md-3" aria-label="breadcrumb">
+  <ul class="breadcrumb">
+    
+
+    <li class="active breadcrumb-item"><a href="index.html">Index</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-methods.html">All XRP-API Methods</a></li>
+    <li class="active breadcrumb-item"><a href="XRPAPI-data-types.html">XRP-API Data Types</a></li>
+    <li class="active breadcrumb-item">AccountData</li>
+  </ul>
+</nav><!--/.breadcrumbs-wrap-->            <section class="pt-3 p-md-3">
+              <article class="dactyl-content">
+                <h1 id="accountdata">AccountData</h1>
+<p>The raw <a href="https://xrpl.org/accountroot.html">AccountRoot object</a> of the account, as stored in the XRP Ledger.</p>
+<ul>
+<li><strong>Type:</strong> Object</li>
+</ul>
+<p>This type can contain the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Account</code></td>
+<td>String (<a href="XRPAPI-data-types-address.html">Address</a>)</td>
+<td>Required</td>
+<td>The address of an XRP Ledger account.</td>
+</tr>
+<tr>
+<td><code>Balance</code></td>
+<td>String</td>
+<td>Required</td>
+<td>The XRP balance of the account, in integer "drops of XRP", where 1000000 drops = 1 XRP.</td>
+</tr>
+<tr>
+<td><code>Flags</code></td>
+<td>Integer</td>
+<td>Required</td>
+<td>A bitwise map of settings applied to this account.</td>
+</tr>
+<tr>
+<td><code>LedgerEntryType</code></td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>OwnerCount</code></td>
+<td>Integer</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>PreviousTxnID</code></td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>PreviousTxnLgrSeq</code></td>
+<td>Integer</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>RegularKey</code></td>
+<td>String (<a href="XRPAPI-data-types-address.html">Address</a>)</td>
+<td>Optional</td>
+<td>The address of an XRP Ledger account.</td>
+</tr>
+<tr>
+<td><code>Sequence</code></td>
+<td>Integer</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>String</td>
+<td>Optional</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+              </article>
+            </section>
+      </main>
+      <!-- Left sidebar last so it's at the end for mobile -->
+      <aside class="sidebar col-md-5 col-lg-3 order-md-1" role="complementary">
+
+
+<nav class="nav flex-column dactyl-tree-nav">
+  <div class="nav-item nav-parent">
+    <a class="nav-link" href="index.html">Index</a>
+  </div>
+    
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1" aria-expanded="true" aria-controls="tree_nav_group_1"></a>
+    <a class="nav-link" href="XRPAPI-methods.html">All XRP-API Methods</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1">
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_1" aria-expanded="false" aria-controls="tree_nav_group_1_1"></a>
+    <a class="nav-link" href="XRPAPI-Query-methods.html">Query Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_1">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountInfo.html">Get Account Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountSettings.html">Get Account Settings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getAccountTransactions.html">Get Account Transactions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getTransaction.html">Get Transaction</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_2" aria-expanded="false" aria-controls="tree_nav_group_1_2"></a>
+    <a class="nav-link" href="XRPAPI-Transact-methods.html">Transact Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_2">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-preparePayment.html">Prepare a Payment</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-signSubmitPayment.html">Sign and/or submit a payment</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-createSignSubmitPayment.html">Create, sign, and submit a payment</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item ">
+
+
+      <a class="nav-toggler collapsed" role="button" data-toggle="collapse" href="#tree_nav_group_1_3" aria-expanded="false" aria-controls="tree_nav_group_1_3"></a>
+    <a class="nav-link" href="XRPAPI-Meta-methods.html">Meta Methods</a>
+
+    <nav class="nav flex-column collapse" id="tree_nav_group_1_3">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getServerInfo.html">Get Server Info</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getApiDoc.html">Get API Docs</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-getPing.html">Ping</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+      
+  <div class="nav-item active-parent">
+
+
+      <a class="nav-toggler " role="button" data-toggle="collapse" href="#tree_nav_group_1_4" aria-expanded="true" aria-controls="tree_nav_group_1_4"></a>
+    <a class="nav-link" href="XRPAPI-data-types.html">XRP-API Data Types</a>
+
+    <nav class="nav flex-column show " id="tree_nav_group_1_4">
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippleapierror.html">RippleAPIError</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-erroritem.html">ErrorItem</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverinfo.html">ServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-rippledserverinfo.html">RippledServerInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-load.html">Load</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-lastclose.html">LastClose</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-serverstate.html">ServerState</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-validatedledger.html">ValidatedLedger</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-address.html">Address</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionid.html">TransactionID</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-preparedpaymenttransaction.html">PreparedPaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-appliedtransaction.html">AppliedTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountinfo.html">AccountInfo</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountsettings.html">AccountSettings</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accounttransactions.html">AccountTransactions</a>
+  </div>
+
+      
+  <div class="nav-item active">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-accountdata.html">AccountData</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-ledgerindex.html">LedgerIndex</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object_and_instructions.html">Payment object and instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-payment_object.html">Payment Object</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-amount.html">Amount</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-currency.html">Currency</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_instructions.html">Transaction Instructions</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transactionstatus.html">TransactionStatus</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-transaction_common_fields.html">Transaction Common Fields</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-paymenttransaction.html">PaymentTransaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-signed_transaction.html">Signed Transaction</a>
+  </div>
+
+      
+  <div class="nav-item ">
+    <a class="nav-link nav-leaf" href="XRPAPI-data-types-apidoc.html">ApiDoc</a>
+  </div>
+
+    </nav>
+
+  </div>
+
+    </nav>
+
+  </div>
+
+</nav>      </aside>
+    </div><!--/.row (main layout)-->
+  </div>
+
+<footer class="dactyl-footer px-2" role="contentinfo">
+
+  <section class="container-fluid p-5 pl-sm-0">
+
+
+    <div class="absolute_bottom_footer">
+    </div><!-- /.absolute_bottom_footer -->
+
+  </section>
+</footer>
+
+<!-- Jump to top button -->
+<a href="#main_content_wrapper" class="jump-to-top btn btn-primary btn-lg" role="button" title="Return to top of page">Top</a>
+<!-- Non-blocking resources -->
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<!-- Dactyl JS -->
+<script src="https://dactyl.link/template_assets/dactyl.js"></script>
+<!-- fontawesome icons -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+</body>
+</html>
