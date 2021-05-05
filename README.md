@@ -3,7 +3,7 @@
 An API server that provides a REST-like interface to the XRP Ledger.
 
 
-## [➡️ XRP API Reference Documentation](https://xrpl.org/xrp-api.html)
+## [➡️ XRP API Reference Documentation](https://xpring-eng.github.io/xrp-api/)
 
 See the full reference documentation on the XRP Ledger Dev Portal.
 
