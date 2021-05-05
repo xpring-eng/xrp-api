@@ -26,3 +26,27 @@ Example:
 You can specify multiple categories separated by `,`:
 
     NODE_DEBUG=paths,ripple-api yarn dev
+
+## Updating Docs
+
+The [API Reference](https://xpring-eng.github.io/xrp-api/) is based on the [`api-doc.yml` file](../api-doc.yml) and hosted using GitHub Pages. To update it, you need to have [Dactyl](https://github.com/ripple/dactyl/) installed (`pip install dactyl`). Then complete the following steps:
+
+1. Merge changes from the master branch into the `gh-pages` branch.
+
+        # From the repo base directory:
+        git checkout master
+        git pull
+        git switch gh-pages
+        git merge master
+
+2. Build the API docs using the OpenAPI spec:
+
+        dactyl_build --openapi api-doc.yml -o .
+
+3. Commit the updated HTML files:
+
+        git add ./*.html
+        git commit -m "[gh-pages] Update docs"
+        git push
+
+4. Wait a couple minutes for changes to propagate.
