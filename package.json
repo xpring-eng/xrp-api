@@ -29,7 +29,7 @@
   "dependencies": {
     "@types/got": "^9.6.9",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-openapi": "^6.0.0",
     "got": "^9.6.0",
     "log4js": "^6.1.2",
