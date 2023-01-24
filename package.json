@@ -31,7 +31,7 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-openapi": "^6.0.0",
-    "got": "^9.6.0",
+    "got": "^11.8.5",
     "log4js": "^6.1.2",
     "ripple-address-codec": "^4.1.1",
     "ripple-lib": "^1.6.6-beta.2",
